@@ -1,13 +1,30 @@
+version: '3.8'
+
 services:
   lightrag:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lightrag-server
+    container_name: lightrag-server
     ports:
-      - "${PORT:-9621}:9621"
+      - "${PORT:-9621}:${PORT:-9621}"
     volumes:
-      - ./data/rag_storage:/app/data/rag_storage
-      - ./data/inputs:/app/data/inputs
-      - ./config.ini:/app/config.ini
-      - ./.env:/app/.env
+      - ./data:/app/data
+      - ./inputs:/app/data/inputs
     env_file:
       - .env
+    # Add host.docker.internal mapping for Ollama when using local LLM
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT:-8G}
+        reservations:
+          memory: ${MEMORY_RESERVATION:-4G}
+
+volumes:
+  lightrag_data:
+    driver: local
