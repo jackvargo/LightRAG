@@ -25,10 +25,10 @@ export type LightragGraphType = {
 }
 
 export type LightragStatus = {
-  status: 'healthy'
-  working_directory: string
-  input_directory: string
-  configuration: {
+  status: 'healthy' | 'success' | 'error'
+  working_directory?: string
+  input_directory?: string
+  configuration?: {
     llm_binding: string
     llm_binding_host: string
     llm_model: string
@@ -45,9 +45,10 @@ export type LightragStatus = {
   core_version?: string
   api_version?: string
   auth_mode?: 'enabled' | 'disabled'
-  pipeline_busy: boolean
+  pipeline_busy?: boolean
   webui_title?: string
   webui_description?: string
+  message?: string
 }
 
 export type LightragDocumentsScanProgress = {
@@ -68,12 +69,14 @@ export type LightragDocumentsScanProgress = {
  */
 export type QueryMode = 'naive' | 'local' | 'global' | 'hybrid' | 'mix'
 
-export type Message = {
+export interface Message {
   role: 'user' | 'assistant' | 'system'
   content: string
+  context?: string[]
+  prompt?: string
 }
 
-export type QueryRequest = {
+export interface QueryRequest {
   query: string
   /** Specifies the retrieval mode. */
   mode: QueryMode
@@ -174,6 +177,28 @@ export type LoginResponse = {
 export const InvalidApiKeyError = 'Invalid API Key'
 export const RequireApiKeError = 'API Key required'
 
+// Context-related types
+export interface ContextInfo {
+  description: string
+  path: string
+  created_at: string
+  is_default?: boolean
+  is_current?: boolean
+  stats?: ContextStats
+}
+
+export interface ContextStats {
+  documents_count: number
+  entities_count: number
+  relationships_count: number
+  disk_usage_mb: number
+}
+
+export interface ContextsResponse {
+  contexts: Record<string, ContextInfo>
+  current_context: string | null
+}
+
 // Axios instance
 const axiosInstance = axios.create({
   baseURL: backendBaseUrl,
@@ -183,7 +208,7 @@ const axiosInstance = axios.create({
 })
 
 // Interceptor: add api key and check authentication
-axiosInstance.interceptors.request.use((config) => {
+axiosInstance.interceptors.request.use((config: any) => {
   const apiKey = useSettingsStore.getState().apiKey
   const token = localStorage.getItem('LIGHTRAG-API-TOKEN');
 
@@ -197,9 +222,9 @@ axiosInstance.interceptors.request.use((config) => {
   return config
 })
 
-// Interceptor：hanle error
+// Interceptor：handle error
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response: any) => response,
   (error: AxiosError) => {
     if (error.response) {
       if (error.response?.status === 401) {
@@ -312,7 +337,7 @@ export const queryTextStream = async (
           }
         ]
       })
-      .catch((error) => {
+      .catch((error: any) => {
         if (onError) onError(errorMessage(error))
       })
 
@@ -361,7 +386,7 @@ export const uploadDocument = async (
     // prettier-ignore
     onUploadProgress:
       onUploadProgress !== undefined
-        ? (progressEvent) => {
+        ? (progressEvent: any) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!)
           onUploadProgress(percentCompleted)
         }
@@ -470,4 +495,35 @@ export const loginToServer = async (username: string, password: string): Promise
   });
 
   return response.data;
+}
+
+// Context API functions
+export const getContexts = async (): Promise<ContextsResponse> => {
+  const response = await axiosInstance.get('/contexts')
+  return response.data
+}
+
+export const getContextStats = async (contextName: string): Promise<ContextStats> => {
+  const response = await axiosInstance.get(`/contexts/${contextName}/stats`)
+  return response.data
+}
+
+export const createContext = async (name: string, description: string): Promise<{ status: string; message: string }> => {
+  const response = await axiosInstance.post('/contexts', { name, description })
+  return response.data
+}
+
+export const switchContext = async (name: string): Promise<{ status: string; message: string }> => {
+  const response = await axiosInstance.post(`/contexts/${name}/switch`)
+  return response.data
+}
+
+export const renameContext = async (oldName: string, newName: string): Promise<{ status: string; message: string }> => {
+  const response = await axiosInstance.put(`/contexts/${oldName}/rename`, { new_name: newName })
+  return response.data
+}
+
+export const deleteContext = async (name: string): Promise<{ status: string; message: string }> => {
+  const response = await axiosInstance.delete(`/contexts/${name}`)
+  return response.data
 }
