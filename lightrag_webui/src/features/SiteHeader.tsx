@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { navigationService } from '@/services/navigation'
 import { ZapIcon, GithubIcon, LogOutIcon } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/Tooltip'
+import { ContextSelector } from '@/components/ContextSelector'
 
 interface NavigationTabProps {
   value: string
@@ -95,8 +96,9 @@ export default function SiteHeader() {
         )}
       </div>
 
-      <div className="flex h-10 flex-1 items-center justify-center">
+      <div className="flex h-10 flex-1 items-center justify-center gap-4">
         <TabsNavigation />
+        <ContextSelector />
         {isGuestMode && (
           <div className="ml-2 self-center px-2 py-1 text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 rounded-md">
             {t('login.guestMode', 'Guest Mode')}
