@@ -203,10 +203,10 @@ services:
       # Expose the API server port, using PORT from .env or fallback to 9621
       - "${PORT:-9621}:${PORT:-9621}"
     volumes:
-      # Mount data directory for persistent storage of graph database, vector database, etc.
-      - ./data:/app/data
-      # Mount inputs directory for document processing
-      - ./inputs:/app/data/inputs
+      # Mount working directory to container's expected path
+      - ${LIGHTRAG_WORKING_DIR:-./data/rag_storage}:/app/data/rag_storage
+      # Mount inputs directory to container's expected path
+      - ${LIGHTRAG_INPUT_DIR:-./inputs}:/app/data/inputs
     env_file:
       # Load environment variables from .env file
       - .env

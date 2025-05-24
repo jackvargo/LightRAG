@@ -10,8 +10,8 @@ services:
     ports:
       - "${PORT:-9621}:${PORT:-9621}"
     volumes:
-      - ./data:/app/data
-      - ./inputs:/app/data/inputs
+      - ${LIGHTRAG_WORKING_DIR:-./data/rag_storage}:/app/data/rag_storage
+      - ${LIGHTRAG_INPUT_DIR:-./inputs}:/app/data/inputs
     env_file:
       - .env
     # Add host.docker.internal mapping for Ollama when using local LLM
