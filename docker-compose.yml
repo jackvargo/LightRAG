@@ -11,7 +11,11 @@ services:
       - "${PORT:-9621}:${PORT:-9621}"
     volumes:
       - ${LIGHTRAG_WORKING_DIR:-./data/rag_storage}:/app/data/rag_storage
-      - ${LIGHTRAG_INPUT_DIR:-./inputs}:/app/data/inputs
+      - ${LIGHTRAG_INPUT_DIR:-./data/inputs}:/app/data/inputs
+      - ${LIGHTRAG_CONTEXTS_DIR:-./data/contexts}:/app/data/contexts
+      # Mount the default context subdirectories properly including its input directories for context changes after startup
+      - ${LIGHTRAG_WORKING_DIR:-./data/rag_storage}:/app/data/contexts/default
+      - ${LIGHTRAG_INPUT_DIR:-./data/inputs}:/app/data/contexts/default_inputs
     env_file:
       - .env
     # Add host.docker.internal mapping for Ollama when using local LLM

@@ -1,5 +1,8 @@
-# Build stage
-FROM python:3.11-slim AS builder
+# Use a simpler setup without frontend build
+# We'll copy pre-built frontend assets instead of building in Docker
+
+# Backend build stage
+FROM python:3.10 AS builder
 
 WORKDIR /app
 
@@ -29,7 +32,7 @@ COPY . .
 RUN pip install --user --no-cache-dir ".[api]"
 
 # Final stage
-FROM python:3.11-slim
+FROM python:3.10
 
 WORKDIR /app
 
@@ -43,15 +46,24 @@ COPY --from=builder /root/.local /root/.local
 COPY --from=builder /app/lightrag /app/lightrag
 COPY --from=builder /app/setup.py /app/
 
+# Copy local pre-built frontend files
+COPY lightrag/api/webui /app/lightrag/api/webui
+
 # Make sure scripts in .local are usable
 ENV PATH=/root/.local/bin:$PATH
 
 # Create necessary directories
-RUN mkdir -p /app/data/rag_storage /app/data/inputs
+RUN mkdir -p /app/data/rag_storage /app/data/inputs /app/data/contexts
 
 # Docker data directories
 ENV WORKING_DIR=/app/data/rag_storage
 ENV INPUT_DIR=/app/data/inputs
+ENV CONTEXTS_DIR=/app/data/contexts
+
+# Multi-Context Configuration
+ENV ENABLE_MULTI_CONTEXT=true
+ENV DEFAULT_CONTEXT=default
+ENV MAX_CONTEXTS=10
 
 # Expose the default port
 EXPOSE 9621
