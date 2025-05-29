@@ -47,6 +47,7 @@ from lightrag.kg.shared_storage import (
     get_namespace_data,
     get_pipeline_status_lock,
     initialize_pipeline_status,
+    reset_all_storage_namespaces_for_context_switch,
 )
 from fastapi.security import OAuth2PasswordRequestForm
 from lightrag.api.auth import auth_handler
@@ -369,25 +370,57 @@ def create_app(args):
         
         logger.info(f"Context switch callback: {previous_context_name} → {context_name}")
         
-        # Update RAG working directory
-        old_working_dir = rag.working_dir
-        rag.working_dir = str(context_working_path)
-        logger.info(f"Updated RAG working_dir: {old_working_dir} → {rag.working_dir}")
-        
-        # Update document manager input directory
-        if context_input_path:
-            old_input_dir = doc_manager.input_dir  
-            doc_manager.input_dir = Path(context_input_path)
-            logger.info(f"Updated doc_manager input_dir: {old_input_dir} → {doc_manager.input_dir}")
+        try:
+            # Reset storage namespaces first to ensure clean context switch
+            await reset_all_storage_namespaces_for_context_switch()
+            logger.info("Reset storage namespaces for context switch")
             
-            # Clear indexed files and reload from new context
-            doc_manager.indexed_files.clear()
-            if hasattr(doc_manager, 'load_indexed_files_from_storage'):
-                await doc_manager.load_indexed_files_from_storage(rag)
-        
-        # Update storage global_configs
-        if hasattr(rag, '_update_storage_configs'):
-            await rag._update_storage_configs()
+            # Use the enhanced update_working_dir method if available
+            if hasattr(rag, 'update_working_dir'):
+                await rag.update_working_dir(str(context_working_path))
+            else:
+                # Fallback to direct assignment and storage config update
+                old_working_dir = rag.working_dir
+                rag.working_dir = str(context_working_path)
+                logger.info(f"Updated RAG working_dir: {old_working_dir} → {rag.working_dir}")
+                
+                # Update storage global_configs
+                if hasattr(rag, '_update_storage_configs'):
+                    await rag._update_storage_configs()
+            
+            # Update document manager input directory  
+            if context_input_path:
+                if hasattr(doc_manager, 'update_input_directory'):
+                    doc_manager.update_input_directory(context_input_path)
+                else:
+                    # Fallback method
+                    old_input_dir = doc_manager.input_dir  
+                    doc_manager.input_dir = Path(context_input_path)
+                    logger.info(f"Updated doc_manager input_dir: {old_input_dir} → {doc_manager.input_dir}")
+                
+                # Reset frontend state and reload indexed files
+                if hasattr(doc_manager, 'reset_frontend_state'):
+                    doc_manager.reset_frontend_state()
+                else:
+                    # Fallback - clear indexed files manually
+                    doc_manager.indexed_files.clear()
+                    
+                # Load indexed files from new context
+                if hasattr(doc_manager, 'load_indexed_files_from_storage'):
+                    await doc_manager.load_indexed_files_from_storage(rag)
+            
+            # Reload storages to refresh data if method available
+            if hasattr(rag, 'reload_storages'):
+                await rag.reload_storages()
+                logger.info("Reloaded all storages after context switch")
+                
+            logger.info(f"Context switch completed successfully: {previous_context_name} → {context_name}")
+            
+        except Exception as e:
+            logger.error(f"Error during context switch callback: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            raise  # Re-raise to propagate the error
 
     # Register the callback
     ContextManager.register_context_switch_callback(on_context_switch)

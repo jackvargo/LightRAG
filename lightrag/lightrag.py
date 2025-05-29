@@ -525,6 +525,49 @@ class LightRAG:
         
         logger.info(f"Updated global_config in {len([s for s in storages_to_update if hasattr(s, 'global_config')])} storage instances")
 
+    async def update_working_dir(self, new_working_dir: str) -> None:
+        """
+        Update the working directory for LightRAG to support context switching.
+        
+        Args:
+            new_working_dir: New working directory path to use
+        """
+        logger.info(f"Updating working directory from {self.working_dir} to {new_working_dir}")
+        
+        # Save the current storage state
+        prev_state = self._storages_status
+        
+        # Finalize current storages if initialized
+        if self._storages_status == StoragesStatus.INITIALIZED:
+            await self.finalize_storages()
+        
+        # Update the working directory
+        self.working_dir = new_working_dir
+        
+        # Reset the storages status to create and reinitialize
+        self._storages_status = StoragesStatus.CREATED
+        
+        # Re-initialize if we were previously initialized
+        if prev_state == StoragesStatus.INITIALIZED:
+            await self.initialize_storages()
+            
+        logger.info(f"Successfully updated working directory to {new_working_dir}")
+    
+    async def reload_storages(self) -> None:
+        """
+        Reload all storages to refresh data after context switch.
+        This forces a complete reload of all databases and indexes.
+        """
+        logger.info("Reloading all storages")
+        
+        # Only reload if storages are initialized
+        if self._storages_status == StoragesStatus.INITIALIZED:
+            # Close and open storages to refresh data
+            await self.finalize_storages()
+            await self.initialize_storages()
+            
+        logger.info("Successfully reloaded all storages")
+
     async def get_graph_labels(self):
         text = await self.chunk_entity_relation_graph.get_all_labels()
         return text
