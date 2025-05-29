@@ -326,6 +326,8 @@ class PipelineStatusResponse(BaseModel):
 
 
 class DocumentManager:
+    """Manages document scanning and processing in a separate background process."""
+
     def __init__(
         self,
         input_dir: str,
@@ -417,6 +419,18 @@ class DocumentManager:
         except Exception as e:
             logger.warning(f"Error loading indexed files from storage: {e}")
             # Don't fail - just continue with empty set (current behavior)
+
+    def update_input_directory(self, new_input_dir: str | Path):
+        """Update the input directory for the document manager."""
+        self.input_dir = Path(new_input_dir)
+        self.input_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"DocumentManager input directory updated to: {self.input_dir}")
+    
+    def reset_frontend_state(self):
+        """Reset frontend-facing state tracking."""
+        # Clear the indexed files tracking to force re-scanning
+        self.indexed_files.clear()
+        logger.info("DocumentManager frontend state reset - cleared indexed files tracking")
 
 
 async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:

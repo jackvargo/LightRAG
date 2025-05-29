@@ -518,6 +518,60 @@ async def get_namespace_data(namespace: str) -> Dict[str, Any]:
     return _shared_dicts[namespace]
 
 
+async def reset_all_storage_namespaces_for_context_switch():
+    """
+    Reset all storage namespace initialization flags and clear shared data 
+    to force complete reload from disk during context switch.
+    
+    This function addresses the core issue where storage namespaces remain 
+    "initialized" across context switches, preventing proper data reload.
+    """
+    global _init_flags, _shared_dicts
+    
+    if _init_flags is None or _shared_dicts is None:
+        direct_log(
+            f"Process {os.getpid()}: Storage not initialized, cannot reset namespaces",
+            level="WARNING"
+        )
+        return
+    
+    async with get_internal_lock():
+        # Define all storage namespaces that need to be reset
+        storage_namespaces = [
+            "full_docs", "text_chunks", "entities", "relationships",
+            "chunks", "chunk_entity_relation", "llm_response_cache", "doc_status"
+        ]
+        
+        direct_log(
+            f"Process {os.getpid()}: Starting context switch storage reset for namespaces: {storage_namespaces}"
+        )
+        
+        # Reset initialization flags to force reload
+        reset_count = 0
+        for namespace in storage_namespaces:
+            if namespace in _init_flags:
+                old_value = _init_flags[namespace]
+                _init_flags[namespace] = False
+                if old_value:
+                    reset_count += 1
+                    direct_log(
+                        f"Process {os.getpid()}: Reset initialization flag for namespace: [{namespace}]"
+                    )
+            
+            # Clear shared data for the namespace
+            if namespace in _shared_dicts:
+                data_count = len(_shared_dicts[namespace])
+                _shared_dicts[namespace].clear()
+                if data_count > 0:
+                    direct_log(
+                        f"Process {os.getpid()}: Cleared {data_count} items from namespace: [{namespace}]"
+                    )
+        
+        direct_log(
+            f"Process {os.getpid()}: Context switch storage reset complete - reset {reset_count} namespaces"
+        )
+
+
 def finalize_share_data():
     """
     Release shared resources and clean up.
