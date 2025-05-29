@@ -892,6 +892,35 @@ class LightRAG:
                 to_process_docs.update(failed_docs)
                 to_process_docs.update(pending_docs)
 
+                # Safety check: Remove any documents that are actually processed on disk
+                # This prevents reprocessing when shared memory is corrupted after context switch
+                if hasattr(self.doc_status, '_file_name') and hasattr(self.doc_status, 'global_config'):
+                    try:
+                        import json
+                        from pathlib import Path
+                        
+                        # Check the actual file on disk for processed status
+                        working_dir = Path(self.doc_status.global_config.get("working_dir", "."))
+                        status_file = working_dir / self.doc_status._file_name
+                        
+                        if status_file.exists():
+                            with open(status_file, 'r') as f:
+                                disk_data = json.load(f)
+                            
+                            # Remove any doc that is marked as "processed" on disk
+                            docs_to_remove = []
+                            for doc_id in to_process_docs.keys():
+                                if doc_id in disk_data and disk_data[doc_id].get('status') == 'processed':
+                                    docs_to_remove.append(doc_id)
+                                    logger.info(f"Skipping reprocessing of {doc_id} - already processed on disk")
+                            
+                            for doc_id in docs_to_remove:
+                                del to_process_docs[doc_id]
+                                
+                    except Exception as e:
+                        logger.warning(f"Error checking disk status for processed docs: {e}")
+                        # Continue with normal processing if disk check fails
+
                 if not to_process_docs:
                     logger.info("No documents to process")
                     return

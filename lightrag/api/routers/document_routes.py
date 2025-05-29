@@ -402,7 +402,17 @@ class DocumentManager:
             
         try:
             from lightrag.base import DocStatus
+            
+            # First attempt: Get processed docs from current storage
             processed_docs = await rag.doc_status.get_docs_by_status(DocStatus.PROCESSED)
+            
+            # If we get no processed docs but there might be a file on disk, reload from disk
+            if not processed_docs:
+                # Try to force reload from disk by re-initializing storage
+                if hasattr(rag.doc_status, 'initialize'):
+                    logger.info("No processed docs found in memory, attempting to reload from disk...")
+                    await rag.doc_status.initialize()
+                    processed_docs = await rag.doc_status.get_docs_by_status(DocStatus.PROCESSED)
             
             # Clear current indexed files first
             previous_count = len(self.indexed_files)
