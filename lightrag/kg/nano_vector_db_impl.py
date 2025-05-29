@@ -346,3 +346,13 @@ class NanoVectorDBStorage(BaseVectorStorage):
         except Exception as e:
             logger.error(f"Error dropping {self.namespace}: {e}")
             return {"status": "error", "message": str(e)}
+
+    def update_working_dir(self, new_working_dir: str):
+        """Update client file path when working directory changes"""
+        self._client_file_name = os.path.join(new_working_dir, f"vdb_{self.namespace}.json")
+        # Reinitialize the client with the new file path
+        self._client = NanoVectorDB(
+            self.embedding_func.embedding_dim,
+            storage_file=self._client_file_name,
+        )
+        logger.info(f"Updated NanoVectorDBStorage file path to: {self._client_file_name}")

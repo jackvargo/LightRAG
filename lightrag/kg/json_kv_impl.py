@@ -31,6 +31,11 @@ class JsonKVStorage(BaseKVStorage):
         self._storage_lock = None
         self.storage_updated = None
 
+    def update_working_dir(self, new_working_dir: str):
+        """Update file path when working directory changes"""
+        self._file_name = os.path.join(new_working_dir, f"kv_store_{self.namespace}.json")
+        logger.info(f"Updated JsonKVStorage file path to: {self._file_name}")
+
     async def initialize(self):
         """Initialize storage data"""
         self._storage_lock = get_storage_lock()

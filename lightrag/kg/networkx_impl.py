@@ -449,3 +449,14 @@ class NetworkXStorage(BaseGraphStorage):
         except Exception as e:
             logger.error(f"Error dropping graph {self.namespace}: {e}")
             return {"status": "error", "message": str(e)}
+
+    def update_working_dir(self, new_working_dir: str):
+        """Update graphml file path when working directory changes"""
+        self._graphml_xml_file = os.path.join(new_working_dir, f"graph_{self.namespace}.graphml")
+        # Try to load existing graph from new location
+        preloaded_graph = NetworkXStorage.load_nx_graph(self._graphml_xml_file)
+        if preloaded_graph is not None:
+            self._graph = preloaded_graph
+            logger.info(f"Updated NetworkXStorage file path and loaded graph from: {self._graphml_xml_file}")
+        else:
+            logger.info(f"Updated NetworkXStorage file path to: {self._graphml_xml_file} (no existing graph found)")

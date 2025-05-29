@@ -507,6 +507,7 @@ class LightRAG:
         from dataclasses import asdict
         
         new_global_config = asdict(self)
+        new_working_dir = new_global_config['working_dir']
         
         # Update all storage instances that have global_config
         storages_to_update = [
@@ -515,15 +516,17 @@ class LightRAG:
             self.chunk_entity_relation_graph, self.llm_response_cache
         ]
         
+        updated_count = 0
         for storage in storages_to_update:
             if hasattr(storage, 'global_config'):
                 storage.global_config.update(new_global_config)
-                # Trigger re-initialization of file paths for storages that need it
-                if hasattr(storage, '_file_name') and hasattr(storage, '__post_init__'):
-                    storage.__post_init__()
-                    logger.debug(f"Re-initialized storage {type(storage).__name__} with new working_dir")
+                updated_count += 1
+                
+                # Simply update the file path if storage supports it
+                if hasattr(storage, 'update_working_dir'):
+                    storage.update_working_dir(new_working_dir)
         
-        logger.info(f"Updated global_config in {len([s for s in storages_to_update if hasattr(s, 'global_config')])} storage instances")
+        logger.info(f"Updated global_config in {updated_count} storage instances")
 
     async def update_working_dir(self, new_working_dir: str) -> None:
         """
@@ -543,6 +546,9 @@ class LightRAG:
         
         # Update the working directory
         self.working_dir = new_working_dir
+        
+        # CRITICAL: Update storage configurations with new working directory
+        await self._update_storage_configs()
         
         # Reset the storages status to create and reinitialize
         self._storages_status = StoragesStatus.CREATED
