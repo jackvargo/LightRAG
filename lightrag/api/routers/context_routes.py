@@ -2,17 +2,24 @@
 Context management routes for LightRAG API.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from typing import Dict, Optional, List
 from pydantic import BaseModel
 from lightrag.contexts.context_manager import ContextManager
 from lightrag.utils import logger
+from lightrag.api.utils_api import get_combined_auth_dependency
 import os
 from pathlib import Path
 import json
 import asyncio
 
 router = APIRouter(prefix="/contexts", tags=["contexts"])
+
+# Get the auth dependency - we'll apply it to individual routes
+def get_auth_dependency():
+    """Get the authentication dependency for context routes"""
+    api_key = os.getenv("LIGHTRAG_API_KEY")
+    return get_combined_auth_dependency(api_key)
 
 class ContextCreate(BaseModel):
     name: str
@@ -97,7 +104,8 @@ def get_context_stats(context_path: str) -> ContextStats:
         # Return empty stats on error
         return ContextStats()
 
-@router.get("/", response_model=ContextsResponse)
+@router.get("/", response_model=ContextsResponse, dependencies=[Depends(get_auth_dependency())])
+@router.get("", response_model=ContextsResponse, dependencies=[Depends(get_auth_dependency())])
 async def list_contexts():
     """List all available contexts and the current active context."""
     context_manager = ContextManager.get_instance()
@@ -105,7 +113,7 @@ async def list_contexts():
     current_context = context_manager.get_current_context()
     return {"contexts": contexts, "current_context": current_context}
 
-@router.get("/{context_name}/stats", response_model=ContextStats)
+@router.get("/{context_name}/stats", response_model=ContextStats, dependencies=[Depends(get_auth_dependency())])
 async def get_context_statistics(context_name: str):
     """Get statistics for a specific context."""
     context_manager = ContextManager.get_instance()
@@ -118,7 +126,7 @@ async def get_context_statistics(context_name: str):
     stats = get_context_stats(str(context_path))
     return stats
 
-@router.post("/", response_model=bool)
+@router.post("/", response_model=bool, dependencies=[Depends(get_auth_dependency())])
 async def create_context(context: ContextCreate):
     """Create a new context."""
     context_manager = ContextManager.get_instance()
@@ -127,7 +135,7 @@ async def create_context(context: ContextCreate):
         raise HTTPException(status_code=400, detail="Context already exists")
     return success
 
-@router.post("/{context_name}/switch", response_model=Dict)
+@router.post("/{context_name}/switch", response_model=Dict, dependencies=[Depends(get_auth_dependency())])
 async def switch_context(context_name: str):
     """Switch to a different context."""
     logger.info(f"API request to switch to context: {context_name}")
@@ -170,7 +178,7 @@ async def switch_context(context_name: str):
         "message": f"Successfully switched to context: {context_name}"
     }
 
-@router.delete("/{context_name}", response_model=bool)
+@router.delete("/{context_name}", response_model=bool, dependencies=[Depends(get_auth_dependency())])
 async def delete_context(context_name: str):
     """Delete a context."""
     context_manager = ContextManager.get_instance()
@@ -179,7 +187,7 @@ async def delete_context(context_name: str):
         raise HTTPException(status_code=404, detail="Context not found or it's the last remaining context")
     return success
 
-@router.put("/{context_name}/rename", response_model=bool)
+@router.put("/{context_name}/rename", response_model=bool, dependencies=[Depends(get_auth_dependency())])
 async def rename_context(context_name: str, rename: ContextRename):
     """Rename a context."""
     context_manager = ContextManager.get_instance()
