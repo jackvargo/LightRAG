@@ -109,8 +109,29 @@ def create_app(args):
     # Check if API key is provided either through env var or args
     api_key = os.getenv("LIGHTRAG_API_KEY") or args.key
 
-    # Initialize document manager
-    doc_manager = DocumentManager(args.input_dir)
+    # Initialize context manager first to get the current context paths
+    context_manager = ContextManager.get_instance()
+    
+    # Get the current context's working and input directories, fallback to args if no context
+    current_working_path, current_input_path = context_manager.get_context_paths()
+    
+    # Use context-specific working directory if available
+    if current_working_path:
+        context_working_dir = str(current_working_path)
+        logger.info(f"Using context-specific working directory: {context_working_dir}")
+        args.working_dir = context_working_dir
+    else:
+        logger.info(f"No context working path found, using default: {args.working_dir}")
+    
+    # Use context-specific input directory if available 
+    doc_input_dir = str(current_input_path) if current_input_path else args.input_dir
+    if current_input_path:
+        logger.info(f"Using context-specific input directory: {doc_input_dir}")
+    else:
+        logger.info(f"No context input path found, using default: {args.input_dir}")
+
+    # Initialize document manager with context-aware input directory
+    doc_manager = DocumentManager(doc_input_dir)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
