@@ -387,8 +387,6 @@ def create_app(args):
     # Add this function after rag and doc_manager are created
     async def on_context_switch(context_name, context_working_path, previous_context_name=None, context_input_path=None, **kwargs):
         """Update RAG instance and document manager when context switches"""
-        from pathlib import Path
-        
         logger.info(f"Context switch callback: {previous_context_name} → {context_name}")
         
         try:
@@ -396,8 +394,7 @@ def create_app(args):
             await reset_all_storage_namespaces_for_context_switch()
             logger.info("Reset storage namespaces for context switch")
             
-            # CRITICAL: Instead of trying to update existing storages, recreate the LightRAG instance
-            # This ensures all storage file paths are properly updated to the new context
+            # Update RAG working directory
             if hasattr(rag, 'update_working_dir'):
                 await rag.update_working_dir(str(context_working_path))
                 logger.info(f"Updated RAG working directory to: {context_working_path}")
@@ -407,25 +404,19 @@ def create_app(args):
                 logger.info(f"Manually updated RAG working_dir to: {context_working_path}")
             
             # Force reload document status storage from new context files
-            logger.info(f"DEBUG: rag.doc_status type: {type(rag.doc_status)}")
-            logger.info(f"DEBUG: hasattr(rag.doc_status, 'initialize'): {hasattr(rag.doc_status, 'initialize')}")
             if hasattr(rag.doc_status, 'initialize'):
                 await rag.doc_status.initialize()
                 logger.info("Force reloaded document status storage from new context")
-            else:
-                logger.info("DEBUG: rag.doc_status does not have initialize method")
             
             # Update document manager input directory  
             if hasattr(doc_manager, 'update_input_directory'):
                 doc_manager.update_input_directory(context_input_path)
                 logger.info(f"DocumentManager input directory updated to: {context_input_path}")
                 
-            # Reset frontend state
+            # Reset frontend state and load indexed files from new context
             if hasattr(doc_manager, 'reset_frontend_state'):
                 doc_manager.reset_frontend_state()
-                logger.info("DocumentManager frontend state reset - cleared indexed files tracking")
-                    
-            # Load indexed files from new context
+                
             if hasattr(doc_manager, 'load_indexed_files_from_storage'):
                 await doc_manager.load_indexed_files_from_storage(rag)
                 logger.info("Loaded indexed files from new context storage")
