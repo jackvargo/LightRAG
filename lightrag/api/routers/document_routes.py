@@ -397,8 +397,6 @@ class DocumentManager:
 
     async def load_indexed_files_from_storage(self, rag: Optional['LightRAG'] = None) -> None:
         """Load processed file paths from document status storage into indexed_files"""
-        logger.info(f"DEBUG: load_indexed_files_from_storage called with rag={rag is not None}")
-        
         if not rag:
             logger.debug("No RAG instance provided, cannot load indexed files from storage")
             return
@@ -406,46 +404,18 @@ class DocumentManager:
         try:
             from lightrag.base import DocStatus
             
-            logger.info(f"DEBUG: Calling rag.doc_status.get_docs_by_status(DocStatus.PROCESSED)")
-            # First attempt: Get processed docs from current storage
+            # Get processed docs from current storage
             processed_docs = await rag.doc_status.get_docs_by_status(DocStatus.PROCESSED)
-            logger.info(f"DEBUG: get_docs_by_status returned {len(processed_docs)} processed docs")
-            
-            if not processed_docs:
-                logger.info("DEBUG: No processed docs found, checking storage file directly...")
-                # Check if the storage file exists and has data
-                storage_file = rag.doc_status._file_name
-                logger.info(f"DEBUG: Storage file path: {storage_file}")
-                if os.path.exists(storage_file):
-                    from lightrag.utils import load_json
-                    file_data = load_json(storage_file) or {}
-                    logger.info(f"DEBUG: Storage file exists with {len(file_data)} items")
-                    for doc_id, doc_data in file_data.items():
-                        logger.info(f"DEBUG: Doc {doc_id}: status={doc_data.get('status', 'unknown')}")
-                else:
-                    logger.info(f"DEBUG: Storage file does not exist: {storage_file}")
             
             # Clear current indexed files first
             previous_count = len(self.indexed_files)
             
-            logger.info(f"DEBUG: Found {len(processed_docs)} processed docs in storage")
-            
             for doc_id, doc_info in processed_docs.items():
-                logger.info(f"DEBUG: Processing doc_id={doc_id}, doc_info type={type(doc_info)}")
                 if hasattr(doc_info, 'file_path') and doc_info.file_path:
-                    logger.info(f"DEBUG: doc_info.file_path='{doc_info.file_path}'")
-                    logger.info(f"DEBUG: self.input_dir='{self.input_dir}'")
                     # Convert stored file path back to Path object for consistency
                     file_path = self.input_dir / doc_info.file_path
-                    logger.info(f"DEBUG: Combined file_path='{file_path}'")
-                    logger.info(f"DEBUG: file_path.exists()={file_path.exists()}")
                     if file_path.exists():  # Only add if file still exists
                         self.indexed_files.add(file_path)
-                        logger.info(f"DEBUG: Added file to indexed_files: {file_path}")
-                    else:
-                        logger.warning(f"DEBUG: File does not exist, not adding: {file_path}")
-                else:
-                    logger.warning(f"DEBUG: doc_info missing file_path or file_path is empty")
             
             logger.info(f"Loaded {len(self.indexed_files)} indexed files from storage (was {previous_count}) for {self.input_dir}")
             
