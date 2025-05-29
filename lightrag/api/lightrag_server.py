@@ -40,6 +40,7 @@ from lightrag.api.routers.document_routes import (
 from lightrag.api.routers.query_routes import create_query_routes
 from lightrag.api.routers.graph_routes import create_graph_routes
 from lightrag.api.routers.ollama_api import OllamaAPI
+from lightrag.api.routers import context_routes
 
 from lightrag.utils import logger, set_verbose_debug
 from lightrag.kg.shared_storage import (
@@ -49,6 +50,7 @@ from lightrag.kg.shared_storage import (
 )
 from fastapi.security import OAuth2PasswordRequestForm
 from lightrag.api.auth import auth_handler
+from lightrag.contexts.context_manager import ContextManager
 
 # use the .env that is inside the current folder
 # allows to use different .env file for each lightrag instance
@@ -360,9 +362,41 @@ def create_app(args):
         )
 
     # Add routes
+    # Add this function after rag and doc_manager are created
+    async def on_context_switch(context_name, context_working_path, previous_context_name=None, context_input_path=None, **kwargs):
+        """Update RAG instance and document manager when context switches"""
+        from pathlib import Path
+        
+        logger.info(f"Context switch callback: {previous_context_name} → {context_name}")
+        
+        # Update RAG working directory
+        old_working_dir = rag.working_dir
+        rag.working_dir = str(context_working_path)
+        logger.info(f"Updated RAG working_dir: {old_working_dir} → {rag.working_dir}")
+        
+        # Update document manager input directory
+        if context_input_path:
+            old_input_dir = doc_manager.input_dir  
+            doc_manager.input_dir = Path(context_input_path)
+            logger.info(f"Updated doc_manager input_dir: {old_input_dir} → {doc_manager.input_dir}")
+            
+            # Clear indexed files and reload from new context
+            doc_manager.indexed_files.clear()
+            if hasattr(doc_manager, 'load_indexed_files_from_storage'):
+                await doc_manager.load_indexed_files_from_storage(rag)
+        
+        # Update storage global_configs
+        if hasattr(rag, '_update_storage_configs'):
+            await rag._update_storage_configs()
+
+    # Register the callback
+    ContextManager.register_context_switch_callback(on_context_switch)
+    logger.info("Registered context switch callback")
+
     app.include_router(create_document_routes(rag, doc_manager, api_key))
     app.include_router(create_query_routes(rag, api_key, args.top_k))
     app.include_router(create_graph_routes(rag, api_key))
+    app.include_router(context_routes.router, dependencies=[Depends(combined_auth)])
 
     # Add Ollama API routes
     ollama_api = OllamaAPI(rag, top_k=args.top_k, api_key=api_key)
