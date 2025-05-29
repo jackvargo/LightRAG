@@ -392,6 +392,32 @@ class DocumentManager:
     def is_supported_file(self, filename: str) -> bool:
         return any(filename.lower().endswith(ext) for ext in self.supported_extensions)
 
+    async def load_indexed_files_from_storage(self, rag: Optional['LightRAG'] = None) -> None:
+        """Load processed file paths from document status storage into indexed_files"""
+        if not rag:
+            logger.debug("No RAG instance provided, cannot load indexed files from storage")
+            return
+            
+        try:
+            from lightrag.base import DocStatus
+            processed_docs = await rag.doc_status.get_docs_by_status(DocStatus.PROCESSED)
+            
+            # Clear current indexed files first
+            previous_count = len(self.indexed_files)
+            
+            for doc_id, doc_info in processed_docs.items():
+                if hasattr(doc_info, 'file_path') and doc_info.file_path:
+                    # Convert stored file path back to Path object for consistency
+                    file_path = self.input_dir / doc_info.file_path
+                    if file_path.exists():  # Only add if file still exists
+                        self.indexed_files.add(file_path)
+            
+            logger.info(f"Loaded {len(self.indexed_files)} indexed files from storage (was {previous_count}) for {self.input_dir}")
+            
+        except Exception as e:
+            logger.warning(f"Error loading indexed files from storage: {e}")
+            # Don't fail - just continue with empty set (current behavior)
+
 
 async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
     """Add a file to the queue for processing
@@ -664,6 +690,11 @@ async def save_temp_file(input_dir: Path, file: UploadFile = File(...)) -> Path:
 async def run_scanning_process(rag: LightRAG, doc_manager: DocumentManager):
     """Background task to scan and index documents"""
     try:
+        # Load existing processed files from storage first
+        logger.info("Loading existing processed files from storage...")
+        await doc_manager.load_indexed_files_from_storage(rag)
+        
+        # Now scan for truly new files
         new_files = doc_manager.scan_directory_for_new_files()
         total_files = len(new_files)
         logger.info(f"Found {total_files} new files to index.")

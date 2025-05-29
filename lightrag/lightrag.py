@@ -502,6 +502,29 @@ class LightRAG:
             self._storages_status = StoragesStatus.FINALIZED
             logger.debug("Finalized Storages")
 
+    async def _update_storage_configs(self):
+        """Update global_config in all storage instances with current working_dir"""
+        from dataclasses import asdict
+        
+        new_global_config = asdict(self)
+        
+        # Update all storage instances that have global_config
+        storages_to_update = [
+            self.doc_status, self.full_docs, self.text_chunks, 
+            self.entities_vdb, self.relationships_vdb, self.chunks_vdb, 
+            self.chunk_entity_relation_graph, self.llm_response_cache
+        ]
+        
+        for storage in storages_to_update:
+            if hasattr(storage, 'global_config'):
+                storage.global_config.update(new_global_config)
+                # Trigger re-initialization of file paths for storages that need it
+                if hasattr(storage, '_file_name') and hasattr(storage, '__post_init__'):
+                    storage.__post_init__()
+                    logger.debug(f"Re-initialized storage {type(storage).__name__} with new working_dir")
+        
+        logger.info(f"Updated global_config in {len([s for s in storages_to_update if hasattr(s, 'global_config')])} storage instances")
+
     async def get_graph_labels(self):
         text = await self.chunk_entity_relation_graph.get_all_labels()
         return text
