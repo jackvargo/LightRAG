@@ -11,6 +11,10 @@ restart_only() {
     cp -frv ../LightRAG-data_bak/data/bc_data ./data/contexts/
     cp -frv ../LightRAG-data_bak/data/dxops ./data/contexts/
     docker compose restart
+    # Skip logs if --no-follow-logs flag is passed
+    if [ "$NO_FOLLOW_LOGS" = true ]; then
+        exit 0
+    fi
     docker compose logs -f
     exit 0
 }
@@ -19,20 +23,34 @@ restart_only() {
 # Parse command line arguments
 BUILD_FLAG=""
 REBUILD=false
+NO_FOLLOW_LOGS=false
+
 while [[ $# -gt 0 ]]; do
     case $1 in
         --build)
             BUILD_FLAG="--build"
             REBUILD=true
+            # Allow --no-follow-logs to be processed before calling restart_only
+            if [[ "$*" == *"--no-follow-logs"* ]]; then
+                NO_FOLLOW_LOGS=true
+            fi
             shift
             ;;
         --restart)
+            # Allow --no-follow-logs to be processed before calling restart_only
+            if [[ "$*" == *"--no-follow-logs"* ]]; then
+                NO_FOLLOW_LOGS=true
+            fi
             restart_only
+            shift
+            ;;
+        --no-follow-logs)
+            NO_FOLLOW_LOGS=true
             shift
             ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: $0 [--build]"
+            echo "Usage: $0 [--build] [--restart] [--no-follow-logs]"
             exit 1
             ;;
     esac
@@ -56,6 +74,12 @@ cp -frv ../LightRAG-data_bak/data/dxops ../lightrag-test/data/contexts/
 
 cd ../lightrag-test
 docker compose up -d $BUILD_FLAG
+
+# Skip logs if --no-follow-logs flag is passed
+if [ "$NO_FOLLOW_LOGS" = true ]; then
+    exit 0
+fi
+
 docker compose logs -f
 
 
