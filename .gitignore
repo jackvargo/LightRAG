@@ -74,3 +74,6 @@ memory-bank/
 /.env
 /.env.template
 /data/
+
+/aidevdocs/Screenshot*
+/.claude/screenshots/
