@@ -1,12 +1,21 @@
 version: '3.8'
 
+networks:
+  proxy:
+    external: true
+  default:
+    driver: bridge
+
 services:
-  lightrag:
+  # Development profile - maintains current workflow
+  lightrag-dev:
+    profiles: ["dev"]
     build:
       context: .
       dockerfile: Dockerfile
-    image: lightrag-server
-    container_name: lightrag-server
+      target: backend-builder
+    image: lightrag-server:dev
+    container_name: lightrag-dev
     ports:
       - "${PORT:-9621}:${PORT:-9621}"
     volumes:
@@ -22,12 +31,88 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
+    command: ["python", "-m", "lightrag.api.lightrag_server"]
     deploy:
       resources:
         limits:
           memory: ${MEMORY_LIMIT:-8G}
         reservations:
           memory: ${MEMORY_RESERVATION:-4G}
+
+  # CI profile - for build testing and SBOM generation
+  lightrag-ci:
+    profiles: ["ci"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    image: lightrag-server:ci
+    container_name: lightrag-ci
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./ci-reports:/app/reports
+    command: ["echo", "CI build complete"]
+
+  # Production profile - integrated WebUI container
+  lightrag-prod:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    image: lightrag-server:prod
+    container_name: lightrag-prod
+    environment:
+      - NODE_ENV=production
+      - CORS_ORIGINS=${CORS_ORIGINS:-https://lightrag.example.com}
+      - TOKEN_SECRET_FILE=/run/secrets/token_secret
+      - AUTH_FILE=/run/secrets/auth_users
+      - LIGHTRAG_API_KEY_FILE=/run/secrets/api_key
+    secrets:
+      - token_secret
+      - auth_users
+      - api_key
+    volumes:
+      - ${LIGHTRAG_WORKING_DIR:-./data/rag_storage}:/app/data/rag_storage
+      - ${LIGHTRAG_INPUT_DIR:-./data/inputs}:/app/data/inputs
+      - ${LIGHTRAG_CONTEXTS_DIR:-./data/contexts}:/app/data/contexts
+      - ${LIGHTRAG_WORKING_DIR:-./data/rag_storage}:/app/data/contexts/default
+      - ${LIGHTRAG_INPUT_DIR:-./data/inputs}:/app/data/contexts/default_inputs
+    networks:
+      - proxy
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.lightrag.rule=Host(`${LIGHTRAG_DOMAIN:-lightrag.example.com}`)"
+      - "traefik.http.routers.lightrag.entrypoints=websecure"
+      - "traefik.http.routers.lightrag.tls.certresolver=le"
+      - "traefik.http.routers.lightrag.middlewares=redirect-https@file,sec-headers@file,ratelimit@file"
+      - "traefik.http.services.lightrag.loadbalancer.server.port=9621"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT:-8G}
+        reservations:
+          memory: ${MEMORY_RESERVATION:-4G}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9621/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# Docker secrets for production
+secrets:
+  token_secret:
+    file: ./secrets/token_secret
+  auth_users:
+    file: ./secrets/auth_users
+  api_key:
+    file: ./secrets/api_key
 
 volumes:
   lightrag_data:

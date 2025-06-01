@@ -1,0 +1,3 @@
+- Extend multicontext support to the rest of the data store options
+- Write tests for mutlicontext enhancements
+- Clean up/expand this document
