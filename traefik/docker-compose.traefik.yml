@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v3.3
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Traefik dashboard (optional, secure with auth)
+    environment:
+      # Let's Encrypt configuration
+      - ACME_EMAIL=${ACME_EMAIL:-admin@example.com}
+      # Optional: Cloudflare DNS challenge (if using Cloudflare)
+      # - CF_API_EMAIL=${CF_API_EMAIL}
+      # - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+    command:
+      # API and dashboard
+      - --api.dashboard=true
+      - --api.insecure=false
+      # Docker provider
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=proxy
+      # File provider for dynamic configuration
+      - --providers.file.filename=/etc/traefik/dynamic.yml
+      - --providers.file.watch=true
+      # Entry points
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      # Let's Encrypt certificate resolver
+      - --certificatesresolvers.le.acme.email=${ACME_EMAIL:-admin@example.com}
+      - --certificatesresolvers.le.acme.storage=/acme.json
+      - --certificatesresolvers.le.acme.tlschallenge=true
+      # Optional: DNS challenge for wildcard certificates
+      # - --certificatesresolvers.le.acme.dnschallenge=true
+      # - --certificatesresolvers.le.acme.dnschallenge.provider=cloudflare
+      # Logging
+      - --log.level=INFO
+      - --accesslog=true
+      - --accesslog.format=json
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data/acme.json:/acme.json
+      - ./dynamic.yml:/etc/traefik/dynamic.yml:ro
+    labels:
+      - "traefik.enable=true"
+      # Dashboard (secure with basic auth)
+      - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN:-example.com}`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls.certresolver=le"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.middlewares=auth@file"
+      # Global redirect to HTTPS
+      - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https@file"
+
+networks:
+  proxy:
+    external: true 

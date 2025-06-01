@@ -1,0 +1,81 @@
+http:
+  middlewares:
+    # HTTPS redirect middleware
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+    # Security headers middleware
+    sec-headers:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+        customResponseHeaders:
+          X-Frame-Options: "DENY"
+          X-Content-Type-Options: "nosniff"
+          X-XSS-Protection: "1; mode=block"
+          Referrer-Policy: "strict-origin-when-cross-origin"
+          Permissions-Policy: "camera=(), microphone=(), geolocation=()"
+        contentSecurityPolicy: |
+          default-src 'self';
+          script-src 'self' 'unsafe-inline' 'unsafe-eval';
+          style-src 'self' 'unsafe-inline';
+          img-src 'self' data: https:;
+          font-src 'self';
+          connect-src 'self';
+          frame-ancestors 'none';
+        sslRedirect: true
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: true
+
+    # Rate limiting middleware
+    ratelimit:
+      rateLimit:
+        burst: 100
+        average: 50
+        period: "5s"
+        sourceCriterion:
+          ipStrategy:
+            depth: 1
+
+    # Basic authentication for Traefik dashboard
+    auth:
+      basicAuth:
+        users:
+          # admin:admin (change this!)
+          # Generate with: htpasswd -nb admin your_password
+          - "admin:$2y$10$8K8O8K8O8K8O8K8O8K8O8O8K8O8K8O8K8O8K8O8K8O8K8O8K8O8K8O"
+
+    # CORS middleware for API access
+    cors:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        accessControlAllowOriginList:
+          - "https://lightrag.example.com"
+        accessControlAllowHeaders:
+          - "Content-Type"
+          - "Authorization"
+          - "X-Requested-With"
+        accessControlExposeHeaders:
+          - "Content-Length"
+        accessControlAllowCredentials: true
+        accessControlMaxAge: 86400
+
+# TLS configuration
+tls:
+  options:
+    default:
+      minVersion: "VersionTLS12"
+      cipherSuites:
+        - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+        - "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"
+        - "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+        - "TLS_RSA_WITH_AES_256_GCM_SHA384"
+        - "TLS_RSA_WITH_AES_128_GCM_SHA256" 

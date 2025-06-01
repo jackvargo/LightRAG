@@ -3,6 +3,9 @@
 # Script to reload LightRAG service
 # Stops running containers, updates code, and restarts services
 
+# Step out of 'aidevdocs' folder
+cd ../
+
 set -e  # Exit on any error
 # Function to restart containers only
 restart_only() {

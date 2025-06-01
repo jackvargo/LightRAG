@@ -1,27 +1,42 @@
-# Use a simpler setup without frontend build
-# We'll copy pre-built frontend assets instead of building in Docker
+# Multi-stage build for LightRAG with integrated WebUI
+ARG BUILD_ENV=production
 
-# Backend build stage
-FROM python:3.10 AS builder
+# Stage 1: Build WebUI
+FROM node:20-alpine AS ui-builder
+WORKDIR /ui
 
+# Copy package files first for better caching
+COPY lightrag_webui/package*.json ./
+COPY lightrag_webui/yarn.lock* ./
+
+# Install dependencies with legacy peer deps to handle version conflicts
+RUN npm install --legacy-peer-deps
+
+# Copy source code and build
+COPY lightrag_webui/ ./
+RUN npm run build-no-bun
+
+# Stage 2: Backend build
+FROM python:3.12-slim AS backend-builder
 WORKDIR /app
 
-# Install Rust and required build dependencies
+# Install build dependencies including Rust for some packages
 RUN apt-get update && apt-get install -y \
     curl \
     build-essential \
     pkg-config \
     git \
     && rm -rf /var/lib/apt/lists/* \
-    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
-    && . $HOME/.cargo/env
+    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# Add Rust to PATH
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Copy only requirements files first to leverage Docker cache
 COPY requirements.txt .
 COPY lightrag/api/requirements.txt ./lightrag/api/
 
-# Install dependencies
-ENV PATH="/root/.cargo/bin:${PATH}"
+# Install Python dependencies
 RUN pip install --user --no-cache-dir -r requirements.txt
 RUN pip install --user --no-cache-dir -r lightrag/api/requirements.txt
 
@@ -31,23 +46,22 @@ COPY . .
 # Install LightRAG with API support
 RUN pip install --user --no-cache-dir ".[api]"
 
-# Final stage
-FROM python:3.10
-
+# Stage 3: Production runtime
+FROM python:3.12-slim AS prod
 WORKDIR /app
 
-# Install runtime dependencies (curl for health checks and API interactions)
+# Install runtime dependencies (curl for health checks)
 RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy installed packages from builder
-COPY --from=builder /root/.local /root/.local
-COPY --from=builder /app/lightrag /app/lightrag
-COPY --from=builder /app/setup.py /app/
+# Copy Python packages from builder
+COPY --from=backend-builder /root/.local /root/.local
+COPY --from=backend-builder /app/lightrag /app/lightrag
+COPY --from=backend-builder /app/setup.py /app/
 
-# Copy local pre-built frontend files
-COPY lightrag/api/webui /app/lightrag/api/webui
+# Copy built WebUI from ui-builder stage
+COPY --from=ui-builder /ui/dist /app/static
 
 # Make sure scripts in .local are usable
 ENV PATH=/root/.local/bin:$PATH
@@ -55,18 +69,20 @@ ENV PATH=/root/.local/bin:$PATH
 # Create necessary directories
 RUN mkdir -p /app/data/rag_storage /app/data/inputs /app/data/contexts
 
-# Docker data directories
+# Environment variables
 ENV WORKING_DIR=/app/data/rag_storage
 ENV INPUT_DIR=/app/data/inputs
 ENV CONTEXTS_DIR=/app/data/contexts
-
-# Multi-Context Configuration
 ENV ENABLE_MULTI_CONTEXT=true
 ENV DEFAULT_CONTEXT=default
 ENV MAX_CONTEXTS=10
 
-# Expose the default port
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:9621/health || exit 1
+
+# Expose port
 EXPOSE 9621
 
-# Set entrypoint
-ENTRYPOINT ["python", "-m", "lightrag.api.lightrag_server"]
+# Use Uvicorn directly for better control
+CMD ["uvicorn", "lightrag.api.main:app", "--host", "0.0.0.0", "--port", "9621"]

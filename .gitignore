@@ -77,3 +77,13 @@ memory-bank/
 
 /aidevdocs/Screenshot*
 /.claude/screenshots/
+
+# Security & Deployment
+secrets/
+traefik/data/
+ci-reports/
+
+# WebUI Build Output
+lightrag_webui/dist/
+lightrag_webui/node_modules/
+lightrag/api/webui/

@@ -21,8 +21,22 @@ export default defineConfig(({ mode }) => {
     },
     base: webuiPrefix,
     build: {
-      outDir: path.resolve(__dirname, '../lightrag/api/webui'),
-      emptyOutDir: true
+      // For production Docker build, output to dist
+      // For development build, output to the API webui directory
+      outDir: isDev ? 
+        path.resolve(__dirname, '../lightrag/api/webui') : 
+        path.resolve(__dirname, './dist'),
+      emptyOutDir: true,
+      sourcemap: !isDev, // Enable sourcemaps in production for debugging
+      assetsDir: 'assets',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'axios'],
+            ui: ['@radix-ui/react-alert-dialog', '@radix-ui/react-dialog']
+          }
+        }
+      }
     },
     server: {
       proxy: isDev ? {
