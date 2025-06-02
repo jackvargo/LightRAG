@@ -6,30 +6,11 @@ This module extends the existing lightrag_server.py with static file capabilitie
 import os
 from datetime import datetime
 from pathlib import Path
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from lightrag.api.lightrag_server import create_app
 from lightrag.api.config import global_args
-
-
-class SPAStaticFiles(StaticFiles):
-    """Custom StaticFiles that serves index.html for SPA routing."""
-    
-    async def get_response(self, path: str, scope):
-        """Override to serve index.html for SPA routes that don't match files."""
-        try:
-            # Try to get the file normally
-            response = await super().get_response(path, scope)
-            return response
-        except Exception:
-            # If file not found and it's not an API route, serve index.html
-            if not path.startswith('api/') and not path.endswith('.js') and not path.endswith('.css') and not path.endswith('.ico'):
-                # Serve index.html for SPA routing
-                index_path = str(Path(self.directory) / "index.html")
-                if Path(index_path).exists():
-                    return FileResponse(index_path)
-            raise
 
 
 def create_main_app():
@@ -54,8 +35,8 @@ def create_main_app():
     
     # Only mount static files if the directory exists (production mode)
     if static_dir.exists() and static_dir.is_dir():
-        # Mount static files for WebUI with SPA support
-        app.mount("/webui", SPAStaticFiles(directory=str(static_dir), html=True), name="webui")
+        # Mount static files for WebUI at /webui to match Vite config
+        app.mount("/webui", StaticFiles(directory=str(static_dir), html=True), name="webui")
     
     return app
 
