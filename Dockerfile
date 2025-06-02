@@ -20,17 +20,13 @@ RUN npm run build-no-bun
 FROM python:3.12-slim AS backend-builder
 WORKDIR /app
 
-# Install build dependencies including Rust for some packages
+# Install build dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     build-essential \
     pkg-config \
     git \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-
-# Add Rust to PATH
-ENV PATH="/root/.cargo/bin:${PATH}"
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy only requirements files first to leverage Docker cache
 COPY requirements.txt .
@@ -84,5 +80,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Expose port
 EXPOSE 9621
 
-# Use Uvicorn directly for better control
-CMD ["uvicorn", "lightrag.api.main:app", "--host", "0.0.0.0", "--port", "9621"]
+# Use Python module invocation to avoid CLI conflicts
+CMD ["python", "-c", "from lightrag.api.main import app; import uvicorn; uvicorn.run(app, host='0.0.0.0', port=9621)"]

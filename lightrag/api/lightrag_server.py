@@ -578,13 +578,16 @@ def create_app(args):
             return response
 
     # Webui mount webui/index.html
-    static_dir = Path(__file__).parent / "webui"
-    static_dir.mkdir(exist_ok=True)
-    app.mount(
-        "/webui",
-        NoCacheStaticFiles(directory=static_dir, html=True, check_dir=True),
-        name="webui",
-    )
+    # Skip this mount if we have integrated static files (production mode)
+    integrated_static_dir = Path("/app/static")
+    if not (integrated_static_dir.exists() and integrated_static_dir.is_dir()):
+        static_dir = Path(__file__).parent / "webui"
+        static_dir.mkdir(exist_ok=True)
+        app.mount(
+            "/webui",
+            NoCacheStaticFiles(directory=static_dir, html=True, check_dir=True),
+            name="webui",
+        )
 
     return app
 
