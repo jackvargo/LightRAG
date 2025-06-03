@@ -100,6 +100,42 @@ pip install -e ".[api]"
 
 **For more information about LightRAG Server, please refer to [LightRAG Server](./lightrag/api/README.md).**
 
+### 🐳 Integrated WebUI Deployment
+
+LightRAG now supports **integrated production deployment** with WebUI and API served from a single container:
+
+#### **Quick Production Deployment**
+```bash
+# Single-container deployment (API + WebUI on port 9621)
+docker compose --profile prod up -d
+
+# Access WebUI at: http://localhost:9621/webui/
+# Access API at: http://localhost:9621/docs
+```
+
+#### **Development Workflow (Preserved)**
+```bash
+# Development mode (maintains existing workflow)
+docker compose --profile dev up -d    # Backend on 9621
+cd lightrag_webui && npm run dev      # Frontend on 5173
+```
+
+#### **Key Features**
+- ✅ **Single Port**: Production deployment on port 9621 only
+- ✅ **Multi-Context Support**: Full context switching functionality  
+- ✅ **Authentication**: Built-in JWT authentication (admin:admin123)
+- ✅ **Health Monitoring**: Comprehensive `/health` endpoint
+- ✅ **Backwards Compatible**: Existing development workflow preserved
+
+#### **Production Profiles**
+| Profile | Purpose | Ports | Use Case |
+|---------|---------|-------|----------|
+| `dev` | Development | 9621 (API) + 5173 (WebUI) | Development & testing |
+| `prod` | Production | 9621 (API + WebUI) | Homelab, CI/CD, production |
+| `ci` | CI/CD | Build validation | Testing & SBOM generation |
+
+**For complete deployment guide, see [DEV-README.md](./DEV-README.md)**
+
 ## Quick Start
 
 * [Video demo](https://www.youtube.com/watch?v=g21royNJ4fw) of running LightRAG locally.
