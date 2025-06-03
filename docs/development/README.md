@@ -30,9 +30,20 @@ This directory contains development environment setup, workflows, and best pract
 ../LightRAG/reload_server.sh --restart
 ```
 
+### 🆕 **Integrated Production Deployment**
+```bash
+# Production single-container deployment
+docker compose --profile prod up -d
+
+# Development mode (preserved workflow)
+docker compose --profile dev up -d
+cd lightrag_webui && npm run dev
+```
+
 ### Service Ports
 - **Backend**: http://localhost:9621 (FastAPI + Docker)
-- **Frontend**: http://localhost:5173 (Vue.js WebUI)
+- **Frontend Dev**: http://localhost:5173 (Vue.js WebUI development)
+- **🆕 Production WebUI**: http://localhost:9621/webui/ (Integrated deployment)
 
 ## 📚 Related Documentation
 

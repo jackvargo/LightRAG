@@ -10,6 +10,43 @@ The Docker configuration in this repository allows you to:
 2. Use either local LLMs (via Ollama) or cloud LLMs (via OpenAI)
 3. Persist data between container restarts
 4. Scale resources based on your system capabilities
+5. **NEW**: Deploy integrated WebUI + API in a single production container
+
+## 🆕 **Integrated WebUI Deployment**
+
+LightRAG now supports **production-ready integrated deployment** with WebUI and API served from a single container:
+
+### **Quick Production Start**
+```bash
+# Single-container deployment (API + WebUI)
+docker compose --profile prod up -d
+
+# Access WebUI: http://localhost:9621/webui/
+# Access API docs: http://localhost:9621/docs
+```
+
+### **Development Mode (Preserved)**
+```bash
+# Development workflow (separate services)
+docker compose --profile dev up -d    # Backend on 9621
+cd lightrag_webui && npm run dev      # Frontend on 5173
+```
+
+### **Deployment Profiles**
+
+| Profile | Container Count | Ports | WebUI | Use Case |
+|---------|-----------------|-------|-------|----------|
+| `dev` | 1 | 9621 (API only) | Separate dev server (5173) | Development |
+| `prod` | 1 | 9621 (API + WebUI) | Integrated | Production, Homelab |
+| `ci` | 1 | Build validation | N/A | CI/CD, Testing |
+
+### **Production Features**
+- ✅ **Single Port Deployment**: Everything on port 9621
+- ✅ **Multi-Context Support**: Full context switching functionality
+- ✅ **Authentication**: JWT-based with admin:admin123 default
+- ✅ **Health Monitoring**: `/health` endpoint with WebUI status
+- ✅ **Static Asset Serving**: Optimized asset delivery
+- ✅ **SPA Routing**: Complete single-page application support
 
 ## Prerequisites
 

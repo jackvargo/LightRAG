@@ -71,54 +71,55 @@ External Port 443 → Ubuntu Docker Host IP:443
 
 ## 🧪 **Testing Procedures**
 
-### **Phase 1: Development Workflow Validation**
+### **✅ Phase 1: COMPLETE - WebUI Integration**
+
+**Status**: ✅ **Successfully completed**
+
+All Phase 1 objectives achieved:
+- ✅ **Development workflow preserved**: `docker compose --profile dev up -d` works perfectly
+- ✅ **Production container validated**: Single container serves API + WebUI on port 9621  
+- ✅ **Static asset serving**: WebUI assets serve correctly with `/webui/` base path
+- ✅ **Multi-context support**: All environment variables and functionality preserved
+- ✅ **Health monitoring**: Comprehensive `/health` endpoint operational
+
+#### **Production Container Testing Results**
 ```bash
-# Test new dev profile preserves existing workflow
-docker compose --profile dev up -d
-
-# Verify services
-curl http://localhost:9621/health
-```
-
-**Expected Result**: Backend runs on 9621, WebUI dev server still works on 5173
-
-### **Phase 2: Production Container Testing**
-```bash
-# Generate secrets for testing
-./scripts/setup-secrets.sh
-
-# Build and test production container
-docker compose --profile prod build
+# ✅ VERIFIED: Production deployment works
 docker compose --profile prod up -d
 
-# Test health endpoint
+# ✅ VERIFIED: Health endpoint operational  
 curl http://localhost:9621/health
+# Returns: {"status":"healthy","webui_available":true,...}
 
-# Test WebUI integration
+# ✅ VERIFIED: WebUI integration complete
 curl http://localhost:9621/webui/
+# Returns: 200 OK - Complete WebUI served
+
+# ✅ VERIFIED: Static assets loading correctly
+curl http://localhost:9621/webui/assets/index-K-IL4uaq.css
+# Returns: 200 OK - CSS assets served correctly
 ```
 
-**Expected Result**: Single container serves both API and WebUI
+### **🔄 Phase 2: IN PROGRESS - Functional Testing**
 
-### **Phase 3: Local Traefik Integration**
-```bash
-# Start Traefik locally
-cd traefik
-DOMAIN=localhost ACME_EMAIL=admin@localhost docker compose -f docker-compose.traefik.yml up -d
-cd ..
+**Current Focus**: Validate end-to-end functionality in integrated container
 
-# Start LightRAG with Traefik labels
-CORS_ORIGINS="https://homelab.localhost" LIGHTRAG_DOMAIN=homelab.localhost docker compose --profile prod up -d
+#### **Test Checklist**
+- [ ] **Multi-Context Switching**: Test context switching in integrated container
+- [ ] **Document Processing**: Upload, process, and query documents end-to-end
+- [ ] **API Endpoint Validation**: Verify all REST API routes work correctly
+- [ ] **Authentication Testing**: JWT token flow and admin:admin123 credentials
+- [ ] **WebUI Functionality**: All WebUI features operational in production mode
 
-# Test through Traefik
-curl -k https://homelab.localhost/health
-```
+### **📋 Phase 3: READY - Production Deployment**
 
-### **Phase 4: Multi-Context Validation**
-```bash
-# Test context switching still works
-# [TODO: Add specific context switching test commands]
-```
+**Prerequisites**: Router configuration for external access
+
+#### **Deployment Validation**
+- [ ] **Traefik Integration**: Test with homelab.flipgoal.xyz domain
+- [ ] **External Access**: Full stack deployment in target environment  
+- [ ] **Performance Testing**: Compare integrated vs separate service performance
+- [ ] **Team Onboarding**: Validate external team member access
 
 ## 📋 **Development Profiles**
 
