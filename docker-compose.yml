@@ -3,6 +3,7 @@ version: '3.8'
 networks:
   proxy:
     external: true
+    name: traefik_proxy
   default:
     driver: bridge
 
@@ -63,13 +64,11 @@ services:
       target: prod
     image: lightrag-server:prod
     container_name: lightrag-prod
-    ports:
-      - "${PORT:-9621}:${PORT:-9621}"
     env_file:
       - .env
     environment:
       - NODE_ENV=production
-      - CORS_ORIGINS=${CORS_ORIGINS:-https://lightrag.example.com}
+      - CORS_ORIGINS=https://homelab.flipgoal.xyz
       - TOKEN_SECRET_FILE=/run/secrets/token_secret
       - AUTH_FILE=/run/secrets/auth_users
       - LIGHTRAG_API_KEY_FILE=/run/secrets/api_key
@@ -88,11 +87,12 @@ services:
       - default
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.lightrag.rule=Host(`${LIGHTRAG_DOMAIN:-lightrag.example.com}`)"
+      - "traefik.http.routers.lightrag.rule=Host(`homelab.flipgoal.xyz`)"
       - "traefik.http.routers.lightrag.entrypoints=websecure"
       - "traefik.http.routers.lightrag.tls.certresolver=le"
       - "traefik.http.routers.lightrag.middlewares=redirect-https@file,sec-headers@file,ratelimit@file"
       - "traefik.http.services.lightrag.loadbalancer.server.port=9621"
+      - "traefik.docker.network=traefik_proxy"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
