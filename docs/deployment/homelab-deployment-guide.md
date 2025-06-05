@@ -235,6 +235,7 @@ curl -I https://lightrag.flipgoal.xyz/auth-status
 | Auth file not loading | Check container secret mounts: `docker exec lightrag ls -la /run/secrets/` |
 | Performance issues | Verify multiple workers: `docker exec lightrag ps aux \| grep gunicorn` |
 | Worker process issues | Check Gunicorn master/worker processes: `docker exec lightrag ps aux` |
+| WebUI 404 errors | Verify static files mounted: `docker exec lightrag ls -la /app/static/` |
 
 ### **Debug Commands**
 ```bash
@@ -257,6 +258,10 @@ docker exec lightrag env | grep AUTH
 
 # Check worker processes (NEW)
 docker exec lightrag ps aux | grep gunicorn
+
+# Verify WebUI static files (NEW)
+docker exec lightrag ls -la /app/static/
+docker exec lightrag curl -I http://localhost:9621/webui/
 ```
 
 ---
@@ -330,6 +335,7 @@ After deployment, you should have:
 - **Direct Configuration**: No more intermediate launcher scripts
 - **File-based Secrets**: Standard Docker secrets pattern
 - **Improved Logging**: Better visibility into application performance
+- **Fixed WebUI Serving**: Corrected static file mounting logic for production mode
 
 ---
 
