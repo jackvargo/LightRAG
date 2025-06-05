@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   traefik:
-    image: traefik:v3.3
+    image: traefik:v3.4.1
     container_name: traefik
     restart: unless-stopped
     security_opt:
@@ -12,7 +12,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"  # Traefik dashboard (optional, secure with auth)
+      - "8080:8080"  # Traefik dashboard (secured with auth)
     environment:
       # Let's Encrypt configuration
       - ACME_EMAIL=${ACME_EMAIL:-admin@flipgoal.xyz}
@@ -41,25 +41,45 @@ services:
       # - --certificatesresolvers.le.acme.dnschallenge=true
       # - --certificatesresolvers.le.acme.dnschallenge.provider=cloudflare
       # Logging
-      - --log.level=INFO
+      - --log.level=DEBUG  # Increased logging for troubleshooting
       - --accesslog=true
       - --accesslog.format=json
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./data/acme.json:/acme.json
       - ./dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - ./auth:/etc/traefik/auth:ro
     labels:
       - "traefik.enable=true"
-      # Dashboard (secure with basic auth)
-      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.flipgoal.xyz`)"
-      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
-      - "traefik.http.routers.traefik-dashboard.tls.certresolver=le"
-      - "traefik.http.routers.traefik-dashboard.service=api@internal"
-      - "traefik.http.routers.traefik-dashboard.middlewares=auth@file"
-      # Global redirect to HTTPS
+      
+      # Security Headers for Traefik Dashboard
+      - "traefik.http.middlewares.traefik-secure-headers.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.traefik-secure-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.traefik-secure-headers.headers.forceSTSHeader=true"
+      - "traefik.http.middlewares.traefik-secure-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.traefik-secure-headers.headers.stsPreload=true"
+      - "traefik.http.middlewares.traefik-secure-headers.headers.stsSeconds=31536000"
+      
+      # HTTPS Dashboard Router
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.flipgoal.xyz`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=le"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=traefik-auth@file"
+      
+      # HTTP Dashboard Router (for redirect)
+      - "traefik.http.routers.dashboard-http.rule=Host(`traefik.flipgoal.xyz`)"
+      - "traefik.http.routers.dashboard-http.entrypoints=web"
+      - "traefik.http.middlewares.dashboard-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.dashboard-redirect.redirectscheme.permanent=true"
+      - "traefik.http.routers.dashboard-http.middlewares=dashboard-redirect"
+      
+      # Global HTTP to HTTPS Redirect
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
       - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
       - "traefik.http.routers.http-catchall.entrypoints=web"
-      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https@file"
+      - "traefik.http.routers.http-catchall.middlewares=https-redirect"
 
 networks:
   traefik_proxy:
