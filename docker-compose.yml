@@ -63,12 +63,12 @@ services:
       dockerfile: Dockerfile
       target: prod
     image: lightrag-server:prod
-    container_name: lightrag-prod
+    container_name: lightrag
     env_file:
       - .env
     environment:
       - NODE_ENV=production
-      - CORS_ORIGINS=https://homelab.flipgoal.xyz
+      - CORS_ORIGINS=https://lightrag.flipgoal.xyz
       - TOKEN_SECRET_FILE=/run/secrets/token_secret
       - AUTH_FILE=/run/secrets/auth_users
       - LIGHTRAG_API_KEY_FILE=/run/secrets/api_key
@@ -87,10 +87,10 @@ services:
       - default
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.lightrag.rule=Host(`homelab.flipgoal.xyz`)"
+      - "traefik.http.routers.lightrag.rule=Host(`lightrag.flipgoal.xyz`)"
       - "traefik.http.routers.lightrag.entrypoints=websecure"
       - "traefik.http.routers.lightrag.tls.certresolver=le"
-      - "traefik.http.routers.lightrag.middlewares=redirect-https@file,sec-headers@file,ratelimit@file"
+      - "traefik.http.routers.lightrag.middlewares=redirect-to-https@file,sec-headers@file,ratelimit@file"
       - "traefik.http.services.lightrag.loadbalancer.server.port=9621"
       - "traefik.docker.network=traefik_proxy"
     extra_hosts:
