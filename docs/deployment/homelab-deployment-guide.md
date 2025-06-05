@@ -79,11 +79,11 @@ LIGHTRAG_WORKING_DIR=./data/rag_storage
 LIGHTRAG_INPUT_DIR=./data/inputs
 LIGHTRAG_CONTEXTS_DIR=./data/contexts
 
-# Production Settings - Enhanced Performance with Multiple Workers
+# Production Settings - Standard Performance (Workers configured in application)
 NODE_ENV=production
 MEMORY_LIMIT=8G
 MEMORY_RESERVATION=4G
-WORKERS=4
+# WORKERS=4  # Currently handled by application configuration
 
 # Email for Let's Encrypt
 ACME_EMAIL=admin@flipgoal.xyz
@@ -234,6 +234,7 @@ curl -I https://lightrag.flipgoal.xyz/auth-status
 | Traefik auth fails | Verify auth file exists: `ls -la traefik/auth/users` |
 | Auth file not loading | Check container secret mounts: `docker exec lightrag ls -la /run/secrets/` |
 | Performance issues | Verify multiple workers: `docker exec lightrag ps aux \| grep uvicorn` |
+| Uvicorn argument error | Check Dockerfile CMD and rebuild: `docker compose --profile prod build --no-cache` |
 
 ### **Debug Commands**
 ```bash
@@ -308,15 +309,17 @@ After deployment, you should have:
 - ✅ **NEW**: Enhanced performance with 4 worker processes
 - ✅ **NEW**: Native secret handling (no launcher scripts)
 - ✅ **NEW**: Proper bcrypt password security
+- ✅ **NEW**: Improved FastAPI architecture
 
 ---
 
 ## 🆕 **What's New in This Version**
 
 ### **Performance Improvements**
-- **4 Worker Processes**: Better concurrent request handling
-- **Standard Uvicorn**: Replaced custom launcher with proper uvicorn configuration
+- **Standard Uvicorn**: Uses proper uvicorn configuration with main.py entry point
+- **Improved Architecture**: Replaced custom launcher with standard FastAPI application
 - **Memory Optimization**: Better resource utilization
+- **Multi-worker Support**: Available but currently disabled due to configuration conflicts
 
 ### **Security Enhancements**
 - **Native Secret Handling**: Application reads secrets directly from files
