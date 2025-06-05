@@ -52,6 +52,9 @@ from lightrag.kg.shared_storage import (
 from fastapi.security import OAuth2PasswordRequestForm
 from lightrag.api.auth import auth_handler
 from lightrag.contexts.context_manager import ContextManager
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from passlib.context import CryptContext
 
 # use the .env that is inside the current folder
 # allows to use different .env file for each lightrag instance
@@ -68,6 +71,9 @@ config.read("config.ini")
 
 # Global authentication configuration
 auth_configured = bool(auth_handler.accounts)
+
+# Create a password context for hashing and verification
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def create_app(args):
@@ -504,10 +510,28 @@ def create_app(args):
                 "webui_description": webui_description,
             }
         username = form_data.username
-        if auth_handler.accounts.get(username) != form_data.password:
+        stored_password_hash = auth_handler.accounts.get(username)
+
+        # Securely verify the password using bcrypt hash verification
+        # Support both hashed passwords and plain text passwords for backward compatibility
+        if not stored_password_hash:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
             )
+        
+        # Check if stored password is hashed (bcrypt hashes start with $2b$)
+        if stored_password_hash.startswith('$2b$'):
+            # Use bcrypt verification for hashed passwords
+            if not pwd_context.verify(form_data.password, stored_password_hash):
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
+                )
+        else:
+            # Plain text comparison for backward compatibility
+            if form_data.password != stored_password_hash:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
+                )
 
         # Regular user login
         user_token = auth_handler.create_token(

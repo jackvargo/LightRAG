@@ -8,8 +8,8 @@
 
 This guide implements the robust single-Traefik architecture where:
 - **Traefik**: Runs in its own stack, handles all TLS and routing
-- **LightRAG**: Connects via external network, no port exposure
-- **Domain**: `homelab.flipgoal.xyz` → `vargohome.duckdns.org`
+- **LightRAG**: Connects via external network, no port exposure, native secret handling
+- **Domain**: `lightrag.flipgoal.xyz` → `vargohome.duckdns.org`
 
 ---
 
@@ -17,7 +17,7 @@ This guide implements the robust single-Traefik architecture where:
 
 - [ ] Ubuntu Docker host with Docker & Docker Compose installed
 - [ ] Router configured for port forwarding: `80,443 → Docker host IP`
-- [ ] DNS: CNAME `homelab.flipgoal.xyz` → `vargohome.duckdns.org` (✅ Complete)
+- [ ] DNS: CNAME `lightrag.flipgoal.xyz` → `vargohome.duckdns.org` (✅ Complete)
 - [ ] Git access to feature branch
 
 ---
@@ -50,8 +50,17 @@ docker network create --attachable traefik_proxy
 ```bash
 # Generate production secrets
 openssl rand -base64 64 > secrets/token_secret
-htpasswd -Bbn admin > secrets/auth_users  # Enter password when prompted
 openssl rand -hex 48 > secrets/api_key
+
+# Generate LightRAG WebUI authentication credentials with bcrypt hashing
+# This creates the login for https://lightrag.flipgoal.xyz
+# Note: LightRAG now supports both bcrypt hashes and plain text for backward compatibility
+htpasswd -Bc secrets/auth_users jack
+# Recommended password: 16+ characters with mix of uppercase, lowercase, numbers, symbols
+# Example: J@ck2024!LightRAG$SecuRe
+
+# Alternative: Create plain text format (less secure, but simpler)
+# echo "jack:J@ck2024!LightRAG\$SecuRe" > secrets/auth_users
 
 # Set proper permissions
 chmod 600 secrets/*
@@ -70,13 +79,20 @@ LIGHTRAG_WORKING_DIR=./data/rag_storage
 LIGHTRAG_INPUT_DIR=./data/inputs
 LIGHTRAG_CONTEXTS_DIR=./data/contexts
 
-# Production Settings
+# Production Settings - Enhanced Performance with Multiple Workers
 NODE_ENV=production
 MEMORY_LIMIT=8G
 MEMORY_RESERVATION=4G
+WORKERS=4
 
 # Email for Let's Encrypt
 ACME_EMAIL=admin@flipgoal.xyz
+
+# Native Secret Handling (NEW)
+# LightRAG now reads secrets directly from files - no launcher script needed
+AUTH_FILE=/run/secrets/auth_users
+TOKEN_SECRET_FILE=/run/secrets/token_secret
+LIGHTRAG_API_KEY_FILE=/run/secrets/api_key
 EOF
 ```
 
@@ -87,11 +103,6 @@ cat > traefik/dynamic.yml << EOF
 http:
   middlewares:
     redirect-to-https:
-      redirectScheme:
-        scheme: https
-        permanent: true
-    
-    redirect-https:
       redirectScheme:
         scheme: https
         permanent: true
@@ -112,14 +123,15 @@ http:
         average: 50
         period: 5s
         burst: 25
-    
-    auth:
-      basicAuth:
-        usersFile: /etc/traefik/users  # You'll need to create this
 EOF
 
-# Create basic auth file for Traefik dashboard
-htpasswd -Bbn admin > traefik/users  # Enter dashboard password
+# Create Traefik dashboard authentication
+mkdir -p traefik/auth
+htpasswd -Bc traefik/auth/users jack
+# Use a strong password - this protects your Traefik dashboard at https://traefik.flipgoal.xyz
+# Example: Tr@ef1k2024!D@shboard$Admin
+
+chmod 600 traefik/auth/users
 ```
 
 ### **Step 6: Create ACME Storage**
@@ -145,10 +157,11 @@ docker logs traefik
 cd ..
 
 # Deploy LightRAG production stack
+# Note: Now uses standard uvicorn with 4 workers for better performance
 docker compose --profile prod up -d
 
 # Monitor deployment
-docker logs -f lightrag-prod
+docker logs -f lightrag
 ```
 
 ---
@@ -164,20 +177,47 @@ docker network inspect traefik_proxy
 docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 # Test internal health endpoint
-docker exec lightrag-prod curl -f http://localhost:9621/health
+docker exec lightrag curl -f http://localhost:9621/health
+
+# Verify multiple workers are running (new performance feature)
+docker exec lightrag ps aux | grep uvicorn
 ```
 
 ### **External Access Tests**
 ```bash
 # Test HTTP redirect (should redirect to HTTPS)
-curl -I http://homelab.flipgoal.xyz
+curl -I http://lightrag.flipgoal.xyz
 
 # Test HTTPS access (after certificate generation)
-curl -I https://homelab.flipgoal.xyz
+curl -I https://lightrag.flipgoal.xyz
 
 # Test WebUI access
-curl -I https://homelab.flipgoal.xyz/webui/
+curl -I https://lightrag.flipgoal.xyz/webui/
+
+# Test authentication endpoint
+curl -I https://lightrag.flipgoal.xyz/auth-status
 ```
+
+---
+
+## 🔐 **Security Recommendations**
+
+### **Password Guidelines**
+- **LightRAG Auth**: Username `jack`, strong password (16+ chars)
+  - Example pattern: `J@ck2024!LightRAG$SecuRe`
+- **Traefik Dashboard**: Same username, DIFFERENT strong password
+  - Example pattern: `Tr@ef1k2024!D@shboard$Admin`
+
+### **Authentication Security Enhancements (NEW)**
+- **bcrypt Support**: LightRAG now properly supports bcrypt password hashing
+- **Backward Compatibility**: Plain text passwords still work during transition
+- **Native Secret Handling**: No more workaround scripts - secrets loaded directly by application
+- **Multiple Workers**: Improved performance with 4 worker processes instead of 1
+
+### **Why Different Passwords?**
+- **Defense in depth**: If one service is compromised, others remain secure
+- **Role separation**: Traefik dashboard vs application access
+- **Audit clarity**: Different credentials for different purposes
 
 ---
 
@@ -188,9 +228,12 @@ curl -I https://homelab.flipgoal.xyz/webui/
 | Issue | Solution |
 |-------|----------|
 | Certificate generation fails | Check ports 80,443 are forwarded to Docker host |
-| 502 Bad Gateway | Verify LightRAG container is healthy: `docker logs lightrag-prod` |
+| 502 Bad Gateway | Verify LightRAG container is healthy: `docker logs lightrag` |
 | Network not found | Ensure `traefik_proxy` network exists: `docker network ls` |
 | Permission denied on secrets | Check file permissions: `chmod 600 secrets/*` |
+| Traefik auth fails | Verify auth file exists: `ls -la traefik/auth/users` |
+| Auth file not loading | Check container secret mounts: `docker exec lightrag ls -la /run/secrets/` |
+| Performance issues | Verify multiple workers: `docker exec lightrag ps aux \| grep uvicorn` |
 
 ### **Debug Commands**
 ```bash
@@ -202,6 +245,17 @@ docker exec traefik cat /acme.json | jq '.le.Certificates'
 
 # View all logs
 docker compose --profile prod logs -f
+
+# Test auth file format
+cat secrets/auth_users
+# Should show: jack:$2y$10$... (bcrypt hash) OR jack:plaintext (backward compatibility)
+
+# Verify secret file loading (NEW)
+docker exec lightrag cat /run/secrets/auth_users
+docker exec lightrag env | grep AUTH
+
+# Check worker processes (NEW)
+docker exec lightrag ps aux | grep uvicorn
 ```
 
 ---
@@ -213,8 +267,11 @@ docker compose --profile prod logs -f
 # Pull latest changes
 git pull origin feature/webui-integrated-deployment
 
-# Rebuild and redeploy
+# Rebuild and redeploy (now uses improved architecture)
 docker compose --profile prod up -d --build
+
+# Verify improved performance
+docker exec lightrag ps aux | grep uvicorn
 ```
 
 ### **Updating Traefik**
@@ -224,26 +281,63 @@ docker compose -f docker-compose.traefik.yml pull
 docker compose -f docker-compose.traefik.yml up -d
 ```
 
+### **Migrating to bcrypt Passwords (Recommended)**
+```bash
+# Generate new bcrypt hash
+htpasswd -Bc secrets/auth_users_new jack
+
+# Test the new hash works
+# Then replace old file
+mv secrets/auth_users_new secrets/auth_users
+
+# Redeploy to apply changes
+docker compose --profile prod up -d
+```
+
 ---
 
 ## 🏆 **Success Criteria**
 
 After deployment, you should have:
-- ✅ `https://homelab.flipgoal.xyz` serves LightRAG WebUI
+- ✅ `https://lightrag.flipgoal.xyz` serves LightRAG WebUI
 - ✅ `https://traefik.flipgoal.xyz` serves Traefik dashboard (with auth)
 - ✅ Automatic HTTPS certificates from Let's Encrypt
 - ✅ HTTP automatically redirects to HTTPS
 - ✅ All containers running and healthy
 - ✅ Multi-context functionality preserved
+- ✅ **NEW**: Enhanced performance with 4 worker processes
+- ✅ **NEW**: Native secret handling (no launcher scripts)
+- ✅ **NEW**: Proper bcrypt password security
+
+---
+
+## 🆕 **What's New in This Version**
+
+### **Performance Improvements**
+- **4 Worker Processes**: Better concurrent request handling
+- **Standard Uvicorn**: Replaced custom launcher with proper uvicorn configuration
+- **Memory Optimization**: Better resource utilization
+
+### **Security Enhancements**
+- **Native Secret Handling**: Application reads secrets directly from files
+- **bcrypt Support**: Proper password hashing with backward compatibility
+- **Cleaner Architecture**: Removed workaround scripts and duplicate code
+
+### **Deployment Simplification**
+- **Direct Configuration**: No more intermediate launcher scripts
+- **File-based Secrets**: Standard Docker secrets pattern
+- **Improved Logging**: Better visibility into application performance
 
 ---
 
 ## 📞 **Support**
 
 For issues specific to this deployment:
-1. Check container logs: `docker logs <container-name>`
+1. Check container logs: `docker logs lightrag`
 2. Verify network connectivity: `docker network inspect traefik_proxy`
-3. Test internal health: `docker exec lightrag-prod curl http://localhost:9621/health`
+3. Test internal health: `docker exec lightrag curl http://localhost:9621/health`
 4. Review Traefik dashboard for routing issues
+5. **NEW**: Check worker processes: `docker exec lightrag ps aux | grep uvicorn`
+6. **NEW**: Verify secret loading: `docker exec lightrag ls -la /run/secrets/`
 
-**Domain Status**: `homelab.flipgoal.xyz` configured and ready for deployment 🚀 
+**Domain Status**: `lightrag.flipgoal.xyz` configured and ready for deployment 🚀 

@@ -59,6 +59,9 @@ COPY --from=backend-builder /app/setup.py /app/
 # Copy built WebUI from ui-builder stage
 COPY --from=ui-builder /ui/dist /app/static
 
+# Copy the main application (no longer need the launcher script)
+# COPY run_webui_server.py /app/
+
 # Make sure scripts in .local are usable
 ENV PATH=/root/.local/bin:$PATH
 
@@ -80,5 +83,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Expose port
 EXPOSE 9621
 
-# Use Python module invocation to avoid CLI conflicts
-CMD ["python", "-c", "from lightrag.api.main import app; import uvicorn; uvicorn.run(app, host='0.0.0.0', port=9621)"]
+# Default command for the application - use standard uvicorn for better performance
+CMD ["uvicorn", "lightrag.api.main:app", "--host", "0.0.0.0", "--port", "9621", "--workers", "4"]
