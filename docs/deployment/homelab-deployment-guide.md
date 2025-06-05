@@ -366,6 +366,15 @@ echo "jack:your_plain_password" > secrets/auth_users
 docker compose --profile prod up -d
 ```
 
+### **Known Harmless Warnings**
+
+You may see this warning in the logs - **it's completely harmless and doesn't affect functionality**:
+```
+[WARNING] passlib.handlers.bcrypt: (trapped) error reading bcrypt version
+```
+
+This is just a version compatibility issue between passlib and bcrypt libraries. The authentication works perfectly despite this warning.
+
 ---
 
 ## 🔄 **Updates & Maintenance**
