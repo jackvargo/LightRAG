@@ -519,13 +519,20 @@ def create_app(args):
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
             )
         
-        # Check if stored password is hashed (bcrypt hashes start with $2b$)
-        if stored_password_hash.startswith('$2b$'):
+        # Check if stored password is hashed (bcrypt hashes start with $2a$, $2b$, $2x$, $2y$)
+        if stored_password_hash.startswith(('$2a$', '$2b$', '$2x$', '$2y$')):
             # Use bcrypt verification for hashed passwords
-            if not pwd_context.verify(form_data.password, stored_password_hash):
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
-                )
+            try:
+                if not pwd_context.verify(form_data.password, stored_password_hash):
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
+                    )
+            except Exception as e:
+                # If bcrypt verification fails for any reason, fall back to plain text
+                if form_data.password != stored_password_hash:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
+                    )
         else:
             # Plain text comparison for backward compatibility
             if form_data.password != stored_password_hash:

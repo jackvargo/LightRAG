@@ -262,6 +262,26 @@ docker exec lightrag ps aux | grep gunicorn
 # Verify WebUI static files (NEW)
 docker exec lightrag ls -la /app/static/
 docker exec lightrag curl -I http://localhost:9621/webui/
+
+# Debug authentication issues (NEW)
+docker exec lightrag env | grep AUTH
+docker exec lightrag cat /run/secrets/auth_users
+docker exec lightrag python -c "from lightrag.api.auth import auth_handler; print('Accounts loaded:', bool(auth_handler.accounts)); print('Account details:', list(auth_handler.accounts.keys()) if auth_handler.accounts else 'None')"
+
+# Test bcrypt hash verification (NEW)
+docker exec lightrag python -c "
+from passlib.context import CryptContext
+pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+hash_from_file = open('/run/secrets/auth_users').read().split(':')[1].strip()
+print('Hash from file:', hash_from_file)
+print('Hash format valid:', hash_from_file.startswith(('$2a$', '$2b$', '$2x$', '$2y$')))
+test_password = 'your_test_password'
+try:
+    result = pwd_context.verify(test_password, hash_from_file)
+    print('Password verification result:', result)
+except Exception as e:
+    print('Verification error:', str(e))
+"
 ```
 
 ---
@@ -289,15 +309,55 @@ docker compose -f docker-compose.traefik.yml up -d
 
 ### **Migrating to bcrypt Passwords (Recommended)**
 ```bash
-# Generate new bcrypt hash
+# Generate new bcrypt hash (ensure compatibility)
 htpasswd -Bc secrets/auth_users_new jack
+# Or use Python to generate hash
+python3 -c "
+from passlib.context import CryptContext
+import getpass
+pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+password = getpass.getpass('Enter password: ')
+hash_value = pwd_context.hash(password)
+print(f'jack:{hash_value}')
+" > secrets/auth_users_new
 
-# Test the new hash works
-# Then replace old file
+# Test the new hash works before applying
+docker exec lightrag python -c "
+from passlib.context import CryptContext
+pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+# Test with your actual password
+test_result = pwd_context.verify('your_actual_password', 'your_generated_hash')
+print('Hash verification test:', test_result)
+"
+
+# If test passes, replace old file
 mv secrets/auth_users_new secrets/auth_users
 
 # Redeploy to apply changes
 docker compose --profile prod up -d
+```
+
+### **Troubleshooting bcrypt Authentication**
+```bash
+# If bcrypt authentication fails:
+
+# 1. Check hash format
+cat secrets/auth_users
+# Should show: jack:$2b$12$... (or $2a$, $2x$, $2y$)
+
+# 2. Test hash manually
+docker exec lightrag python -c "
+from passlib.context import CryptContext
+pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+# Replace with your actual values
+result = pwd_context.verify('your_password', 'your_hash')
+print('Manual verification:', result)
+"
+
+# 3. Temporarily use plain text for testing
+echo 'jack:your_plain_password' > secrets/auth_users
+docker compose --profile prod up -d
+# If this works, the issue is with bcrypt hash generation/verification
 ```
 
 ---
