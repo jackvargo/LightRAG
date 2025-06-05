@@ -83,5 +83,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Expose port
 EXPOSE 9621
 
-# Default command for the application - use uvicorn with the main.py app
-CMD ["uvicorn", "lightrag.api.main:app", "--host", "0.0.0.0", "--port", "9621"]
+# Default command for the application - use Gunicorn for multi-worker production deployment
+# Gunicorn is the proper way to run this application with multiple workers
+CMD ["python", "-m", "lightrag.api.run_with_gunicorn"]
