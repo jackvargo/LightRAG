@@ -41,12 +41,10 @@ http:
             depth: 1
 
     # Basic authentication for Traefik dashboard
-    auth:
+    traefik-auth:
       basicAuth:
-        users:
-          # admin:admin (change this!)
-          # Generate with: htpasswd -nb admin your_password
-          - "admin:$2y$10$8K8O8K8O8K8O8K8O8K8O8O8K8O8K8O8K8O8K8O8K8O8K8O8K8O8K8O"
+        usersFile: "/etc/traefik/auth/users"
+        removeHeader: true # Removes the WWW-Authenticate header after successful authentication.
 
     # CORS middleware for API access
     cors:
