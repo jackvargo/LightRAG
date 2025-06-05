@@ -79,11 +79,11 @@ LIGHTRAG_WORKING_DIR=./data/rag_storage
 LIGHTRAG_INPUT_DIR=./data/inputs
 LIGHTRAG_CONTEXTS_DIR=./data/contexts
 
-# Production Settings - Standard Performance (Workers configured in application)
+# Production Settings - Enhanced Performance with Gunicorn Multi-Worker
 NODE_ENV=production
 MEMORY_LIMIT=8G
 MEMORY_RESERVATION=4G
-# WORKERS=4  # Currently handled by application configuration
+WORKERS=4
 
 # Email for Let's Encrypt
 ACME_EMAIL=admin@flipgoal.xyz
@@ -157,7 +157,7 @@ docker logs traefik
 cd ..
 
 # Deploy LightRAG production stack
-# Note: Now uses standard uvicorn with 4 workers for better performance
+# Note: Now uses Gunicorn with 4 workers for better production performance
 docker compose --profile prod up -d
 
 # Monitor deployment
@@ -180,7 +180,7 @@ docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 docker exec lightrag curl -f http://localhost:9621/health
 
 # Verify multiple workers are running (new performance feature)
-docker exec lightrag ps aux | grep uvicorn
+docker exec lightrag ps aux | grep gunicorn
 ```
 
 ### **External Access Tests**
@@ -233,8 +233,8 @@ curl -I https://lightrag.flipgoal.xyz/auth-status
 | Permission denied on secrets | Check file permissions: `chmod 600 secrets/*` |
 | Traefik auth fails | Verify auth file exists: `ls -la traefik/auth/users` |
 | Auth file not loading | Check container secret mounts: `docker exec lightrag ls -la /run/secrets/` |
-| Performance issues | Verify multiple workers: `docker exec lightrag ps aux \| grep uvicorn` |
-| Uvicorn argument error | Check Dockerfile CMD and rebuild: `docker compose --profile prod build --no-cache` |
+| Performance issues | Verify multiple workers: `docker exec lightrag ps aux \| grep gunicorn` |
+| Worker process issues | Check Gunicorn master/worker processes: `docker exec lightrag ps aux` |
 
 ### **Debug Commands**
 ```bash
@@ -256,7 +256,7 @@ docker exec lightrag cat /run/secrets/auth_users
 docker exec lightrag env | grep AUTH
 
 # Check worker processes (NEW)
-docker exec lightrag ps aux | grep uvicorn
+docker exec lightrag ps aux | grep gunicorn
 ```
 
 ---
@@ -272,7 +272,7 @@ git pull origin feature/webui-integrated-deployment
 docker compose --profile prod up -d --build
 
 # Verify improved performance
-docker exec lightrag ps aux | grep uvicorn
+docker exec lightrag ps aux | grep gunicorn
 ```
 
 ### **Updating Traefik**
@@ -309,17 +309,17 @@ After deployment, you should have:
 - ✅ **NEW**: Enhanced performance with 4 worker processes
 - ✅ **NEW**: Native secret handling (no launcher scripts)
 - ✅ **NEW**: Proper bcrypt password security
-- ✅ **NEW**: Improved FastAPI architecture
+- ✅ **NEW**: Production Gunicorn deployment
 
 ---
 
 ## 🆕 **What's New in This Version**
 
 ### **Performance Improvements**
-- **Standard Uvicorn**: Uses proper uvicorn configuration with main.py entry point
-- **Improved Architecture**: Replaced custom launcher with standard FastAPI application
-- **Memory Optimization**: Better resource utilization
-- **Multi-worker Support**: Available but currently disabled due to configuration conflicts
+- **4 Worker Processes**: Better concurrent request handling with Gunicorn
+- **Production WSGI Server**: Uses Gunicorn instead of development uvicorn
+- **Shared Data Architecture**: Optimized for multi-process deployment
+- **Memory Optimization**: Better resource utilization across workers
 
 ### **Security Enhancements**
 - **Native Secret Handling**: Application reads secrets directly from files
@@ -340,7 +340,7 @@ For issues specific to this deployment:
 2. Verify network connectivity: `docker network inspect traefik_proxy`
 3. Test internal health: `docker exec lightrag curl http://localhost:9621/health`
 4. Review Traefik dashboard for routing issues
-5. **NEW**: Check worker processes: `docker exec lightrag ps aux | grep uvicorn`
+5. **NEW**: Check worker processes: `docker exec lightrag ps aux | grep gunicorn`
 6. **NEW**: Verify secret loading: `docker exec lightrag ls -la /run/secrets/`
 
 **Domain Status**: `lightrag.flipgoal.xyz` configured and ready for deployment 🚀 
