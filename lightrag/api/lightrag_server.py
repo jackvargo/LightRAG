@@ -519,23 +519,41 @@ def create_app(args):
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
             )
         
+        # Clean the hash and check format (handle potential whitespace/newlines)
+        clean_hash = stored_password_hash.strip()
+        
+        # Debug logging to see what we're working with
+        logger.debug(f"Auth attempt for user: {username}")
+        logger.debug(f"Hash from storage: {repr(clean_hash)}")
+        logger.debug(f"Hash starts with: {repr(clean_hash[:4])}")
+        
         # Check if stored password is hashed (bcrypt hashes start with $2a$, $2b$, $2x$, $2y$)
-        if stored_password_hash.startswith(('$2a$', '$2b$', '$2x$', '$2y$')):
+        # Note: htpasswd -Bc generates $2y$ hashes, which are perfectly valid
+        bcrypt_prefixes = ['$2a$', '$2b$', '$2x$', '$2y$']
+        is_bcrypt_hash = any(clean_hash.startswith(prefix) for prefix in bcrypt_prefixes)
+        
+        logger.debug(f"Is bcrypt hash: {is_bcrypt_hash}")
+        
+        if is_bcrypt_hash:
             # Use bcrypt verification for hashed passwords
             try:
-                if not pwd_context.verify(form_data.password, stored_password_hash):
+                verification_result = pwd_context.verify(form_data.password, clean_hash)
+                logger.debug(f"bcrypt verification result: {verification_result}")
+                if not verification_result:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
                     )
             except Exception as e:
+                logger.warning(f"bcrypt verification failed: {e}, falling back to plain text comparison")
                 # If bcrypt verification fails for any reason, fall back to plain text
-                if form_data.password != stored_password_hash:
+                if form_data.password != clean_hash:
                     raise HTTPException(
                         status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
                     )
         else:
+            logger.debug("Using plain text password comparison")
             # Plain text comparison for backward compatibility
-            if form_data.password != stored_password_hash:
+            if form_data.password != clean_hash:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
                 )

@@ -271,17 +271,99 @@ docker exec lightrag python -c "from lightrag.api.auth import auth_handler; prin
 # Test bcrypt hash verification (NEW)
 docker exec lightrag python -c "
 from passlib.context import CryptContext
-pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+import sys
+print('Python version:', sys.version)
+
+# Read and analyze the hash
 hash_from_file = open('/run/secrets/auth_users').read().split(':')[1].strip()
-print('Hash from file:', hash_from_file)
-print('Hash format valid:', hash_from_file.startswith(('$2a$', '$2b$', '$2x$', '$2y$')))
-test_password = 'your_test_password'
+print('Hash from file:', repr(hash_from_file))  # Use repr to see hidden characters
+print('Hash length:', len(hash_from_file))
+print('First 4 chars:', repr(hash_from_file[:4]))
+
+# Test format detection step by step
+valid_prefixes = ('$2a$', '$2b$', '$2x$', '$2y$')
+print('Valid prefixes:', valid_prefixes)
+for prefix in valid_prefixes:
+    if hash_from_file.startswith(prefix):
+        print(f'Hash starts with {prefix}: True')
+        break
+else:
+    print('Hash does not start with any valid prefix')
+
+# Test bcrypt directly without passlib first
 try:
-    result = pwd_context.verify(test_password, hash_from_file)
-    print('Password verification result:', result)
+    import bcrypt
+    print('bcrypt library available')
+    print('bcrypt version:', getattr(bcrypt, '__version__', 'unknown'))
+    
+    # Test with bcrypt directly
+    test_password = b'your_test_password'
+    hash_bytes = hash_from_file.encode('utf-8')
+    result = bcrypt.checkpw(test_password, hash_bytes)
+    print('Direct bcrypt verification:', result)
 except Exception as e:
-    print('Verification error:', str(e))
+    print('Direct bcrypt error:', str(e))
+
+# Test with passlib
+try:
+    pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+    result = pwd_context.verify('your_test_password', hash_from_file)
+    print('Passlib verification result:', result)
+except Exception as e:
+    print('Passlib verification error:', str(e))
 "
+
+### **Quick Fix for bcrypt Authentication Issues**
+
+**The `htpasswd -Bc` command SHOULD work perfectly!** If it's not working, there's a bug that needs debugging.
+
+**Standard htpasswd approach (SHOULD work):**
+```bash
+# This is the correct and simple way to generate bcrypt hashes
+htpasswd -Bc secrets/auth_users jack
+
+# Redeploy
+docker compose --profile prod up -d
+```
+
+**If htpasswd -Bc doesn't work, debug with:**
+```bash
+# Check what htpasswd actually generated
+cat secrets/auth_users
+# Should show: jack:$2y$12$... (this IS a valid bcrypt hash)
+
+# Enable debug logging to see what's happening
+docker compose --profile prod logs -f | grep -E "(Auth attempt|Hash from storage|Is bcrypt|verification)"
+
+# Test the exact hash htpasswd generated
+docker exec lightrag python -c "
+hash_line = open('/run/secrets/auth_users').read().strip()
+username, hash_value = hash_line.split(':', 1)
+print(f'Username: {username}')
+print(f'Hash: {repr(hash_value)}')
+print(f'Hash starts with: {repr(hash_value[:4])}')
+print(f'Is valid bcrypt format: {hash_value.startswith((\"\$2a\$\", \"\$2b\$\", \"\$2x\$\", \"\$2y\$\"))}')
+"
+```
+
+**Only if htpasswd continues to fail, use alternatives:**
+
+```bash
+# Option 1: Force regenerate hash with Python (compatible format)
+docker exec lightrag python -c "
+import bcrypt
+password = b'your_actual_password'  # Replace with your real password
+salt = bcrypt.gensalt()
+hash_bytes = bcrypt.hashpw(password, salt)
+hash_str = hash_bytes.decode('utf-8')
+print(f'jack:{hash_str}')
+" > secrets/auth_users
+
+# Option 2: Use plain text temporarily (less secure but works)
+echo "jack:your_plain_password" > secrets/auth_users
+
+# Redeploy after either fix
+docker compose --profile prod up -d
 ```
 
 ---
@@ -403,10 +485,3 @@ After deployment, you should have:
 
 For issues specific to this deployment:
 1. Check container logs: `docker logs lightrag`
-2. Verify network connectivity: `docker network inspect traefik_proxy`
-3. Test internal health: `docker exec lightrag curl http://localhost:9621/health`
-4. Review Traefik dashboard for routing issues
-5. **NEW**: Check worker processes: `docker exec lightrag ps aux | grep gunicorn`
-6. **NEW**: Verify secret loading: `docker exec lightrag ls -la /run/secrets/`
-
-**Domain Status**: `lightrag.flipgoal.xyz` configured and ready for deployment 🚀 
