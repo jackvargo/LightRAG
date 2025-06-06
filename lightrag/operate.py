@@ -7,6 +7,8 @@ import re
 import os
 from typing import Any, AsyncIterator
 from collections import Counter, defaultdict
+import time
+from dotenv import load_dotenv
 
 from .utils import (
     logger,
@@ -35,8 +37,6 @@ from .base import (
     QueryParam,
 )
 from .prompt import GRAPH_FIELD_SEP, PROMPTS
-import time
-from dotenv import load_dotenv
 
 # use the .env that is inside the current folder
 # allows to use different .env file for each lightrag instance
@@ -355,6 +355,7 @@ async def _merge_edges_then_upsert(
                     "description": description,
                     "entity_type": "UNKNOWN",
                     "file_path": file_path,
+                    "created_at": int(time.time()),
                 },
             )
     description = await _handle_entity_relation_summary(
@@ -369,6 +370,7 @@ async def _merge_edges_then_upsert(
             keywords=keywords,
             source_id=source_id,
             file_path=file_path,
+            created_at=int(time.time()),
         ),
     )
 
@@ -377,8 +379,10 @@ async def _merge_edges_then_upsert(
         tgt_id=tgt_id,
         description=description,
         keywords=keywords,
+        weight=weight,
         source_id=source_id,
         file_path=file_path,
+        created_at=int(time.time()),
     )
 
     return edge_data

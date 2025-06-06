@@ -4,17 +4,28 @@ import asyncio
 import configparser
 import os
 import csv
+import time
 import warnings
 from dataclasses import asdict, dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from functools import partial
-from typing import Any, AsyncIterator, Callable, Iterator, cast, final, Literal
+from typing import Any, AsyncIterator, Callable, Iterator, cast, final, Literal, Optional, List, Dict
 import pandas as pd
 
+from lightrag.constants import (
+    DEFAULT_MAX_TOKEN_SUMMARY,
+    DEFAULT_FORCE_LLM_SUMMARY_ON_MERGE,
+)
+from lightrag.utils import get_env_value
 
 from lightrag.kg import (
     STORAGES,
     verify_storage_implementation,
+)
+
+from lightrag.kg.shared_storage import (
+    get_namespace_data,
+    get_pipeline_status_lock,
 )
 
 from .base import (
@@ -104,7 +115,7 @@ class LightRAG:
     """Maximum number of entity extraction attempts for ambiguous content."""
 
     entity_summary_to_max_tokens: int = field(
-        default=int(os.getenv("MAX_TOKEN_SUMMARY", 500))
+        default=int(os.getenv("MAX_TOKEN_SUMMARY", DEFAULT_MAX_TOKEN_SUMMARY))
     )
 
     # Text chunking
@@ -874,11 +885,6 @@ class LightRAG:
         3. Process each chunk for entity and relation extraction
         4. Update the document status
         """
-        from lightrag.kg.shared_storage import (
-            get_namespace_data,
-            get_pipeline_status_lock,
-        )
-
         # Get pipeline status shared data and lock
         pipeline_status = await get_namespace_data("pipeline_status")
         pipeline_status_lock = get_pipeline_status_lock()
@@ -1232,7 +1238,6 @@ class LightRAG:
         self,
         custom_kg: dict[str, Any],
         full_doc_id: str = None,
-        file_path: str = "custom_kg",
     ) -> None:
         update_storage = False
         try:
@@ -1242,6 +1247,7 @@ class LightRAG:
             for chunk_data in custom_kg.get("chunks", []):
                 chunk_content = clean_text(chunk_data["content"])
                 source_id = chunk_data["source_id"]
+                file_path = chunk_data.get("file_path", "custom_kg")
                 tokens = len(
                     encode_string_by_tiktoken(
                         chunk_content, model_name=self.tiktoken_model_name
