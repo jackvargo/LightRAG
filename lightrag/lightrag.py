@@ -16,7 +16,6 @@ from lightrag.constants import (
     DEFAULT_MAX_TOKEN_SUMMARY,
     DEFAULT_FORCE_LLM_SUMMARY_ON_MERGE,
 )
-from lightrag.utils import get_env_value
 
 from lightrag.kg import (
     STORAGES,
