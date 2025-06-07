@@ -1,0 +1,83 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# LightRAG Development Testing Automation
+
+## Dev Testing Command
+
+When the user says "Start dev testing", "start dev environment", "begin testing", "launch dev setup", or similar phrases, automatically execute this complete development testing workflow:
+
+### Automated Dev Testing Workflow:
+
+1. **Environment Cleanup & Setup**
+   - Stop any running containers: `docker compose down`
+   - Clean up old containers: `docker system prune -f`
+   - Ensure proxy network exists: `docker network create proxy 2>/dev/null || true`
+
+2. **Development Environment Launch**  
+   - Start development profile: `docker compose --profile dev up -d`
+   - Wait for backend to be ready (30 seconds)
+   - Health check: `curl -f http://localhost:9621/health`
+
+3. **WebUI Development Setup**
+   - Navigate to WebUI directory: `cd lightrag_webui`
+   - Start frontend dev server: `npm run dev-no-bun` (in background)
+   - Return to root: `cd ..`
+
+4. **Post-Launch Validation**
+   - Check backend health: `curl -f http://localhost:9621/health`
+   - Verify WebUI dev server: `curl -f http://localhost:5173`
+   - Check container status: `docker compose --profile dev ps`
+   - Display access URLs and testing instructions
+
+5. **Browser Setup**
+   - Take screenshot of current state
+   - Check for any console errors
+   - Verify network connectivity
+
+### Success Criteria:
+- Backend container running on port 9621
+- WebUI dev server running on port 5173  
+- Health endpoints responding
+- No critical errors in logs
+- Browser testing ready
+
+### On Failure:
+- Display container logs: `docker compose --profile dev logs`
+- Check network issues
+- Suggest troubleshooting steps from DEV-README.md
+
+### Testing Checklist After Launch:
+- [ ] Multi-Context Switching: Test context switching in integrated container
+- [ ] Document Processing: Upload, process, and query documents end-to-end
+- [ ] API Endpoint Validation: Verify all REST API routes work correctly
+- [ ] Authentication Testing: JWT token flow and admin:admin123 credentials
+- [ ] WebUI Functionality: All WebUI features operational in production mode
+
+This workflow should complete in 60-90 seconds and provide a fully functional development environment ready for testing after major upstream integrations.
+
+## Production Testing Command
+
+When the user says "Start production testing" or "test production deployment", execute:
+
+1. **Production Environment Setup**
+   - Ensure secrets exist: `./scripts/setup-secrets.sh`
+   - Build production image: `docker compose --profile prod build`
+   - Start production container: `docker compose --profile prod up -d`
+
+2. **Production Validation**
+   - Health check: `curl -f http://localhost:9621/health`
+   - WebUI check: `curl -f http://localhost:9621/webui/`
+   - API validation: Test key endpoints
+   - Display production access URLs
+
+## Homelab Deployment Command
+
+When the user says "Deploy to homelab" or "start homelab deployment", execute:
+
+1. **Homelab Deployment**
+   - Run deployment script: `./scripts/deploy-homelab.sh`
+   - Verify external access (if router configured)
+   - Display homelab URLs and access information
