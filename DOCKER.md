@@ -40,6 +40,15 @@ cd lightrag_webui && npm run dev      # Frontend on 5173
 | `prod` | 1 | 9621 (API + WebUI) | Integrated | Production, Homelab |
 | `ci` | 1 | Build validation | N/A | CI/CD, Testing |
 
+**Multi-Instance Example:**
+```bash
+# Production instance 1 (port 9621)
+docker compose --env-file .env.prod1 --profile prod up -d
+
+# Production instance 2 (port 9622) 
+docker compose --env-file .env.prod2 --profile prod up -d
+```
+
 ### **Production Features**
 - ✅ **Single Port Deployment**: Everything on port 9621
 - ✅ **Multi-Context Support**: Full context switching functionality
@@ -53,6 +62,52 @@ cd lightrag_webui && npm run dev      # Frontend on 5173
 - Docker and Docker Compose installed
 - [Ollama](https://ollama.ai/) (optional, for local LLM processing)
 - OpenAI API key (optional, for cloud LLM processing)
+
+## Multi-Instance Deployment
+
+LightRAG supports running multiple instances on the same Docker host by using environment variables to avoid conflicts:
+
+### Running Multiple Instances
+
+Create separate environment files for each instance:
+
+**Instance 1 (.env.instance1):**
+```bash
+CONTAINER_NAME=lightrag-instance1
+INSTANCE_NAME=instance1
+PORT=9621
+DOMAIN=lightrag1.localhost
+```
+
+**Instance 2 (.env.instance2):**
+```bash
+CONTAINER_NAME=lightrag-instance2
+INSTANCE_NAME=instance2
+PORT=9622
+DOMAIN=lightrag2.localhost
+```
+
+Deploy each instance:
+```bash
+# Start instance 1
+docker compose --env-file .env.instance1 --profile prod up -d
+
+# Start instance 2  
+docker compose --env-file .env.instance2 --profile prod up -d
+```
+
+**Key Variables for Multi-Instance:**
+- `CONTAINER_NAME`: Unique container name (e.g., `lightrag-app1`, `lightrag-app2`)
+- `INSTANCE_NAME`: Unique data directory name (e.g., `app1`, `app2`)
+- `PORT`: Unique port mapping (e.g., `9621`, `9622`, `9623`)
+- `DOMAIN`: Unique domain for Traefik routing (prod profile only)
+
+**Data Isolation:**
+Each instance will store data in separate directories:
+- Instance 1: `./data/instance1/`
+- Instance 2: `./data/instance2/`
+
+This ensures complete data isolation between instances.
 
 ## Quick Start
 
@@ -98,6 +153,20 @@ If you prefer to set up manually:
    ```
 
 ## Configuration Options
+
+### Multi-Instance Variables
+
+For running multiple instances, these variables control naming and data isolation:
+
+```
+# Container and instance identification
+CONTAINER_NAME=lightrag-myapp     # Unique container name
+INSTANCE_NAME=myapp               # Unique data directory name
+PORT=9621                         # Unique port number
+
+# Production routing (if using Traefik)
+DOMAIN=lightrag.mydomain.com      # Unique domain
+```
 
 ### LLM Provider Options
 
@@ -207,12 +276,16 @@ Check logs for errors:
 
 ```bash
 docker compose logs
+# For specific instance
+docker compose --env-file .env.instance1 logs
 ```
 
 Common issues include:
-- Port conflicts (change `PORT` in `.env`)
+- Port conflicts (change `PORT` in `.env` or use different values per instance)
+- Container name conflicts (ensure `CONTAINER_NAME` is unique)
 - Missing or invalid API keys
 - Insufficient disk space
+- Data directory conflicts (ensure `INSTANCE_NAME` is unique)
 
 ## Advanced Usage
 

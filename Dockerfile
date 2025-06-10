@@ -75,13 +75,14 @@ ENV CONTEXTS_DIR=/app/data/contexts
 ENV ENABLE_MULTI_CONTEXT=true
 ENV DEFAULT_CONTEXT=default
 ENV MAX_CONTEXTS=10
+ENV PORT=9621
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:9621/health || exit 1
+    CMD curl -f http://localhost:${PORT}/health || exit 1
 
 # Expose port
-EXPOSE 9621
+EXPOSE ${PORT}
 
 # Default command for the application - use Gunicorn for multi-worker production deployment
 # Gunicorn is the proper way to run this application with multiple workers

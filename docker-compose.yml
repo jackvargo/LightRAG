@@ -16,16 +16,16 @@ services:
       dockerfile: Dockerfile
       target: backend-builder
     image: lightrag-server:dev
-    container_name: lightrag-dev
+    container_name: ${CONTAINER_NAME:-lightrag}-dev
     ports:
       - "${PORT:-9621}:${PORT:-9621}"
     volumes:
-      - ${LIGHTRAG_WORKING_DIR:-./data/rag_storage}:/app/data/rag_storage
-      - ${LIGHTRAG_INPUT_DIR:-./data/inputs}:/app/data/inputs
-      - ${LIGHTRAG_CONTEXTS_DIR:-./data/contexts}:/app/data/contexts
+      - ${LIGHTRAG_WORKING_DIR:-./data/${INSTANCE_NAME:-default}/rag_storage}:/app/data/rag_storage
+      - ${LIGHTRAG_INPUT_DIR:-./data/${INSTANCE_NAME:-default}/inputs}:/app/data/inputs
+      - ${LIGHTRAG_CONTEXTS_DIR:-./data/${INSTANCE_NAME:-default}/contexts}:/app/data/contexts
       # Mount the default context subdirectories properly including its input directories for context changes after startup
-      - ${LIGHTRAG_WORKING_DIR:-./data/rag_storage}:/app/data/contexts/default
-      - ${LIGHTRAG_INPUT_DIR:-./data/inputs}:/app/data/contexts/default_inputs
+      - ${LIGHTRAG_WORKING_DIR:-./data/${INSTANCE_NAME:-default}/rag_storage}:/app/data/contexts/default
+      - ${LIGHTRAG_INPUT_DIR:-./data/${INSTANCE_NAME:-default}/inputs}:/app/data/contexts/default_inputs
     env_file:
       - .env
     # Add host.docker.internal mapping for Ollama when using local LLM
@@ -48,7 +48,7 @@ services:
       dockerfile: Dockerfile
       target: prod
     image: lightrag-server:ci
-    container_name: lightrag-ci
+    container_name: ${CONTAINER_NAME:-lightrag}-ci
     environment:
       - NODE_ENV=production
     volumes:
@@ -63,7 +63,7 @@ services:
       dockerfile: Dockerfile
       target: prod
     image: lightrag-server:prod
-    container_name: lightrag
+    container_name: ${CONTAINER_NAME:-lightrag}
     env_file:
       - .env
     environment:
@@ -77,11 +77,11 @@ services:
       - auth_users
       - api_key
     volumes:
-      - ${LIGHTRAG_WORKING_DIR:-./data/rag_storage}:/app/data/rag_storage
-      - ${LIGHTRAG_INPUT_DIR:-./data/inputs}:/app/data/inputs
-      - ${LIGHTRAG_CONTEXTS_DIR:-./data/contexts}:/app/data/contexts
-      - ${LIGHTRAG_WORKING_DIR:-./data/rag_storage}:/app/data/contexts/default
-      - ${LIGHTRAG_INPUT_DIR:-./data/inputs}:/app/data/contexts/default_inputs
+      - ${LIGHTRAG_WORKING_DIR:-./data/${INSTANCE_NAME:-default}/rag_storage}:/app/data/rag_storage
+      - ${LIGHTRAG_INPUT_DIR:-./data/${INSTANCE_NAME:-default}/inputs}:/app/data/inputs
+      - ${LIGHTRAG_CONTEXTS_DIR:-./data/${INSTANCE_NAME:-default}/contexts}:/app/data/contexts
+      - ${LIGHTRAG_WORKING_DIR:-./data/${INSTANCE_NAME:-default}/rag_storage}:/app/data/contexts/default
+      - ${LIGHTRAG_INPUT_DIR:-./data/${INSTANCE_NAME:-default}/inputs}:/app/data/contexts/default_inputs
     networks:
       - proxy
       - default
@@ -91,7 +91,7 @@ services:
       - "traefik.http.routers.lightrag.entrypoints=websecure"
       - "traefik.http.routers.lightrag.tls.certresolver=le"
       - "traefik.http.routers.lightrag.middlewares=redirect-to-https@file,sec-headers@file,ratelimit@file"
-      - "traefik.http.services.lightrag.loadbalancer.server.port=9621"
+      - "traefik.http.services.lightrag.loadbalancer.server.port=${PORT:-9621}"
       - "traefik.docker.network=traefik_proxy"
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -103,7 +103,7 @@ services:
         reservations:
           memory: ${MEMORY_RESERVATION:-4G}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9621/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-9621}/health"]
       interval: 30s
       timeout: 10s
       retries: 3
