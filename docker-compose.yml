@@ -68,7 +68,7 @@ services:
       - .env
     environment:
       - NODE_ENV=production
-      - CORS_ORIGINS=https://lightrag.flipgoal.xyz
+      - CORS_ORIGINS=https://${DOMAIN:-lightrag.localhost}
       - TOKEN_SECRET_FILE=/run/secrets/token_secret
       - AUTH_FILE=/run/secrets/auth_users
       - LIGHTRAG_API_KEY_FILE=/run/secrets/api_key
@@ -87,7 +87,7 @@ services:
       - default
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.lightrag.rule=Host(`lightrag.flipgoal.xyz`)"
+      - "traefik.http.routers.lightrag.rule=Host(`${DOMAIN:-lightrag.localhost}`)"
       - "traefik.http.routers.lightrag.entrypoints=websecure"
       - "traefik.http.routers.lightrag.tls.certresolver=le"
       - "traefik.http.routers.lightrag.middlewares=redirect-to-https@file,sec-headers@file,ratelimit@file"
