@@ -1,0 +1,2633 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d9" for="edge" attr.name="file_path" attr.type="string" />
+  <key id="d8" for="edge" attr.name="source_id" attr.type="string" />
+  <key id="d7" for="edge" attr.name="keywords" attr.type="string" />
+  <key id="d6" for="edge" attr.name="description" attr.type="string" />
+  <key id="d5" for="edge" attr.name="weight" attr.type="double" />
+  <key id="d4" for="node" attr.name="file_path" attr.type="string" />
+  <key id="d3" for="node" attr.name="source_id" attr.type="string" />
+  <key id="d2" for="node" attr.name="description" attr.type="string" />
+  <key id="d1" for="node" attr.name="entity_type" attr.type="string" />
+  <key id="d0" for="node" attr.name="entity_id" attr.type="string" />
+  <graph edgedefault="undirected">
+    <node id="Evening Primrose Oil">
+      <data key="d0">Evening Primrose Oil</data>
+      <data key="d1">category</data>
+      <data key="d2">Evening Primrose Oil is a natural oil that contains GLA, which is known to decrease ornithine carboxylase activity in breast tumors and acts as a hormone regulator.&lt;SEP&gt;Evening Primrose Oil is a source of Gamma Linolenic Acid (GLA) and is suggested for hormone regulation in breast cancer.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04&lt;SEP&gt;chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="GLA">
+      <data key="d0">GLA</data>
+      <data key="d1">category</data>
+      <data key="d2">GLA (Gamma-Linolenic Acid) is a fatty acid found in Evening Primrose Oil that decreases ornithine carboxylase activity in breast tumors and is suggested to be taken at a dose of around 2g daily.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Paclitaxel">
+      <data key="d0">Paclitaxel</data>
+      <data key="d1">category</data>
+      <data key="d2">Paclitaxel is a chemotherapy drug that, when used in conjunction with GLA, can increase the response to Tamoxifen in breast cancer treatment.&lt;SEP&gt;Paclitaxel is a chemotherapy drug whose efficacy can be influenced by P-Glycoprotein and other drug resistance mechanisms.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Tamoxifen">
+      <data key="d0">Tamoxifen</data>
+      <data key="d1">category</data>
+      <data key="d2">Tamoxifen is a medication used to treat hormone receptor-positive breast cancer and is noted to be more effective when combined with GLA.&lt;SEP&gt;Tamoxifen is a medication used to treat hormone receptor-positive breast cancer.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Grapeseed Extract OPCs">
+      <data key="d0">Grapeseed Extract OPCs</data>
+      <data key="d1">category</data>
+      <data key="d2">Grapeseed Extract OPCs are natural aromatase inhibitors that may play a role in breast cancer treatment.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Green Tea EGCG">
+      <data key="d0">Green Tea EGCG</data>
+      <data key="d1">category</data>
+      <data key="d2">EGCG (Epigallocatechin gallate) is a compound found in green tea known for its antioxidant and anti-cancer effects.&lt;SEP&gt;EGCG (Epigallocatechin gallate) is a powerful antioxidant found in green tea, known for its potential health benefits, including cancer prevention.&lt;SEP&gt;Green Tea EGCG is a compound that acts as a regulator of histone proteins and has implications in reducing drug resistance in cancer treatment.&lt;SEP&gt;Green Tea EGCG is a compound that reduces the risk of recurrence by 50% in post-operative stage I and II breast cancer and inhibits breast cancer cells via the aryl hydrocarbon receptor.&lt;SEP&gt;Green Tea EGCG is a natural compound that acts as a regulator of histone proteins and may help in reducing drug resistance in cancer treatment.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04&lt;SEP&gt;chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Indole-3 Carbinol 13C">
+      <data key="d0">Indole-3 Carbinol 13C</data>
+      <data key="d1">category</data>
+      <data key="d2">Indole-3 Carbinol 13C is a compound that suppresses estrogen activity in ER+ breast cancer and reduces the risk of recurrence.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="DIM">
+      <data key="d0">DIM</data>
+      <data key="d1">category</data>
+      <data key="d2">DIM (Diindolylmethane) is a compound derived from Indole-3 Carbinol that is taken to inhibit estrogen activity in breast cancer treatment.&lt;SEP&gt;DIM (Diindolylmethane) is a compound derived from indole 3 carbinol that may support healthy estrogen metabolism.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Intravenous Artesunate">
+      <data key="d0">Intravenous Artesunate</data>
+      <data key="d1">category</data>
+      <data key="d2">Intravenous Artesunate is a treatment that is suggested to be followed by Intravenous Vitamin C for breast cancer.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Lugol's Solution">
+      <data key="d0">Lugol's Solution</data>
+      <data key="d1">category</data>
+      <data key="d2">Lugol's Solution is an iodine solution used to reduce estrogen receptor expression and regulate thyroid function.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Dr Max Gerson">
+      <data key="d0">Dr Max Gerson</data>
+      <data key="d1">person</data>
+      <data key="d2">Dr Max Gerson is a physician who emphasized the importance of the thyroid in clearing toxins from the body and its potential role in regulating autophagy.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Low Dose Naltrexone">
+      <data key="d0">Low Dose Naltrexone</data>
+      <data key="d1">category</data>
+      <data key="d2">Low Dose Naltrexone is a medication that is particularly supportive in breast cancer treatment and is prescribed in increasing doses.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Dickson Chemist">
+      <data key="d0">Dickson Chemist</data>
+      <data key="d1">organization</data>
+      <data key="d2">Dickson Chemist is a pharmacy that specializes in Low Dose Naltrexone and offers private prescriptions subject to consultation.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Melatonin">
+      <data key="d0">Melatonin</data>
+      <data key="d1">category</data>
+      <data key="d2">Melatonin is a hormone that benefits breast cancer patients, particularly those with ER+ breast cancer, by decreasing the production of estrogen receptors.&lt;SEP&gt;Melatonin is a hormone that can regulate hormone levels and may influence drug resistance in cancer treatment.&lt;SEP&gt;Melatonin is a hormone that regulates sleep-wake cycles and has been studied for its potential anti-cancer properties.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Milk Thistle">
+      <data key="d0">Milk Thistle</data>
+      <data key="d1">category</data>
+      <data key="d2">Milk Thistle is an herbal supplement that restricts growth factors active in many cancers and is known for its liver-protective properties.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Pomegranates">
+      <data key="d0">Pomegranates</data>
+      <data key="d1">category</data>
+      <data key="d2">Pomegranates are fruits that inhibit 17-estradiol growth factor in breast cancer and act as natural aromatase inhibitors.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Quercetin">
+      <data key="d0">Quercetin</data>
+      <data key="d1">category</data>
+      <data key="d2">Quercetin is a flavonoid found in many fruits and vegetables, known for its antioxidant properties and potential anti-cancer effects.&lt;SEP&gt;Quercetin is a flavonoid that can act as a regulator of drug resistance proteins and is derived from various fruits and vegetables.&lt;SEP&gt;Quercetin is a flavonoid that can regulate drug resistance proteins and has been noted for its potential health benefits, including anti-inflammatory effects.&lt;SEP&gt;Quercetin is a flavonoid that can regulate histone proteins and is noted for its potential to influence drug resistance mechanisms.&lt;SEP&gt;Quercetin is a flavonoid that supports breast cancer treatment by activating receptors that make cancer cells more responsive to treatment.&lt;SEP&gt;Quercetin is a flavonoid with antioxidant properties that may help in regulating cancer-related pathways in breast cancer treatment.&lt;SEP&gt;Quercetin is a flavonoid with antioxidant properties that may help reduce inflammation and support immune function.&lt;SEP&gt;Quercetin is a flavonoid with antioxidant properties that may play a role in cancer treatment and prevention.&lt;SEP&gt;Quercetin is a flavonoid with antioxidant properties, often studied for its potential health benefits including anti-cancer effects.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa&lt;SEP&gt;chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Resveratrol">
+      <data key="d0">Resveratrol</data>
+      <data key="d1">category</data>
+      <data key="d2">Resveratrol is a compound found in Muscadine grapes that exhibits phytoestrogen properties and its safety varies by menopausal status.&lt;SEP&gt;Resveratrol is a phytoestrogen that blocks estrogen DNA adducts responsible for breast cancer, though its safety in post-menopausal ER+ women is still under research.&lt;SEP&gt;Resveratrol is a phytoestrogen that blocks estrogen DNA adducts, which are linked to breast cancer, and binds to estrogen receptors.&lt;SEP&gt;Resveratrol is a natural compound found in grapes and berries, known for its antioxidant properties and potential health benefits.&lt;SEP&gt;Resveratrol is a natural compound found in grapes and berries, known for its antioxidant properties and potential health benefits.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04&lt;SEP&gt;chunk-b81d9e841623e400ca410d21b5046cb3&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4&lt;SEP&gt;chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Reishi Mushrooms">
+      <data key="d0">Reishi Mushrooms</data>
+      <data key="d1">category</data>
+      <data key="d2">Reishi Mushrooms are fungi that suppress cell adhesion and metastasis in breast cancer.&lt;SEP&gt;Reishi mushrooms are a type of medicinal fungus known for their potential health benefits, including suppression of cell adhesion and metastases in breast cancer.</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04&lt;SEP&gt;chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Liver Protection">
+      <data key="d0">Liver Protection</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d2">Milk Thistle is known for its liver-protective effects, which are crucial during cancer treatments.</data>
+      <data key="d1">UNKNOWN</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Breast Cancer">
+      <data key="d0">Breast Cancer</data>
+      <data key="d3">chunk-f0633d0c9fbeab3f25914885985ace04&lt;SEP&gt;chunk-b81d9e841623e400ca410d21b5046cb3&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa&lt;SEP&gt;chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d2">Breast cancer is a disease that can metastasize to other areas such as the brain and is monitored through MRI scans.&lt;SEP&gt;Pomegranates act as natural aromatase inhibitors and inhibit growth factors in breast cancer.&lt;SEP&gt;Breast cancer is a type of cancer that develops from breast tissue and is characterized by the production of aromatase and other genetic factors influencing its progression and treatment.&lt;SEP&gt;Breast cancer is a disease where malignant cells form in the tissues of the breast, and it can exhibit various biological behaviors, including brain metastases.&lt;SEP&gt;Breast cancer is a type of cancer that originates from breast tissue and can metastasize to other parts of the body.</data>
+      <data key="d1">category</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Breast Cancer ER positive">
+      <data key="d0">Breast Cancer ER positive</data>
+      <data key="d1">category</data>
+      <data key="d2">Breast Cancer ER positive refers to a specific subtype of breast cancer that is influenced by estrogen receptors.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Jane McLelland">
+      <data key="d0">Jane McLelland</data>
+      <data key="d1">person</data>
+      <data key="d2">Jane McLelland is an individual who discusses the impacts of COVID on cancer patients and shares detox protocols.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Professor Ian Brighthope">
+      <data key="d0">Professor Ian Brighthope</data>
+      <data key="d1">person</data>
+      <data key="d2">Professor Ian Brighthope is a medical practitioner and agricultural scientist, co-founder of the Australasian Integrative Medicine Association.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Australasian Integrative Medicine Association">
+      <data key="d0">Australasian Integrative Medicine Association</data>
+      <data key="d1">organization</data>
+      <data key="d2">The Australasian Integrative Medicine Association is an organization focused on integrative approaches to medicine and health.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Cannabis Health Radio">
+      <data key="d0">Cannabis Health Radio</data>
+      <data key="d1">organization</data>
+      <data key="d2">Cannabis Health Radio is a platform that shares survivor stories related to cancer treatments using cannabis oil.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Corrie Yelland">
+      <data key="d0">Corrie Yelland</data>
+      <data key="d1">person</data>
+      <data key="d2">Corrie Yelland is a co-host of Cannabis Health Radio who has shared her experience with anal cancer treatment using cannabis oil.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Healing Cancer Study Support Group">
+      <data key="d0">Healing Cancer Study Support Group</data>
+      <data key="d1">organization</data>
+      <data key="d2">The Healing Cancer Study Support Group is a Facebook group providing support for individuals dealing with cancer.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Abbey Mitchell">
+      <data key="d0">Abbey Mitchell</data>
+      <data key="d1">person</data>
+      <data key="d2">Abbey Mitchell is the administrator of the Healing Cancer Study Support Group on Facebook.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Dr Neil McKinney">
+      <data key="d0">Dr Neil McKinney</data>
+      <data key="d1">person</data>
+      <data key="d2">Dr Neil McKinney is a medical professional who suggests the use of Carnivora as a potential treatment to block tumor proteins and aid in drug delivery across the blood-brain barrier.&lt;SEP&gt;Dr Neil McKinney is an author and expert in integrative oncology, known for his books on cancer treatment.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458&lt;SEP&gt;chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Integrative Oncology Edition 4">
+      <data key="d0">Integrative Oncology Edition 4</data>
+      <data key="d1">book</data>
+      <data key="d2">Integrative Oncology Edition 4 is a book by Dr Neil McKinney focusing on integrative approaches to cancer treatment.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Chemothermia">
+      <data key="d0">Chemothermia</data>
+      <data key="d1">organization</data>
+      <data key="d2">Chemothermia is a clinic located in Istanbul, Turkey, known for its innovative cancer treatment methods.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Dr Vogl">
+      <data key="d0">Dr Vogl</data>
+      <data key="d1">person</data>
+      <data key="d2">Dr Vogl is a medical professional in Frankfurt known for TACE chemotherapy treatments with positive outcomes.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Mediterranea Medica">
+      <data key="d0">Mediterranea Medica</data>
+      <data key="d1">organization</data>
+      <data key="d2">Mediterranea Medica is a clinic in Valencia that provides various cancer treatments.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Gamma Linolenic Acid (GLA)">
+      <data key="d0">Gamma Linolenic Acid (GLA)</data>
+      <data key="d1">category</data>
+      <data key="d2">Gamma Linolenic Acid (GLA) is a fatty acid that may have therapeutic effects in breast cancer treatment.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="COVID Detox">
+      <data key="d0">COVID Detox</data>
+      <data key="d1">category</data>
+      <data key="d2">COVID Detox refers to the process of removing toxins and addressing symptoms related to COVID-19 and its aftermath, particularly in cancer patients.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Spike Protein">
+      <data key="d0">Spike Protein</data>
+      <data key="d1">category</data>
+      <data key="d2">Spike Protein is a protein associated with the SARS-CoV-2 virus and vaccines, which may lead to long COVID symptoms and inflammatory responses.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Drs around the world">
+      <data key="d0">Drs around the world</data>
+      <data key="d1">organization</data>
+      <data key="d2">Drs around the world refers to a collective of medical professionals observing and reporting on cancer cases and treatments globally.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Bromelain">
+      <data key="d0">Bromelain</data>
+      <data key="d1">category</data>
+      <data key="d2">Bromelain is an enzyme derived from pineapple that is used for its anti-inflammatory and anticoagulant properties.&lt;SEP&gt;Bromelain is an enzyme derived from pineapple that may have anti-inflammatory effects and influence drug resistance.&lt;SEP&gt;Bromelain is an enzyme extracted from pineapples, known for its anti-inflammatory and digestive benefits.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458&lt;SEP&gt;chunk-4cd4bc5e9a136df75fab351b8b07616f&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Curcumin">
+      <data key="d0">Curcumin</data>
+      <data key="d1">category</data>
+      <data key="d2">Curcumin is a bioactive compound found in turmeric, known for its anti-inflammatory and anti-cancer properties.&lt;SEP&gt;Curcumin is a compound found in turmeric that has anti-inflammatory properties and can inhibit prostaglandin production, impacting drug resistance mechanisms.&lt;SEP&gt;Curcumin is a compound found in turmeric that has potential effects on histone proteins and may help mitigate drug resistance.&lt;SEP&gt;Curcumin is a compound found in turmeric, known for its anti-inflammatory and antioxidant effects, often used in cancer treatment protocols.&lt;SEP&gt;Curcumin is a natural compound with anti-inflammatory properties, suggested for various health benefits including bone health.&lt;SEP&gt;Curcumin is a phytochemical that can modulate histone protein acylation and has potential effects on drug resistance mechanisms in cancer.&lt;SEP&gt;Curcumin is a compound found in turmeric that has anti-inflammatory properties and is explored for its potential benefits in cancer treatment.&lt;SEP&gt;Curcumin is the active compound in turmeric, known for its anti-inflammatory and antioxidant properties.&lt;SEP&gt;Curcumin is a phytochemical with anti-inflammatory and anti-cancer properties, often studied for its role in cancer prevention.&lt;SEP&gt;Curcumin is a natural compound found in turmeric, known for its anti-inflammatory and antioxidant properties.&lt;SEP&gt;Curcumin is a bioactive compound found in turmeric, recognized for its anti-inflammatory and anti-cancer properties.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa&lt;SEP&gt;chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458&lt;SEP&gt;chunk-4cd4bc5e9a136df75fab351b8b07616f&lt;SEP&gt;chunk-82d2a533559bae47aaae0d5b20e5718c&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4&lt;SEP&gt;chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Nattokinase">
+      <data key="d0">Nattokinase</data>
+      <data key="d1">category</data>
+      <data key="d2">Nattokinase is an enzyme derived from fermented soybeans, known for its potential benefits in blood clotting and cardiovascular health.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Serrapeptase">
+      <data key="d0">Serrapeptase</data>
+      <data key="d1">category</data>
+      <data key="d2">Serrapeptase is a proteolytic enzyme that is used for its anti-inflammatory properties and is often included in detox protocols.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Lumbrokinase">
+      <data key="d0">Lumbrokinase</data>
+      <data key="d1">category</data>
+      <data key="d2">Lumbrokinase is an enzyme derived from earthworms, used for its potential to dissolve blood clots and improve circulation.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Ivermectin">
+      <data key="d0">Ivermectin</data>
+      <data key="d1">category</data>
+      <data key="d2">Ivermectin is a medication used to treat various parasitic infections, mentioned here as part of a detox protocol for COVID-19.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Vitamin D3">
+      <data key="d0">Vitamin D3</data>
+      <data key="d1">category</data>
+      <data key="d2">Vitamin D3 is a vitamin that plays a crucial role in immune function and is often recommended for cancer patients.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Yestolife">
+      <data key="d0">Yestolife</data>
+      <data key="d1">organization</data>
+      <data key="d2">Yestolife is a support organization that provides resources and interviews related to cancer survivorship.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Patient Led Oncology Trials Group">
+      <data key="d0">Patient Led Oncology Trials Group</data>
+      <data key="d1">organization</data>
+      <data key="d2">The Patient Led Oncology Trials Group is a platform for patients to engage in and learn about oncology trials.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="The Cancer Resolution">
+      <data key="d0">The Cancer Resolution</data>
+      <data key="d1">book</data>
+      <data key="d2">The Cancer Resolution is a book by Mark Lintern that discusses various strategies for cancer treatment and resolution.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Alpha Lipoic Acid">
+      <data key="d0">Alpha Lipoic Acid</data>
+      <data key="d1">category</data>
+      <data key="d2">Alpha Lipoic Acid is an antioxidant that is suggested to enhance the effectiveness of certain cancer treatments.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Artemisinin">
+      <data key="d0">Artemisinin</data>
+      <data key="d1">category</data>
+      <data key="d2">Artemisinin is a compound derived from sweet wormwood, known for its potential in cancer treatment, particularly in breast cancer.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Boswellia Serrata">
+      <data key="d0">Boswellia Serrata</data>
+      <data key="d1">category</data>
+      <data key="d2">Boswellia Serrata is an herbal extract known for its anti-inflammatory properties, often used in cancer support.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Co-Enzyme Q10">
+      <data key="d0">Co-Enzyme Q10</data>
+      <data key="d1">category</data>
+      <data key="d2">Co-Enzyme Q10 is a nutrient that supports mitochondrial function and is suggested for use in cancer treatment.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Doxycycline">
+      <data key="d0">Doxycycline</data>
+      <data key="d1">category</data>
+      <data key="d2">Doxycycline is an antibiotic that has been explored for its potential anti-cancer properties.&lt;SEP&gt;Doxycycline is an antibiotic that has been studied for its potential effects on cancer stem cells.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Fresh Ground Flaxseed">
+      <data key="d0">Fresh Ground Flaxseed</data>
+      <data key="d1">category</data>
+      <data key="d2">Fresh Ground Flaxseed is a source of omega-3 fatty acids and fiber, which may help in slowing breast cancer growth.</data>
+      <data key="d3">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Ingram et al">
+      <data key="d0">Ingram et al</data>
+      <data key="d1">organization</data>
+      <data key="d2">Ingram et al is a research group that conducted a study on the effects of phytoestrogens in women regarding breast cancer risk.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Phytoestrogens">
+      <data key="d0">Phytoestrogens</data>
+      <data key="d1">category</data>
+      <data key="d2">Phytoestrogens are plant-derived compounds that can mimic or modulate estrogen activity in the body, with various health implications.&lt;SEP&gt;Phytoestrogens are plant-derived compounds that can mimic or modulate estrogen activity in the body.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3&lt;SEP&gt;chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Genistein">
+      <data key="d0">Genistein</data>
+      <data key="d1">category</data>
+      <data key="d2">Genistein is an isoflavone found in soy that has estrogenic properties and can impact health outcomes related to estrogen.&lt;SEP&gt;Genistein is an isoflavone that may influence histone proteins and contribute to reducing drug resistance in cancer therapies.&lt;SEP&gt;Genistein is an isoflavone that can influence the expression of proteins involved in drug resistance, particularly in cancer.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b81d9e841623e400ca410d21b5046cb3&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Daidzein">
+      <data key="d0">Daidzein</data>
+      <data key="d1">category</data>
+      <data key="d2">Daidzein is another isoflavone present in soy that is metabolized in the intestines and has various health effects.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Equol">
+      <data key="d0">Equol</data>
+      <data key="d1">category</data>
+      <data key="d2">Equol is a metabolite derived from daidzein that has unique properties and is produced by certain gut bacteria.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Soy Products">
+      <data key="d0">Soy Products</data>
+      <data key="d1">category</data>
+      <data key="d2">Soy products such as tofu, tempeh, and miso are sources of isoflavones and are considered healthier options compared to processed soy products.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Flaxseeds">
+      <data key="d0">Flaxseeds</data>
+      <data key="d1">category</data>
+      <data key="d2">Flaxseeds are plant foods high in lignans, known for their ability to bind hormones and potentially reduce cancer risk.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Red Clover">
+      <data key="d0">Red Clover</data>
+      <data key="d1">category</data>
+      <data key="d2">Red Clover contains biochanin A, which has been studied for its potential anti-cancer properties and effects on metabolism.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Estrogens">
+      <data key="d0">Estrogens</data>
+      <data key="d1">category</data>
+      <data key="d2">Estrogens are a group of hormones that play a critical role in the development and regulation of the female reproductive system and secondary sexual characteristics.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Aromatase Inhibitors">
+      <data key="d0">Aromatase Inhibitors</data>
+      <data key="d1">category</data>
+      <data key="d2">Aromatase inhibitors are substances that prevent the conversion of androgens to estrogens, playing a role in cancer treatment.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Anti-Angiogenic Properties">
+      <data key="d0">Anti-Angiogenic Properties</data>
+      <data key="d1">category</data>
+      <data key="d2">Anti-angiogenic properties refer to the ability of certain substances to inhibit the growth of new blood vessels, which can affect tumor growth.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Isoflavones">
+      <data key="d0">Isoflavones</data>
+      <data key="d1">category</data>
+      <data key="d2">Isoflavones are a class of phytoestrogens found in various plants, particularly soy, that can exert estrogen-like effects in the body.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Lignans">
+      <data key="d0">Lignans</data>
+      <data key="d1">category</data>
+      <data key="d2">Lignans are a group of phytoestrogens found in various seeds and grains that can influence hormone levels in the body.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Blood Brain Barrier">
+      <data key="d0">Blood Brain Barrier</data>
+      <data key="d1">category</data>
+      <data key="d2">The Blood Brain Barrier is a protective barrier consisting of capillary endothelial cells and membranes that restrict the passage of substances to the brain, including toxins and certain drugs.&lt;SEP&gt;The blood-brain barrier is a protective barrier that restricts substances from entering the brain, impacting treatment for conditions like cancer.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="MRI Scans">
+      <data key="d0">MRI Scans</data>
+      <data key="d1">event</data>
+      <data key="d2">MRI scans are imaging techniques used to monitor conditions such as breast cancer and its potential metastasis to the brain.</data>
+      <data key="d3">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Dr. McKinney">
+      <data key="d0">Dr. McKinney</data>
+      <data key="d1">person</data>
+      <data key="d2">Dr. McKinney is a medical professional providing guidance on the use of phytoestrogens and other treatments for breast cancer.</data>
+      <data key="d3">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Sodium Selenite">
+      <data key="d0">Sodium Selenite</data>
+      <data key="d1">category</data>
+      <data key="d2">Sodium Selenite is a compound suggested for daily intake to repair BRAC-2 DNA mutations and support lymphedema.</data>
+      <data key="d3">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Soy Isoflavones">
+      <data key="d0">Soy Isoflavones</data>
+      <data key="d1">category</data>
+      <data key="d2">Soy isoflavones are phytoestrogens that can reduce the risk of estrogen receptor-positive breast cancer when consumed in moderation.</data>
+      <data key="d3">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="White Button Mushrooms">
+      <data key="d0">White Button Mushrooms</data>
+      <data key="d1">category</data>
+      <data key="d2">White button mushrooms (Agaricus Bisporus) are used as an aromatase inhibitor in hormone-dependent breast cancer.</data>
+      <data key="d3">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Vitamin D3 with K2">
+      <data key="d0">Vitamin D3 with K2</data>
+      <data key="d1">category</data>
+      <data key="d2">Vitamin D3 combined with K2 is recommended for strengthening bones by diverting excess calcium to them.</data>
+      <data key="d3">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Cannabis">
+      <data key="d0">Cannabis</data>
+      <data key="d1">category</data>
+      <data key="d2">Cannabis is noted for its potential benefits in improving bone density.</data>
+      <data key="d3">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Cissus Quadrangularis">
+      <data key="d0">Cissus Quadrangularis</data>
+      <data key="d1">category</data>
+      <data key="d2">Cissus Quadrangularis is an herb that may support bone health and has properties that combat osteoporosis.</data>
+      <data key="d3">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Indole 3 Carbinol">
+      <data key="d0">Indole 3 Carbinol</data>
+      <data key="d1">category</data>
+      <data key="d2">Indole 3 Carbinol is a compound derived from cruciferous vegetables that has potential anti-cancer properties.&lt;SEP&gt;Indole 3 Carbinol is a compound found in cruciferous vegetables that may help regulate estrogen metabolism and cancer risk.&lt;SEP&gt;Indole 3 Carbinol is a compound that may have anti-cancer properties and is derived from cruciferous vegetables.&lt;SEP&gt;Indole 3 Carbinol is a compound that regulates hormone levels and can influence the expression of certain proteins related to drug resistance.&lt;SEP&gt;Indole 3 Carbinol is a compound derived from cruciferous vegetables, known for its potential anti-cancer properties.&lt;SEP&gt;Indole 3 Carbinol is a compound derived from cruciferous vegetables, with potential anti-cancer properties.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa&lt;SEP&gt;chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458&lt;SEP&gt;chunk-82d2a533559bae47aaae0d5b20e5718c&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4&lt;SEP&gt;chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Niclosamide">
+      <data key="d0">Niclosamide</data>
+      <data key="d1">category</data>
+      <data key="d2">Niclosamide is a medication that has been prescribed for its potential effects on cancer treatment.</data>
+      <data key="d3">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="EGCG">
+      <data key="d0">EGCG</data>
+      <data key="d1">category</data>
+      <data key="d2">EGCG (Epigallocatechin gallate) is a type of catechin found in green tea that has antioxidant properties and may have anti-cancer effects.&lt;SEP&gt;EGCG, or Epigallocatechin gallate, is a type of catechin found in green tea, recognized for its health benefits including antioxidant effects.&lt;SEP&gt;EGCG, or Epigallocatechin gallate, is a type of catechin found in green tea, known for its antioxidant properties and potential anti-cancer effects.</data>
+      <data key="d3">chunk-17fa5148a048f188a17fb9ca3e127d27&lt;SEP&gt;chunk-82d2a533559bae47aaae0d5b20e5718c&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Microcrystalline Hydroxyapatite Ossein Complex">
+      <data key="d0">Microcrystalline Hydroxyapatite Ossein Complex</data>
+      <data key="d1">category</data>
+      <data key="d2">Microcrystalline Hydroxyapatite Ossein Complex is a supplement that contains bone growth factors and is suggested for bone health.</data>
+      <data key="d3">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Zinc">
+      <data key="d0">Zinc</data>
+      <data key="d1">category</data>
+      <data key="d2">Zinc is a mineral that plays a role in regulating angiogenesis and is important for overall health.&lt;SEP&gt;Zinc is a trace element that plays a role in immune function and may influence cancer development and progression.</data>
+      <data key="d3">chunk-17fa5148a048f188a17fb9ca3e127d27&lt;SEP&gt;chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="MDRP1-9">
+      <data key="d0">MDRP1-9</data>
+      <data key="d1">category</data>
+      <data key="d2">MDRP1-9 refers to a series of multi-drug resistant proteins that are involved in efflux transport mechanisms within the blood-brain barrier, affecting drug resistance.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="ABCG2">
+      <data key="d0">ABCG2</data>
+      <data key="d1">organization</data>
+      <data key="d2">ABCG2, also known as BBRP or BCRP, is a protein that prevents drug resistance in breast cancer by limiting the penetration of certain drugs across the blood-brain barrier.&lt;SEP&gt;ABCG2, also known as BCRP, is a protein that plays a critical role in preventing drug resistance in breast cancer.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="P-Glycoprotein">
+      <data key="d0">P-Glycoprotein</data>
+      <data key="d1">organization</data>
+      <data key="d2">P-Glycoprotein (P-gp) is a protein that limits the bioavailability of orally taken drugs and contributes to drug resistance by pumping cytotoxins out of cells.&lt;SEP&gt;P-Glycoprotein is a membrane protein that pumps cytotoxins and certain drugs out of cells, impacting their bioavailability and contributing to drug resistance.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Histone Protein Acylation Modulators">
+      <data key="d0">Histone Protein Acylation Modulators</data>
+      <data key="d1">category</data>
+      <data key="d2">Histone protein acylation modulators are compounds that can impact drug resistance by affecting the function of certain proteins involved in multidrug resistance.&lt;SEP&gt;Histone protein acylation modulators are compounds that can influence the activity of MDRP-1, potentially reducing drug resistance in cancer treatments.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Acetyl L Carnitine">
+      <data key="d0">Acetyl L Carnitine</data>
+      <data key="d1">category</data>
+      <data key="d2">Acetyl L Carnitine is a compound that aids in carrying medications across the blood-brain barrier, enhancing drug delivery for treatments.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Artesunate">
+      <data key="d0">Artesunate</data>
+      <data key="d1">category</data>
+      <data key="d2">Artesunate is an antimalarial drug that is noted for its ability to cross the blood-brain barrier more effectively than its precursor, Artemisinin.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="DMSO">
+      <data key="d0">DMSO</data>
+      <data key="d1">category</data>
+      <data key="d2">DMSO (Dimethyl sulfoxide) is a solvent that may help penetrate the blood-brain barrier and enhance drug delivery.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Brain Metastases in Breast Cancer">
+      <data key="d0">Brain Metastases in Breast Cancer</data>
+      <data key="d1">event</data>
+      <data key="d2">Brain Metastases in Breast Cancer refers to the occurrence of breast cancer spreading to the brain, which poses significant challenges in treatment due to the blood-brain barrier's restrictions on drug delivery.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="L-Carnitine">
+      <data key="d0">L-Carnitine</data>
+      <data key="d1">category</data>
+      <data key="d2">L-Carnitine is an amino acid derivative that can impact drug delivery across the blood-brain barrier when in its acetyl form.&lt;SEP&gt;L-Carnitine is an amino acid that plays a role in transporting fatty acids into mitochondria for energy production and is also mentioned for its potential to assist in drug delivery across the blood-brain barrier.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Sulforaphane">
+      <data key="d0">Sulforaphane</data>
+      <data key="d1">category</data>
+      <data key="d2">Sulforaphane is a compound derived from cruciferous vegetables that may have protective effects against drug resistance in cancer treatment.&lt;SEP&gt;Sulforaphane is a compound found in cruciferous vegetables that may influence histone protein regulation and drug resistance.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Artichoke">
+      <data key="d0">Artichoke</data>
+      <data key="d1">category</data>
+      <data key="d2">Artichoke is a vegetable that contains compounds which may affect drug resistance mechanisms in cancer treatment.&lt;SEP&gt;Artichoke is a vegetable that is mentioned in the context of regulating histone proteins and potentially assisting in reducing drug resistance.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Silymarin from Milk Thistle">
+      <data key="d0">Silymarin from Milk Thistle</data>
+      <data key="d1">category</data>
+      <data key="d2">Silymarin is a compound extracted from milk thistle that is noted for its potential effects on histone proteins and drug resistance.&lt;SEP&gt;Silymarin is a flavonoid complex derived from milk thistle that has potential effects on drug resistance and liver health.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Apigenin">
+      <data key="d0">Apigenin</data>
+      <data key="d1">category</data>
+      <data key="d2">Apigenin is a flavonoid that can have modulatory effects on histone proteins and is mentioned in the context of drug resistance.&lt;SEP&gt;Apigenin is a flavonoid that can regulate protein expression related to drug resistance and has potential health benefits.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Grapeseed">
+      <data key="d0">Grapeseed</data>
+      <data key="d1">category</data>
+      <data key="d2">Grapeseed extract is noted for its potential to repair the blood-brain barrier, facilitating drug delivery.</data>
+      <data key="d3">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Green Tea">
+      <data key="d0">Green Tea</data>
+      <data key="d1">category</data>
+      <data key="d2">Green Tea contains EGCG, which has been shown to influence the expression of drug resistance proteins in cancer treatment.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Prostaglandins">
+      <data key="d0">Prostaglandins</data>
+      <data key="d1">category</data>
+      <data key="d2">Prostaglandins are fatty acid eicosanoids that play a role in inflammation and are linked to breast cancer cell activity and drug resistance.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Vitamin B2 Riboflavin">
+      <data key="d0">Vitamin B2 Riboflavin</data>
+      <data key="d1">category</data>
+      <data key="d2">Vitamin B2 Riboflavin is a nutrient that can act as a DNA methylation-dependent gene inhibitor, influencing the expression of proteins involved in drug resistance.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="MDRP-1">
+      <data key="d0">MDRP-1</data>
+      <data key="d1">organization</data>
+      <data key="d2">MDRP-1 is a protein associated with multidrug resistance, which can be influenced by various compounds to reduce drug resistance.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Grape Cyanidins">
+      <data key="d0">Grape Cyanidins</data>
+      <data key="d1">category</data>
+      <data key="d2">Grape cyanidins are compounds found in grapes that may influence the expression of proteins involved in drug resistance.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Chemotherapy">
+      <data key="d0">Chemotherapy</data>
+      <data key="d1">category</data>
+      <data key="d2">Chemotherapy refers to the use of drugs to treat cancer, which can be affected by drug resistance mechanisms.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Elacridar">
+      <data key="d0">Elacridar</data>
+      <data key="d1">category</data>
+      <data key="d2">Elacridar is a compound used in clinical trials to inhibit P-Glycoprotein and BCRP, potentially improving drug efficacy in cancer treatment.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="OATS (Organic Anion Transporters)">
+      <data key="d0">OATS (Organic Anion Transporters)</data>
+      <data key="d1">organization</data>
+      <data key="d2">OATS are transporters found in endothelial cells that remove drugs and toxins from the brain, influencing drug efficacy and resistance.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="OATP1A2">
+      <data key="d0">OATP1A2</data>
+      <data key="d1">organization</data>
+      <data key="d2">OATP1A2 is an organic anion transporter that can be overexpressed in breast cancer patients, impacting drug resistance mechanisms.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="OATP1B1">
+      <data key="d0">OATP1B1</data>
+      <data key="d1">organization</data>
+      <data key="d2">OATP1B1 is another organic anion transporter involved in drug transport and resistance in cancer treatment.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="OATP1B3">
+      <data key="d0">OATP1B3</data>
+      <data key="d1">organization</data>
+      <data key="d2">OATP1B3 is a transporter that can influence drug levels in cancer patients, particularly in breast cancer.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="OATP2B1">
+      <data key="d0">OATP2B1</data>
+      <data key="d1">organization</data>
+      <data key="d2">OATP2B1 is an organic anion transporter that may be overexpressed in certain cancer types, impacting drug resistance.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="DNA Methylation-Dependent Gene Inhibitors">
+      <data key="d0">DNA Methylation-Dependent Gene Inhibitors</data>
+      <data key="d1">category</data>
+      <data key="d2">DNA Methylation-Dependent Gene Inhibitors are compounds that can regulate the expression of genes involved in drug resistance mechanisms.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="B3 Niacin">
+      <data key="d0">B3 Niacin</data>
+      <data key="d1">category</data>
+      <data key="d2">B3 Niacin is a vitamin that can act as a DNA methylation-dependent gene inhibitor, influencing drug resistance.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="COQ10">
+      <data key="d0">COQ10</data>
+      <data key="d1">category</data>
+      <data key="d2">COQ10 is a coenzyme that may have implications in regulating gene expression related to drug resistance.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Niacinamide">
+      <data key="d0">Niacinamide</data>
+      <data key="d1">category</data>
+      <data key="d2">Niacinamide is a form of vitamin B3 that can influence gene expression and may impact drug resistance mechanisms.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Ground Flaxseeds">
+      <data key="d0">Ground Flaxseeds</data>
+      <data key="d1">category</data>
+      <data key="d2">Ground flaxseeds are a dietary source that may help regulate hormones and influence drug resistance mechanisms.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="DIM (Diindolylmethane)">
+      <data key="d0">DIM (Diindolylmethane)</data>
+      <data key="d1">category</data>
+      <data key="d2">DIM is a compound derived from cruciferous vegetables that can regulate hormone levels and may affect drug resistance.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Acetyl L-Carnitine">
+      <data key="d0">Acetyl L-Carnitine</data>
+      <data key="d1">category</data>
+      <data key="d2">Acetyl L-Carnitine is a fat-soluble amino acid that can aid in drug delivery across the blood-brain barrier.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Mannitol">
+      <data key="d0">Mannitol</data>
+      <data key="d1">category</data>
+      <data key="d2">Mannitol is a sugar alcohol used in medical applications that may help in drug delivery when combined with certain treatments.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="COX-2 (Cyclooxygenase-2)">
+      <data key="d0">COX-2 (Cyclooxygenase-2)</data>
+      <data key="d1">organization</data>
+      <data key="d2">COX-2 is an enzyme that increases the permeability of the blood-brain barrier and is linked to inflammation and cancer.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="PGE2 (Prostaglandin E2)">
+      <data key="d0">PGE2 (Prostaglandin E2)</data>
+      <data key="d1">category</data>
+      <data key="d2">PGE2 is a prostaglandin produced by COX-2 that can influence inflammation and cancer cell activity.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="NSAIDs (Non-Steroidal Anti-Inflammatory Drugs)">
+      <data key="d0">NSAIDs (Non-Steroidal Anti-Inflammatory Drugs)</data>
+      <data key="d1">category</data>
+      <data key="d2">NSAIDs are a class of drugs that can inhibit COX-2 and reduce inflammation, potentially impacting drug resistance.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Omega 3 DHA with EPA">
+      <data key="d0">Omega 3 DHA with EPA</data>
+      <data key="d1">category</data>
+      <data key="d2">Omega 3 DHA and EPA are essential fatty acids known for their anti-inflammatory properties and benefits for heart and brain health.&lt;SEP&gt;Omega 3 DHA with EPA are fatty acids that have anti-inflammatory properties and may influence drug resistance mechanisms.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Gamma Lipoic Acid">
+      <data key="d0">Gamma Lipoic Acid</data>
+      <data key="d1">category</data>
+      <data key="d2">Gamma Lipoic Acid is an antioxidant that may have implications in cancer treatment and drug resistance mechanisms.&lt;SEP&gt;Gamma Lipoic Acid is an antioxidant that may help reduce oxidative stress and improve insulin sensitivity.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Primrose Oil">
+      <data key="d0">Primrose Oil</data>
+      <data key="d1">category</data>
+      <data key="d2">Primrose Oil is derived from the evening primrose plant and may have health benefits, including anti-inflammatory effects.&lt;SEP&gt;Primrose Oil is derived from the seeds of the evening primrose plant and is often used to treat skin conditions and hormonal imbalances.</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Carnivora">
+      <data key="d0">Carnivora</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d2">Dr Neil McKinney suggests using Carnivora to block tumor proteins and facilitate drug delivery across the blood-brain barrier.</data>
+      <data key="d1">UNKNOWN</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="PGE2">
+      <data key="d0">PGE2</data>
+      <data key="d3">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d2">NSAIDs can inhibit the production of PGE2, which is involved in inflammation and may affect drug resistance mechanisms.</data>
+      <data key="d1">UNKNOWN</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="EGFR">
+      <data key="d0">EGFR</data>
+      <data key="d1">category</data>
+      <data key="d2">EGFR (Epidermal Growth Factor Receptor) is a protein that, when mutated, can contribute to cancer progression, particularly in breast cancer.&lt;SEP&gt;EGFR, or Epidermal Growth Factor Receptor, is a protein that, when overexpressed, contributes to the invasiveness of breast cancer cells and their ability to metastasize.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="HER2">
+      <data key="d0">HER2</data>
+      <data key="d1">category</data>
+      <data key="d2">HER2 is a gene that can be overexpressed in breast cancer, particularly in brain metastases, influencing treatment options and cancer behavior.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="HER3">
+      <data key="d0">HER3</data>
+      <data key="d1">category</data>
+      <data key="d2">HER3 is another gene associated with breast cancer that works alongside HER2 and EGFR in promoting tumor growth and metastasis.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="MAPK Pathway">
+      <data key="d0">MAPK Pathway</data>
+      <data key="d1">category</data>
+      <data key="d2">The MAPK pathway is a signaling pathway that regulates various cellular activities and is implicated in the progression of breast cancer.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Guardant 360">
+      <data key="d0">Guardant 360</data>
+      <data key="d1">organization</data>
+      <data key="d2">Guardant 360 is a gene testing service that provides insights into genetic mutations associated with breast cancer, often available through private healthcare or discounted for NHS patients.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Metformin">
+      <data key="d0">Metformin</data>
+      <data key="d1">category</data>
+      <data key="d2">Metformin is a medication commonly prescribed for diabetes that has been suggested to help regulate certain pathways in breast cancer treatment.&lt;SEP&gt;Metformin is a medication commonly prescribed for managing blood sugar levels in patients with type 2 diabetes, but it also has implications in cancer treatment, particularly in breast cancer.&lt;SEP&gt;Metformin is a medication commonly used to treat type 2 diabetes, which has also been studied for its effects on cancer.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Exercise">
+      <data key="d0">Exercise</data>
+      <data key="d1">category</data>
+      <data key="d2">Exercise is suggested as a beneficial lifestyle change that may help in the management and treatment of breast cancer.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Corticosteroids">
+      <data key="d0">Corticosteroids</data>
+      <data key="d1">category</data>
+      <data key="d2">Corticosteroids are a class of steroid hormones used in the treatment of various conditions, including inflammation and cancer.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="L-Glutamine">
+      <data key="d0">L-Glutamine</data>
+      <data key="d1">category</data>
+      <data key="d2">L-Glutamine is an amino acid that plays a role in protein synthesis and is often used in dietary supplements for muscle recovery and gut health.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Echinacea">
+      <data key="d0">Echinacea</data>
+      <data key="d1">category</data>
+      <data key="d2">Echinacea is an herbal remedy commonly used to boost the immune system and reduce the duration of colds.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Olive Oil">
+      <data key="d0">Olive Oil</data>
+      <data key="d1">category</data>
+      <data key="d2">Olive Oil is a healthy fat rich in monounsaturated fats and antioxidants, often used in cooking and as a dietary supplement.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Flaxseed">
+      <data key="d0">Flaxseed</data>
+      <data key="d1">category</data>
+      <data key="d2">Flaxseed is a source of omega-3 fatty acids and lignans, promoting heart health and digestive wellness.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="COX-2 Inhibitors">
+      <data key="d0">COX-2 Inhibitors</data>
+      <data key="d1">category</data>
+      <data key="d2">COX-2 inhibitors are a class of medications that reduce inflammation and pain by blocking the cyclooxygenase-2 enzyme.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Grapeseed OPGs">
+      <data key="d0">Grapeseed OPGs</data>
+      <data key="d1">category</data>
+      <data key="d2">Grapeseed Oligomeric Proanthocyanidin Complexes (OPGs) are antioxidants derived from grape seeds, believed to support cardiovascular health.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Boswellia">
+      <data key="d0">Boswellia</data>
+      <data key="d1">category</data>
+      <data key="d2">Boswellia is an herbal extract known for its anti-inflammatory effects, often used in the treatment of arthritis and other inflammatory conditions.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Ginger">
+      <data key="d0">Ginger</data>
+      <data key="d1">category</data>
+      <data key="d2">Ginger is a spice with anti-inflammatory properties, commonly used to alleviate nausea and digestive issues.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Bilberry">
+      <data key="d0">Bilberry</data>
+      <data key="d1">category</data>
+      <data key="d2">Bilberry is a fruit rich in antioxidants, often used to support eye health and improve circulation.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Reishi">
+      <data key="d0">Reishi</data>
+      <data key="d1">category</data>
+      <data key="d2">Reishi is a medicinal mushroom known for its immune-boosting and anti-cancer properties.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Liquorice">
+      <data key="d0">Liquorice</data>
+      <data key="d1">category</data>
+      <data key="d2">Liquorice root is used in traditional medicine for its anti-inflammatory and soothing effects on the digestive system.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Garlic">
+      <data key="d0">Garlic</data>
+      <data key="d1">category</data>
+      <data key="d2">Garlic is known for its immune-boosting properties and potential cardiovascular benefits.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Feverfew">
+      <data key="d0">Feverfew</data>
+      <data key="d1">category</data>
+      <data key="d2">Feverfew is an herb traditionally used to prevent migraines and reduce inflammation.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Rosemary">
+      <data key="d0">Rosemary</data>
+      <data key="d1">category</data>
+      <data key="d2">Rosemary is an herb with antioxidant properties, often used in cooking and traditional medicine.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Green-lipid Mussel Extract">
+      <data key="d0">Green-lipid Mussel Extract</data>
+      <data key="d1">category</data>
+      <data key="d2">Green-lipid mussel extract is derived from a type of mussel and is known for its anti-inflammatory properties, often used for joint health.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Aloe Vera">
+      <data key="d0">Aloe Vera</data>
+      <data key="d1">category</data>
+      <data key="d2">Aloe Vera is a succulent plant known for its soothing properties, often used in skincare and digestive health.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Zeel">
+      <data key="d0">Zeel</data>
+      <data key="d1">category</data>
+      <data key="d2">Zeel is a homeopathic medication used for pain relief and treatment of musculoskeletal disorders.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Propolis">
+      <data key="d0">Propolis</data>
+      <data key="d1">category</data>
+      <data key="d2">Propolis is a resinous substance produced by bees, known for its antimicrobial and anti-inflammatory properties.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Black Seed Thymoquinone">
+      <data key="d0">Black Seed Thymoquinone</data>
+      <data key="d1">category</data>
+      <data key="d2">Thymoquinone is a compound found in black seed oil, known for its antioxidant and anti-inflammatory effects.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Aromatase">
+      <data key="d0">Aromatase</data>
+      <data key="d1">category</data>
+      <data key="d2">Aromatase is an enzyme involved in estrogen production, and its inhibition is a target in hormone-sensitive breast cancer treatment.&lt;SEP&gt;Aromatase is an enzyme that converts androgens into estrogens, playing a crucial role in hormone-related cancers.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Invasiveness">
+      <data key="d0">Invasiveness</data>
+      <data key="d1">category</data>
+      <data key="d2">Invasiveness refers to the ability of cancer cells to spread into surrounding tissues, a critical factor in cancer progression.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Ang-2">
+      <data key="d0">Ang-2</data>
+      <data key="d1">category</data>
+      <data key="d2">Angiopoietin-2 (Ang-2) is a protein involved in blood vessel formation and is linked to tumor growth and metastasis.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="COX2">
+      <data key="d0">COX2</data>
+      <data key="d1">category</data>
+      <data key="d2">COX2 is an enzyme that plays a role in inflammation and is a target for certain anti-cancer therapies.&lt;SEP&gt;COX2 is an enzyme that plays a role in inflammation and is often targeted in cancer therapy.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="HER-2">
+      <data key="d0">HER-2</data>
+      <data key="d1">category</data>
+      <data key="d2">HER-2 is a gene that, when overexpressed, is associated with aggressive breast cancer and poor prognosis.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="HER-3">
+      <data key="d0">HER-3</data>
+      <data key="d1">category</data>
+      <data key="d2">HER-3 is a receptor that is part of the HER family, involved in signaling pathways that promote cancer cell growth.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="MAPK">
+      <data key="d0">MAPK</data>
+      <data key="d1">category</data>
+      <data key="d2">The MAPK (Mitogen-Activated Protein Kinase) pathway is involved in cellular signaling and is significant in cancer progression.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Gene Testing">
+      <data key="d0">Gene Testing</data>
+      <data key="d1">category</data>
+      <data key="d2">Gene testing involves analyzing DNA to identify mutations that may influence cancer treatment and prognosis.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="ATAD2">
+      <data key="d0">ATAD2</data>
+      <data key="d1">category</data>
+      <data key="d2">ATAD2 is a gene associated with breast cancer that may be overexpressed in metastatic cases, influencing tumor behavior.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="BRAF">
+      <data key="d0">BRAF</data>
+      <data key="d1">category</data>
+      <data key="d2">BRAF is a gene that, when mutated, can lead to uncontrolled cell growth and is significant in certain cancers.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="DERL1">
+      <data key="d0">DERL1</data>
+      <data key="d1">category</data>
+      <data key="d2">DERL1 is a gene involved in protein degradation and is linked to cancer progression.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="DNMTRB">
+      <data key="d0">DNMTRB</data>
+      <data key="d1">category</data>
+      <data key="d2">DNMTRB (DNA Methyltransferases) are enzymes that add methyl groups to DNA, influencing gene expression and cancer development.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="MiR-372">
+      <data key="d0">MiR-372</data>
+      <data key="d1">category</data>
+      <data key="d2">MiR-372 is a microRNA that can suppress the expression of genes like ATAD2, potentially influencing cancer progression.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="ATM">
+      <data key="d0">ATM</data>
+      <data key="d1">category</data>
+      <data key="d2">ATM is a gene involved in DNA repair and is often under-expressed in breast cancer, impacting tumor behavior.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="CRYAB">
+      <data key="d0">CRYAB</data>
+      <data key="d1">category</data>
+      <data key="d2">CRYAB is a gene that encodes a protein involved in protecting cells from stress and may be linked to cancer survival.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="HSPB2">
+      <data key="d0">HSPB2</data>
+      <data key="d1">category</data>
+      <data key="d2">HSPB2 is a gene associated with cellular stress responses and may be under-expressed in breast cancer.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="VEGF">
+      <data key="d0">VEGF</data>
+      <data key="d1">category</data>
+      <data key="d2">VEGF (Vascular Endothelial Growth Factor) is a signal protein that stimulates the formation of blood vessels and is important in cancer growth.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="MEK">
+      <data key="d0">MEK</data>
+      <data key="d1">category</data>
+      <data key="d2">MEK is a protein kinase involved in the MAPK signaling pathway, playing a role in cell division and cancer progression.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="ERK">
+      <data key="d0">ERK</data>
+      <data key="d1">category</data>
+      <data key="d2">ERK (Extracellular Signal-Regulated Kinase) is part of the MAPK pathway and is involved in cell signaling related to growth and differentiation.</data>
+      <data key="d3">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Chaga Mushrooms">
+      <data key="d0">Chaga Mushrooms</data>
+      <data key="d1">category</data>
+      <data key="d2">Chaga mushrooms are a type of medicinal fungus known for their antioxidant properties and potential health benefits.&lt;SEP&gt;Chaga mushrooms are a type of medicinal fungus known for their potential health benefits, including anti-cancer properties.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="NADPH">
+      <data key="d0">NADPH</data>
+      <data key="d1">category</data>
+      <data key="d2">NADPH (Nicotinamide Adenine Dinucleotide Phosphate) is a cofactor involved in anabolic reactions, including the synthesis of fatty acids and nucleic acids.&lt;SEP&gt;NADPH (Nicotinamide adenine dinucleotide phosphate) is a coenzyme involved in various biochemical reactions and is critical for the survival of breast cancer cells.&lt;SEP&gt;NADPH (Nicotinamide adenine dinucleotide phosphate) is a coenzyme that plays a crucial role in cellular metabolism and protection against oxidative stress.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="GABA">
+      <data key="d0">GABA</data>
+      <data key="d1">category</data>
+      <data key="d2">GABA (Gamma-Aminobutyric Acid) is a neurotransmitter that may play a role in cancer cell metabolism and survival.&lt;SEP&gt;GABA (gamma-aminobutyric acid) is a neurotransmitter that breast cancer cells can uptake to enhance their survival in the tumor microenvironment.&lt;SEP&gt;GABA (gamma-aminobutyric acid) is a neurotransmitter that is involved in regulating brain activity and has implications in cancer cell metabolism.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="GSTAT5">
+      <data key="d0">GSTAT5</data>
+      <data key="d1">category</data>
+      <data key="d2">GSTAT5 is a gene associated with cell survival and growth, which may be upregulated in cancer cells.&lt;SEP&gt;GSTAT5 is a survival gene that is upregulated in breast cancer cells, contributing to their resistance against chemotherapy.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="BCL2L1">
+      <data key="d0">BCL2L1</data>
+      <data key="d1">category</data>
+      <data key="d2">BCL2L1 is a gene that helps regulate apoptosis and may be involved in cancer cell survival.&lt;SEP&gt;BCL2L1 is a gene that helps regulate cell survival and is involved in the resistance of breast cancer cells to treatment.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="TWIST1">
+      <data key="d0">TWIST1</data>
+      <data key="d1">category</data>
+      <data key="d2">TWIST1 is a gene associated with epithelial-mesenchymal transition and is implicated in the aggressiveness of triple-negative breast cancer (TNBC).&lt;SEP&gt;TWIST1 is a gene that promotes epithelial-mesenchymal transition and is associated with cancer metastasis.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="PTEN">
+      <data key="d0">PTEN</data>
+      <data key="d1">category</data>
+      <data key="d2">PTEN is a tumor suppressor gene that regulates cell growth and survival, and its loss is associated with aggressive forms of cancer, including brain metastases in breast cancer.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="PI3K/AKT/mTOR Pathway">
+      <data key="d0">PI3K/AKT/mTOR Pathway</data>
+      <data key="d1">category</data>
+      <data key="d2">The PI3K/AKT/mTOR pathway is a critical signaling pathway that regulates cell growth, proliferation, and survival, often implicated in cancer progression.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Research Reference by Professor Burkhard Hinz">
+      <data key="d0">Research Reference by Professor Burkhard Hinz</data>
+      <data key="d1">person</data>
+      <data key="d2">Professor Burkhard Hinz is a researcher who has contributed to the understanding of the anti-tumor actions of cannabinoids.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Research Reference by Dr Neil McKinney">
+      <data key="d0">Research Reference by Dr Neil McKinney</data>
+      <data key="d1">person</data>
+      <data key="d2">Dr Neil McKinney is a naturopathic doctor who has published work on oncology and cancer treatments.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Research Reference by Sagar Agarwal">
+      <data key="d0">Research Reference by Sagar Agarwal</data>
+      <data key="d1">person</data>
+      <data key="d2">Sagar Agarwal is a researcher who has studied the interactions of breast cancer resistance proteins in brain cancer.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Research Reference by Chris E. Atkins">
+      <data key="d0">Research Reference by Chris E. Atkins</data>
+      <data key="d1">person</data>
+      <data key="d2">Chris E. Atkins is a researcher who has explored the mechanisms of drug uptake in brain metastases models.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Research Reference by Evelyn M. Brosnan">
+      <data key="d0">Research Reference by Evelyn M. Brosnan</data>
+      <data key="d1">person</data>
+      <data key="d2">Evelyn M. Brosnan is a researcher focused on understanding brain metastasis patterns in breast cancer.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Breast Cancer Cells">
+      <data key="d0">Breast Cancer Cells</data>
+      <data key="d1">category</data>
+      <data key="d2">Breast cancer cells are malignant cells that can adapt and change their metabolic pathways, allowing them to survive in adverse conditions, such as during chemotherapy.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Triple Negative Breast Cancer (TNBC)">
+      <data key="d0">Triple Negative Breast Cancer (TNBC)</data>
+      <data key="d1">category</data>
+      <data key="d2">Triple Negative Breast Cancer is a subtype of breast cancer that lacks three common receptors, making it more challenging to treat.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Cyclin D1">
+      <data key="d0">Cyclin D1</data>
+      <data key="d1">category</data>
+      <data key="d2">Cyclin D1 is a protein that regulates the cell cycle and is essential for the proliferation of HER2 positive breast cancer cells.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="CDK4 and CDK6">
+      <data key="d0">CDK4 and CDK6</data>
+      <data key="d1">category</data>
+      <data key="d2">Cyclin-dependent kinases 4 and 6 (CDK4 and CDK6) are enzymes that play a key role in cell cycle progression, particularly in HER2 positive breast cancer.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="MiR-202-3p">
+      <data key="d0">MiR-202-3p</data>
+      <data key="d1">category</data>
+      <data key="d2">MiR-202-3p is a microRNA that is downregulated in brain metastases of breast cancer, affecting cell migration and invasiveness.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="MMP-1">
+      <data key="d0">MMP-1</data>
+      <data key="d1">category</data>
+      <data key="d2">MMP-1 (Matrix Metalloproteinase-1) is an enzyme that facilitates the migration of cancer cells and is overexpressed in brain metastases.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Heavy Metals">
+      <data key="d0">Heavy Metals</data>
+      <data key="d1">category</data>
+      <data key="d2">Heavy metals are environmental toxins that can upregulate MMP-1, potentially contributing to cancer progression.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Chelation">
+      <data key="d0">Chelation</data>
+      <data key="d1">category</data>
+      <data key="d2">Chelation is a medical treatment that involves binding heavy metals to reduce their toxicity, which could be beneficial in cancer therapy.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="COX-2">
+      <data key="d0">COX-2</data>
+      <data key="d1">category</data>
+      <data key="d2">COX-2 is an enzyme associated with inflammation and is a target for regulating MMPs in cancer treatment.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Soy">
+      <data key="d0">Soy</data>
+      <data key="d1">category</data>
+      <data key="d2">Soy contains compounds that may influence cancer growth and has been studied for its potential protective effects.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Sulforaphanes">
+      <data key="d0">Sulforaphanes</data>
+      <data key="d1">category</data>
+      <data key="d2">Sulforaphanes are compounds found in cruciferous vegetables that have shown promise in cancer prevention and treatment.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Vitamin D">
+      <data key="d0">Vitamin D</data>
+      <data key="d1">category</data>
+      <data key="d2">Vitamin D is a fat-soluble vitamin that is important for bone health and has been studied for its role in cancer biology.&lt;SEP&gt;Vitamin D is a nutrient that may have implications in cancer treatment, particularly in promoting cell cycle regulation.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Zeolite">
+      <data key="d0">Zeolite</data>
+      <data key="d1">category</data>
+      <data key="d2">Zeolite is a mineral that may have detoxifying properties and is being explored for its potential benefits in cancer therapy.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Bovine Cartilage">
+      <data key="d0">Bovine Cartilage</data>
+      <data key="d1">category</data>
+      <data key="d2">Bovine cartilage is a source of compounds that may support joint health and has been investigated for anti-cancer properties.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Research References">
+      <data key="d0">Research References</data>
+      <data key="d1">category</data>
+      <data key="d2">Research references include various studies and publications that provide insights into the mechanisms and treatments related to breast cancer.</data>
+      <data key="d3">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="YB-1">
+      <data key="d0">YB-1</data>
+      <data key="d1">category</data>
+      <data key="d2">YB-1 is a compound that may refer to a specific chemical or biological entity, potentially studied for its health effects or applications.</data>
+      <data key="d3">chunk-82d2a533559bae47aaae0d5b20e5718c</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Evelyn M. Brosnan">
+      <data key="d0">Evelyn M. Brosnan</data>
+      <data key="d1">person</data>
+      <data key="d2">Evelyn M. Brosnan is a researcher involved in understanding brain metastasis in breast cancer and therapeutic strategies.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Carey K. Anders">
+      <data key="d0">Carey K. Anders</data>
+      <data key="d1">person</data>
+      <data key="d2">Carey K. Anders is a researcher collaborating with Evelyn M. Brosnan on breast cancer research.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Glucose">
+      <data key="d0">Glucose</data>
+      <data key="d1">category</data>
+      <data key="d2">Glucose is a simple sugar that is an important energy source in living organisms and plays a role in cancer metabolism.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Fatty Acids">
+      <data key="d0">Fatty Acids</data>
+      <data key="d1">category</data>
+      <data key="d2">Fatty acids are carboxylic acids with long aliphatic tails, which are important for various metabolic pathways, including those related to cancer.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Glutamine">
+      <data key="d0">Glutamine</data>
+      <data key="d1">category</data>
+      <data key="d2">Glutamine is an amino acid that is crucial for cellular metabolism and is often utilized by cancer cells.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Berberine">
+      <data key="d0">Berberine</data>
+      <data key="d1">category</data>
+      <data key="d2">Berberine is a compound with potential therapeutic effects in cancer treatment and metabolic regulation.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Aspirin">
+      <data key="d0">Aspirin</data>
+      <data key="d1">category</data>
+      <data key="d2">Aspirin is a medication used to reduce pain and inflammation, and has been investigated for its role in cancer prevention.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Insulin">
+      <data key="d0">Insulin</data>
+      <data key="d1">category</data>
+      <data key="d2">Insulin is a hormone that regulates glucose levels in the blood and has implications in cancer metabolism.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Blackseed Oil">
+      <data key="d0">Blackseed Oil</data>
+      <data key="d1">category</data>
+      <data key="d2">Blackseed oil is derived from the seeds of the Nigella sativa plant and is known for its medicinal properties, including potential anti-cancer effects.&lt;SEP&gt;Blackseed oil is derived from the seeds of the Nigella sativa plant, known for its potential health benefits, including anti-cancer properties.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Omega 3 DHA">
+      <data key="d0">Omega 3 DHA</data>
+      <data key="d1">category</data>
+      <data key="d2">Omega 3 DHA is a fatty acid that is important for brain health and has been studied for its potential effects on cancer.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Cancer Feeding Pathways">
+      <data key="d0">Cancer Feeding Pathways</data>
+      <data key="d1">category</data>
+      <data key="d2">Cancer Feeding Pathways refer to the various metabolic pathways that cancer cells use to derive nutrients necessary for growth and survival.&lt;SEP&gt;Cancer feeding pathways refer to the metabolic processes that cancer cells use to obtain nutrients and energy.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Lena Secky">
+      <data key="d0">Lena Secky</data>
+      <data key="d1">person</data>
+      <data key="d2">Lena Secky is a researcher mentioned in the context of studies related to brain metastasis and cancer pathways.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Theresia Thalhammer">
+      <data key="d0">Theresia Thalhammer</data>
+      <data key="d1">person</data>
+      <data key="d2">Theresia Thalhammer is another researcher involved in understanding cancer pathways and therapeutic strategies.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Atorvastatin">
+      <data key="d0">Atorvastatin</data>
+      <data key="d1">category</data>
+      <data key="d2">Atorvastatin is a medication typically used to lower cholesterol that has potential implications in cancer treatment.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Low GI Diet">
+      <data key="d0">Low GI Diet</data>
+      <data key="d1">category</data>
+      <data key="d2">A Low GI Diet consists of foods that have a low glycemic index, which may help manage insulin levels and has implications for cancer treatment.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="DHEA">
+      <data key="d0">DHEA</data>
+      <data key="d1">category</data>
+      <data key="d2">DHEA (Dehydroepiandrosterone) is a hormone that is sometimes studied for its effects on cancer, particularly hormone-sensitive cancers.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="IV Vit C infusions">
+      <data key="d0">IV Vit C infusions</data>
+      <data key="d1">category</data>
+      <data key="d2">IV Vitamin C infusions are treatments that deliver high doses of vitamin C directly into the bloodstream and are explored for their potential anti-cancer effects.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Liposomal Ascorbate">
+      <data key="d0">Liposomal Ascorbate</data>
+      <data key="d1">category</data>
+      <data key="d2">Liposomal Ascorbate refers to a form of Vitamin C encapsulated in liposomes, enhancing its bioavailability and potential therapeutic effects in cancer.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Hydroxycitrate">
+      <data key="d0">Hydroxycitrate</data>
+      <data key="d1">category</data>
+      <data key="d2">Hydroxycitrate is a compound that may have implications in cancer treatment by influencing metabolic pathways.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="DNA hyper-methylation">
+      <data key="d0">DNA hyper-methylation</data>
+      <data key="d1">category</data>
+      <data key="d2">DNA hyper-methylation refers to a process that can silence tumor suppressor genes and is relevant in cancer biology.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="E-Cadherin">
+      <data key="d0">E-Cadherin</data>
+      <data key="d1">category</data>
+      <data key="d2">E-Cadherin is a protein that helps cells stick together and is important in maintaining tissue architecture, often studied in cancer metastasis.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Insulin Like Growth Factor-1 (IGF-1)">
+      <data key="d0">Insulin Like Growth Factor-1 (IGF-1)</data>
+      <data key="d1">category</data>
+      <data key="d2">IGF-1 is a hormone that plays a role in growth and development and has implications in cancer cell proliferation.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="NFkB">
+      <data key="d0">NFkB</data>
+      <data key="d1">category</data>
+      <data key="d2">NFkB is a protein complex that controls transcription of DNA and is involved in cellular responses to stress, inflammation, and cancer progression.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="P13K/Akt/mTOR">
+      <data key="d0">P13K/Akt/mTOR</data>
+      <data key="d1">category</data>
+      <data key="d2">The P13K/Akt/mTOR pathway is a signaling pathway that regulates cell growth and metabolism, often implicated in cancer.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="STAT-3">
+      <data key="d0">STAT-3</data>
+      <data key="d1">category</data>
+      <data key="d2">STAT-3 is a transcription factor that, when activated, can promote cancer cell survival and proliferation.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Survivin">
+      <data key="d0">Survivin</data>
+      <data key="d1">category</data>
+      <data key="d2">Survivin is a protein that inhibits apoptosis and is often overexpressed in cancer cells, contributing to tumor survival.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="TNF">
+      <data key="d0">TNF</data>
+      <data key="d1">category</data>
+      <data key="d2">TNF (Tumor Necrosis Factor) is a cytokine involved in systemic inflammation and has roles in cancer progression.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <node id="Grapeseed OPCs">
+      <data key="d0">Grapeseed OPCs</data>
+      <data key="d1">category</data>
+      <data key="d2">Grapeseed OPCs (Oligomeric Proanthocyanidins) are antioxidants derived from grape seeds that may have health benefits, including potential anti-cancer effects.</data>
+      <data key="d3">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d4">Breast Cancer Example ER .pdf</data>
+    </node>
+    <edge source="Evening Primrose Oil" target="GLA">
+      <data key="d5">16.0</data>
+      <data key="d6">Evening Primrose Oil contains GLA, which is beneficial for breast cancer treatment.</data>
+      <data key="d7">ingredient, health benefit</data>
+      <data key="d8">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Evening Primrose Oil" target="Gamma Linolenic Acid (GLA)">
+      <data key="d5">9.0</data>
+      <data key="d6">Evening Primrose Oil is a source of Gamma Linolenic Acid (GLA), which is beneficial in hormone regulation for breast cancer patients.</data>
+      <data key="d7">nutritional support, hormone regulation</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="GLA" target="Paclitaxel">
+      <data key="d5">14.0</data>
+      <data key="d6">GLA is synergistic with Paclitaxel, enhancing the drug's effectiveness in breast cancer treatment.</data>
+      <data key="d7">synergy, treatment enhancement</data>
+      <data key="d8">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="GLA" target="Tamoxifen">
+      <data key="d5">14.0</data>
+      <data key="d6">GLA can increase the response to Tamoxifen when used together in breast cancer treatment.</data>
+      <data key="d7">synergy, treatment enhancement</data>
+      <data key="d8">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Tamoxifen" target="Melatonin">
+      <data key="d5">18.0</data>
+      <data key="d6">Melatonin is synergistic with Tamoxifen, particularly in ER+ breast cancer treatment.</data>
+      <data key="d7">synergy, treatment enhancement</data>
+      <data key="d8">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Green Tea EGCG" target="Indole-3 Carbinol 13C">
+      <data key="d5">18.0</data>
+      <data key="d6">Green Tea EGCG and Indole-3 Carbinol 13C both contribute to reducing breast cancer recurrence risk.</data>
+      <data key="d7">risk reduction, cancer treatment</data>
+      <data key="d8">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Green Tea EGCG" target="ABCG2">
+      <data key="d5">25.0</data>
+      <data key="d6">Green Tea EGCG can regulate the expression of ABCG2, which is crucial for managing drug resistance in breast cancer.&lt;SEP&gt;Green Tea EGCG is a regulator that can potentially enhance the activity of ABCG2, impacting drug resistance in breast cancer.</data>
+      <data key="d7">drug resistance, regulation&lt;SEP&gt;natural compounds, cancer treatment</data>
+      <data key="d8">chunk-85c06ae3e33dd062c6f8cbc3263674c7&lt;SEP&gt;chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Green Tea EGCG" target="Breast Cancer">
+      <data key="d5">7.0</data>
+      <data key="d6">EGCG from green tea has been studied for its protective effects against breast cancer development.</data>
+      <data key="d7">antioxidant, cancer prevention</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Indole-3 Carbinol 13C" target="DIM">
+      <data key="d5">16.0</data>
+      <data key="d6">Indole-3 Carbinol 13C is converted into DIM, which also suppresses estrogen activity in breast cancer.</data>
+      <data key="d7">conversion, estrogen suppression</data>
+      <data key="d8">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Lugol's Solution" target="Dr Max Gerson">
+      <data key="d5">12.0</data>
+      <data key="d6">Dr Max Gerson advocates the use of Lugol's Solution for its benefits in regulating thyroid function and clearing toxins.</data>
+      <data key="d7">advocacy, health benefit</data>
+      <data key="d8">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Low Dose Naltrexone" target="Dickson Chemist">
+      <data key="d5">16.0</data>
+      <data key="d6">Dickson Chemist specializes in providing Low Dose Naltrexone for breast cancer patients.</data>
+      <data key="d7">specialization, treatment provision</data>
+      <data key="d8">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Milk Thistle" target="Liver Protection">
+      <data key="d5">16.0</data>
+      <data key="d6">Milk Thistle is known for its liver-protective effects, which are crucial during cancer treatments.</data>
+      <data key="d7">liver health, cancer treatment</data>
+      <data key="d8">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Pomegranates" target="Breast Cancer">
+      <data key="d5">18.0</data>
+      <data key="d6">Pomegranates act as natural aromatase inhibitors and inhibit growth factors in breast cancer.</data>
+      <data key="d7">inhibition, cancer treatment</data>
+      <data key="d8">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Quercetin" target="Resveratrol">
+      <data key="d5">16.0</data>
+      <data key="d6">Quercetin is supported by Resveratrol in enhancing cancer cell responsiveness to treatment.</data>
+      <data key="d7">synergy, treatment enhancement</data>
+      <data key="d8">chunk-f0633d0c9fbeab3f25914885985ace04</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Quercetin" target="P-Glycoprotein">
+      <data key="d5">8.0</data>
+      <data key="d6">Quercetin can regulate the activity of P-Glycoprotein, affecting drug resistance mechanisms in cancer patients.</data>
+      <data key="d7">regulation, drug resistance</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Quercetin" target="OATP1B1">
+      <data key="d5">8.0</data>
+      <data key="d6">Quercetin can influence the expression of OATP1B1, impacting drug transport and resistance in cancer patients.</data>
+      <data key="d7">regulation, drug transport</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Quercetin" target="Breast Cancer">
+      <data key="d5">35.0</data>
+      <data key="d6">Quercetin has potential anti-cancer effects and is being studied for its implications in breast cancer treatment.&lt;SEP&gt;Quercetin has shown potential in inhibiting breast cancer cell growth, making it a candidate for complementary therapy.&lt;SEP&gt;Quercetin may help regulate cancer-related pathways, offering potential benefits in breast cancer treatment.&lt;SEP&gt;Quercetin is being researched for its potential benefits in breast cancer treatment due to its antioxidant properties.</data>
+      <data key="d7">anti-cancer properties, research&lt;SEP&gt;antioxidant effects, cancer treatment&lt;SEP&gt;natural remedy, cancer regulation&lt;SEP&gt;natural remedy, cancer treatment</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Resveratrol" target="Breast Cancer">
+      <data key="d5">6.0</data>
+      <data key="d6">Resveratrol's phytoestrogen properties may pose risks for women post-menopause regarding breast cancer.</data>
+      <data key="d7">hormonal risk, cancer implications</data>
+      <data key="d8">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Resveratrol" target="Dr. McKinney">
+      <data key="d5">18.0</data>
+      <data key="d6">Dr. McKinney advises on the use of Resveratrol as a phytoestrogen that blocks harmful DNA adducts related to breast cancer.</data>
+      <data key="d7">cancer treatment, phytoestrogens</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Reishi Mushrooms" target="Dr. McKinney">
+      <data key="d5">16.0</data>
+      <data key="d6">Dr. McKinney discusses the health benefits of Reishi mushrooms, particularly in relation to breast cancer treatment.</data>
+      <data key="d7">health benefits, cancer treatment</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Flaxseeds">
+      <data key="d5">16.0</data>
+      <data key="d6">Flaxseeds' lignans may help in binding hormones and reducing the risk of breast cancer.</data>
+      <data key="d7">dietary impact, cancer prevention</data>
+      <data key="d8">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Red Clover">
+      <data key="d5">18.0</data>
+      <data key="d6">Red Clover's biochanin A shows potential in inhibiting carcinogenic metabolism, suggesting a link to breast cancer prevention.</data>
+      <data key="d7">cancer prevention, bioactive compounds</data>
+      <data key="d8">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Phytoestrogens">
+      <data key="d5">8.0</data>
+      <data key="d6">Phytoestrogens have been associated with a reduced risk of breast cancer, highlighting their potential health benefits.</data>
+      <data key="d7">health benefits, cancer risk</data>
+      <data key="d8">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Aromatase Inhibitors">
+      <data key="d5">10.0</data>
+      <data key="d6">Aromatase inhibitors are used in the treatment of breast cancer to lower estrogen levels.</data>
+      <data key="d7">cancer treatment, hormonal regulation</data>
+      <data key="d8">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Anti-Angiogenic Properties">
+      <data key="d5">9.0</data>
+      <data key="d6">The anti-angiogenic properties of certain phytoestrogens may inhibit tumor growth in breast cancer.</data>
+      <data key="d7">tumor growth inhibition, cancer treatment</data>
+      <data key="d8">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Blood Brain Barrier">
+      <data key="d5">8.0</data>
+      <data key="d6">The blood-brain barrier is significant in monitoring breast cancer metastasis to the brain through MRI scans.</data>
+      <data key="d7">cancer monitoring, protective barrier</data>
+      <data key="d8">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="EGFR">
+      <data key="d5">27.0</data>
+      <data key="d6">Breast cancer cells often overexpress EGFR, which aids in their invasiveness and ability to metastasize.&lt;SEP&gt;The overexpression of EGFR in breast cancer cells contributes to their invasiveness and metastasis.&lt;SEP&gt;EGFR mutations are often found in breast cancer and are targeted in certain therapies.</data>
+      <data key="d7">cancer progression, gene expression&lt;SEP&gt;genetic mutation, cancer treatment</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="HER2">
+      <data key="d5">17.0</data>
+      <data key="d6">HER2 is a critical marker in breast cancer, influencing treatment decisions based on its overexpression.&lt;SEP&gt;HER2 is frequently overexpressed in breast cancer, particularly in brain metastases, influencing treatment decisions.</data>
+      <data key="d7">cancer treatment, gene expression</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="MAPK Pathway">
+      <data key="d5">24.0</data>
+      <data key="d6">The MAPK pathway is crucial in regulating the behavior of breast cancer cells, affecting their growth and treatment response.&lt;SEP&gt;The MAPK pathway regulates cellular responses that are crucial in breast cancer development and metastasis.&lt;SEP&gt;The MAPK pathway is involved in the signaling processes that drive breast cancer progression.</data>
+      <data key="d7">cancer signaling, progression&lt;SEP&gt;cancer signaling, treatment response&lt;SEP&gt;cancer signaling, tumor growth</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Guardant 360">
+      <data key="d5">18.0</data>
+      <data key="d6">Guardant 360 provides genetic insights that are essential for personalized breast cancer treatment.&lt;SEP&gt;Guardant 360 provides genetic testing that helps identify mutations relevant to breast cancer treatment and management.</data>
+      <data key="d7">genetic testing, cancer management&lt;SEP&gt;genetic testing, personalized medicine</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Metformin">
+      <data key="d5">30.0</data>
+      <data key="d6">Metformin is being investigated for its effects on breast cancer, particularly in relation to insulin sensitivity.&lt;SEP&gt;Metformin is suggested to help regulate pathways involved in breast cancer progression and treatment.&lt;SEP&gt;Metformin may help regulate pathways that are disrupted in breast cancer cells.&lt;SEP&gt;Metformin is used in the treatment of breast cancer due to its potential to improve outcomes by targeting cancer cell metabolism.</data>
+      <data key="d7">diabetes medication, cancer research&lt;SEP&gt;drug treatment, cancer regulation&lt;SEP&gt;treatment, cancer management</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Curcumin">
+      <data key="d5">32.0</data>
+      <data key="d6">Curcumin has potential anti-cancer effects that may help in managing breast cancer treatment outcomes.&lt;SEP&gt;Curcumin has potential anti-inflammatory effects that may aid in breast cancer treatment.&lt;SEP&gt;Curcumin has shown potential in inhibiting cancer cell growth and may be beneficial in breast cancer treatment.&lt;SEP&gt;Curcumin's anti-inflammatory properties are being explored for their potential benefits in breast cancer therapy.</data>
+      <data key="d7">anti-cancer agent, treatment&lt;SEP&gt;anti-inflammatory, cancer treatment&lt;SEP&gt;natural remedy, cancer treatment&lt;SEP&gt;natural treatment, cancer therapy</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Exercise">
+      <data key="d5">14.0</data>
+      <data key="d6">Exercise is recommended as a supportive measure in managing breast cancer and improving overall health.</data>
+      <data key="d7">lifestyle change, health management</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Corticosteroids">
+      <data key="d5">8.0</data>
+      <data key="d6">Corticosteroids are often used in the treatment of breast cancer to reduce inflammation and manage symptoms.</data>
+      <data key="d7">treatment, symptom management</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="HER3">
+      <data key="d5">8.0</data>
+      <data key="d6">HER3 interacts with HER2 in promoting tumor growth in breast cancer.</data>
+      <data key="d7">gene interaction, tumor growth</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Gene Testing">
+      <data key="d5">9.0</data>
+      <data key="d6">Gene testing helps identify mutations relevant to breast cancer treatment and prognosis.</data>
+      <data key="d7">genetic testing, cancer management</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Ang-2">
+      <data key="d5">8.0</data>
+      <data key="d6">Ang-2 is implicated in the formation of blood vessels that support tumor growth in breast cancer.</data>
+      <data key="d7">tumor growth, angiogenesis</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="COX2">
+      <data key="d5">15.0</data>
+      <data key="d6">COX2 contributes to the inflammatory processes that can exacerbate breast cancer progression.&lt;SEP&gt;COX2 is involved in inflammation and is a target for therapies aimed at treating breast cancer.</data>
+      <data key="d7">inflammation, cancer progression&lt;SEP&gt;inflammation, cancer treatment</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4&lt;SEP&gt;chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="BRAF">
+      <data key="d5">8.0</data>
+      <data key="d6">BRAF mutations can lead to uncontrolled cell growth in certain breast cancer types.</data>
+      <data key="d7">genetic mutation, cancer progression</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="ATM">
+      <data key="d5">7.0</data>
+      <data key="d6">ATM is involved in DNA repair, and its under-expression can impact breast cancer progression.</data>
+      <data key="d7">gene expression, cancer behavior</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="CRYAB">
+      <data key="d5">8.0</data>
+      <data key="d6">CRYAB can regulate apoptosis in breast cancer cells, affecting their response to treatment.</data>
+      <data key="d7">cancer response, gene expression</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="GSTAT5">
+      <data key="d5">8.0</data>
+      <data key="d6">GSTAT5 is associated with cell survival, and its expression may protect breast cancer cells from treatment effects.</data>
+      <data key="d7">cancer survival, gene expression</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="NADPH">
+      <data key="d5">13.0</data>
+      <data key="d6">NADPH is involved in metabolic processes that may be altered in breast cancer cells.&lt;SEP&gt;NADPH plays a role in the metabolic adaptations of breast cancer cells, aiding their survival in the tumor microenvironment.</data>
+      <data key="d7">metabolism, cancer behavior&lt;SEP&gt;metabolism, cancer survival</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5&lt;SEP&gt;chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="GABA">
+      <data key="d5">8.0</data>
+      <data key="d6">GABA uptake by breast cancer cells may influence their growth in the brain microenvironment.</data>
+      <data key="d7">cancer behavior, neurotransmitter interaction</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Chaga Mushrooms">
+      <data key="d5">7.0</data>
+      <data key="d6">Chaga mushrooms are investigated for their anti-cancer properties, potentially aiding in breast cancer treatment.</data>
+      <data key="d7">natural remedy, cancer therapy</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="PTEN">
+      <data key="d5">9.0</data>
+      <data key="d6">Loss of PTEN is linked to increased invasiveness in breast cancer cells, particularly in brain metastases.</data>
+      <data key="d7">tumor suppressor, cancer progression</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="PI3K/AKT/mTOR Pathway">
+      <data key="d5">8.0</data>
+      <data key="d6">The activation of the PI3K/AKT/mTOR pathway is associated with aggressive behavior in breast cancer cells.</data>
+      <data key="d7">signaling pathway, cancer aggressiveness</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Research Reference by Professor Burkhard Hinz">
+      <data key="d5">8.0</data>
+      <data key="d6">Professor Hinz's research focuses on the anti-tumor actions of cannabinoids, which may have implications for breast cancer treatment.</data>
+      <data key="d7">research, cannabinoid therapy</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Research Reference by Dr Neil McKinney">
+      <data key="d5">7.0</data>
+      <data key="d6">Dr McKinney's work in naturopathic oncology addresses treatment strategies for breast cancer.</data>
+      <data key="d7">naturopathic approach, cancer treatment</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Research Reference by Sagar Agarwal">
+      <data key="d5">7.0</data>
+      <data key="d6">Agarwal's research on breast cancer resistance proteins highlights mechanisms relevant to brain metastasis.</data>
+      <data key="d7">cancer resistance, research</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Research Reference by Chris E. Atkins">
+      <data key="d5">8.0</data>
+      <data key="d6">Atkins' studies on drug uptake in brain metastases provide insights into therapeutic challenges in breast cancer.</data>
+      <data key="d7">drug delivery, cancer research</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Research Reference by Evelyn M. Brosnan">
+      <data key="d5">9.0</data>
+      <data key="d6">Brosnan's research focuses on understanding patterns of brain metastasis in breast cancer, aiming to develop better treatment strategies.</data>
+      <data key="d7">brain metastasis, research</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Cyclin D1">
+      <data key="d5">8.0</data>
+      <data key="d6">Cyclin D1 is essential for the proliferation of HER2 positive breast cancer cells, influencing their growth rates.</data>
+      <data key="d7">cell cycle regulation, cancer growth</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Indole 3 Carbinol">
+      <data key="d5">7.0</data>
+      <data key="d6">Indole 3 Carbinol may have anti-cancer properties that could be beneficial in breast cancer treatment.</data>
+      <data key="d7">natural compound, cancer therapy</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Zinc">
+      <data key="d5">6.0</data>
+      <data key="d6">Zinc plays a role in immune function and may influence the progression of breast cancer.</data>
+      <data key="d7">nutritional factor, cancer development</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Vitamin D">
+      <data key="d5">6.0</data>
+      <data key="d6">Vitamin D is linked to cell cycle regulation and may impact breast cancer progression.</data>
+      <data key="d7">nutritional factor, cancer biology</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Research References">
+      <data key="d5">8.0</data>
+      <data key="d6">The research references provide valuable insights and findings related to the treatment and understanding of breast cancer.</data>
+      <data key="d7">research, cancer studies</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Cancer Feeding Pathways">
+      <data key="d5">9.0</data>
+      <data key="d6">Understanding cancer feeding pathways is crucial for developing therapeutic strategies for breast cancer.</data>
+      <data key="d7">metabolic pathways, cancer treatment</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="EGCG">
+      <data key="d5">9.0</data>
+      <data key="d6">EGCG has potential anti-cancer effects and is studied in the context of breast cancer treatment.</data>
+      <data key="d7">anti-cancer properties, breast cancer</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Aromatase">
+      <data key="d5">9.0</data>
+      <data key="d6">Aromatase inhibitors are used in breast cancer treatment to reduce estrogen levels, which can fuel cancer growth.</data>
+      <data key="d7">hormonal therapy, breast cancer</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="DNA hyper-methylation">
+      <data key="d5">7.0</data>
+      <data key="d6">DNA hyper-methylation can lead to the silencing of tumor suppressor genes, playing a role in breast cancer progression.</data>
+      <data key="d7">genetic regulation, cancer</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Insulin Like Growth Factor-1 (IGF-1)">
+      <data key="d5">8.0</data>
+      <data key="d6">IGF-1 plays a role in cell growth and proliferation, which is significant in breast cancer development.</data>
+      <data key="d7">growth factor, cancer biology</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="NFkB">
+      <data key="d5">7.0</data>
+      <data key="d6">NFkB is involved in inflammatory responses and can contribute to cancer progression, including breast cancer.</data>
+      <data key="d7">inflammation, cancer biology</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="P13K/Akt/mTOR">
+      <data key="d5">9.0</data>
+      <data key="d6">The P13K/Akt/mTOR pathway is often dysregulated in breast cancer, affecting cell growth and survival.</data>
+      <data key="d7">signaling pathway, cancer</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="STAT-3">
+      <data key="d5">8.0</data>
+      <data key="d6">STAT-3 activation is linked to increased survival of cancer cells, making it relevant in breast cancer research.</data>
+      <data key="d7">cell survival, cancer</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Survivin">
+      <data key="d5">9.0</data>
+      <data key="d6">Survivin is often overexpressed in breast cancer cells, contributing to their resistance to apoptosis.</data>
+      <data key="d7">cell survival, cancer treatment</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="TNF">
+      <data key="d5">7.0</data>
+      <data key="d6">TNF is involved in inflammation and can influence the tumor microenvironment in breast cancer.</data>
+      <data key="d7">inflammation, cancer biology</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Blackseed Oil">
+      <data key="d5">8.0</data>
+      <data key="d6">Blackseed oil has been studied for its potential anti-cancer properties, including in breast cancer treatment.</data>
+      <data key="d7">natural remedy, cancer treatment</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer" target="Grapeseed OPCs">
+      <data key="d5">7.0</data>
+      <data key="d6">Grapeseed OPCs are antioxidants that may have protective effects against cancer, including breast cancer.</data>
+      <data key="d7">antioxidants, cancer prevention</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Jane McLelland" target="Professor Ian Brighthope">
+      <data key="d5">16.0</data>
+      <data key="d6">Jane McLelland discusses cancer treatment protocols which are aligned with the integrative approaches promoted by Professor Ian Brighthope.</data>
+      <data key="d7">collaboration, integrative medicine</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Jane McLelland" target="Spike Protein">
+      <data key="d5">8.0</data>
+      <data key="d6">Jane McLelland discusses the implications of the Spike Protein on health, particularly in relation to cancer patients.</data>
+      <data key="d7">health discussion, cancer implications</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Professor Ian Brighthope" target="Australasian Integrative Medicine Association">
+      <data key="d5">16.0</data>
+      <data key="d6">Professor Ian Brighthope co-founded the Australasian Integrative Medicine Association, promoting integrative health practices.</data>
+      <data key="d7">organization founding, health advocacy</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Cannabis Health Radio" target="Corrie Yelland">
+      <data key="d5">18.0</data>
+      <data key="d6">Corrie Yelland is a co-host on Cannabis Health Radio, sharing her cancer survival story and treatment experiences.</data>
+      <data key="d7">media platform, personal story</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Healing Cancer Study Support Group" target="Abbey Mitchell">
+      <data key="d5">20.0</data>
+      <data key="d6">Abbey Mitchell runs the Healing Cancer Study Support Group, providing a community for cancer patients.</data>
+      <data key="d7">support network, community</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr Neil McKinney" target="Integrative Oncology Edition 4">
+      <data key="d5">18.0</data>
+      <data key="d6">Dr Neil McKinney authored Integrative Oncology Edition 4, which discusses integrative cancer treatment approaches.</data>
+      <data key="d7">author, publication</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr Neil McKinney" target="Carnivora">
+      <data key="d5">8.0</data>
+      <data key="d6">Dr Neil McKinney suggests using Carnivora to block tumor proteins and facilitate drug delivery across the blood-brain barrier.</data>
+      <data key="d7">treatment suggestion, drug delivery</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Chemothermia" target="Dr Vogl">
+      <data key="d5">14.0</data>
+      <data key="d6">Dr Vogl is associated with Chemothermia, utilizing innovative chemotherapy techniques for cancer treatment.</data>
+      <data key="d7">treatment collaboration, medical practice</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="COVID Detox" target="Spike Protein">
+      <data key="d5">9.0</data>
+      <data key="d6">COVID Detox addresses issues related to the Spike Protein and its effects on cancer patients.</data>
+      <data key="d7">health impacts, detoxification</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="COVID Detox" target="Bromelain">
+      <data key="d5">7.0</data>
+      <data key="d6">Bromelain is suggested as part of the COVID Detox protocol for its anti-inflammatory properties.</data>
+      <data key="d7">treatment protocol, inflammation</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="COVID Detox" target="Curcumin">
+      <data key="d5">8.0</data>
+      <data key="d6">Curcumin is included in the COVID Detox protocol due to its anti-inflammatory and antiviral properties.</data>
+      <data key="d7">treatment protocol, anti-inflammatory</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="COVID Detox" target="Nattokinase">
+      <data key="d5">7.0</data>
+      <data key="d6">Nattokinase is recommended as part of the COVID Detox for its potential benefits in blood clotting.</data>
+      <data key="d7">treatment protocol, blood health</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="COVID Detox" target="Serrapeptase">
+      <data key="d5">7.0</data>
+      <data key="d6">Serrapeptase is suggested in the COVID Detox protocol for its anti-inflammatory effects.</data>
+      <data key="d7">treatment protocol, inflammation</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="COVID Detox" target="Ivermectin">
+      <data key="d5">8.0</data>
+      <data key="d6">Ivermectin is included in the COVID Detox protocol as a treatment option for COVID-related symptoms.</data>
+      <data key="d7">treatment protocol, medication</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="COVID Detox" target="Vitamin D3">
+      <data key="d5">8.0</data>
+      <data key="d6">Vitamin D3 is recommended in the COVID Detox protocol for its role in immune health.</data>
+      <data key="d7">treatment protocol, immune support</data>
+      <data key="d8">chunk-4cd4bc5e9a136df75fab351b8b07616f</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Curcumin" target="Dr. McKinney">
+      <data key="d5">16.0</data>
+      <data key="d6">Dr. McKinney suggests Curcumin for its anti-inflammatory properties that may benefit bone health.</data>
+      <data key="d7">health benefits, anti-inflammatory</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Curcumin" target="Prostaglandins">
+      <data key="d5">8.0</data>
+      <data key="d6">Curcumin can inhibit the production of prostaglandins, which are involved in inflammation and cancer cell activity.</data>
+      <data key="d7">anti-inflammatory, cancer treatment</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Curcumin" target="P-Glycoprotein">
+      <data key="d5">9.0</data>
+      <data key="d6">Curcumin can inhibit the activity of P-Glycoprotein, potentially enhancing the effectiveness of chemotherapy drugs.</data>
+      <data key="d7">anti-inflammatory, drug resistance</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Curcumin" target="EGCG">
+      <data key="d5">16.0</data>
+      <data key="d6">Curcumin and EGCG are both natural compounds recognized for their health benefits and antioxidant properties.</data>
+      <data key="d7">health benefits, antioxidants</data>
+      <data key="d8">chunk-82d2a533559bae47aaae0d5b20e5718c</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Curcumin" target="Indole 3 Carbinol">
+      <data key="d5">14.0</data>
+      <data key="d6">Curcumin and Indole 3 Carbinol are both compounds derived from natural sources and studied for their potential health effects.</data>
+      <data key="d7">natural compounds, health research</data>
+      <data key="d8">chunk-82d2a533559bae47aaae0d5b20e5718c</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Curcumin" target="YB-1">
+      <data key="d5">6.0</data>
+      <data key="d6">YB-1 and Curcumin may both be studied for their potential health benefits and therapeutic applications.</data>
+      <data key="d7">health research, therapeutic compounds</data>
+      <data key="d8">chunk-82d2a533559bae47aaae0d5b20e5718c</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Ingram et al" target="Phytoestrogens">
+      <data key="d5">18.0</data>
+      <data key="d6">Ingram et al's study found that phytoestrogens may reduce breast cancer risk in women.</data>
+      <data key="d7">research findings, health implications</data>
+      <data key="d8">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Genistein" target="Soy Products">
+      <data key="d5">15.0</data>
+      <data key="d6">Genistein is an isoflavone that is predominantly found in soy products and has estrogenic effects.&lt;SEP&gt;Genistein is primarily found in soy products, which are recommended for health benefits related to estrogen.</data>
+      <data key="d7">nutritional source, estrogenic effect&lt;SEP&gt;nutritional source, health benefits</data>
+      <data key="d8">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Daidzein" target="Equol">
+      <data key="d5">14.0</data>
+      <data key="d6">Daidzein is metabolized to produce equol, which is influenced by gut microbiome composition.</data>
+      <data key="d7">metabolism, gut health</data>
+      <data key="d8">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Soy Products" target="Isoflavones">
+      <data key="d5">8.0</data>
+      <data key="d6">Isoflavones are primarily found in soy products, which are recommended for health benefits related to estrogen.</data>
+      <data key="d7">nutritional source, health benefits</data>
+      <data key="d8">chunk-b81d9e841623e400ca410d21b5046cb3</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Blood Brain Barrier" target="MDRP1-9">
+      <data key="d5">16.0</data>
+      <data key="d6">MDRP1-9 proteins are part of the mechanisms that function within the blood-brain barrier, contributing to drug resistance.</data>
+      <data key="d7">drug resistance, transport mechanisms</data>
+      <data key="d8">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Blood Brain Barrier" target="P-Glycoprotein">
+      <data key="d5">18.0</data>
+      <data key="d6">P-Glycoprotein is a key efflux transporter within the blood-brain barrier that impacts the bioavailability of drugs and contributes to drug resistance.</data>
+      <data key="d7">efflux transport, drug bioavailability</data>
+      <data key="d8">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Blood Brain Barrier" target="Brain Metastases in Breast Cancer">
+      <data key="d5">20.0</data>
+      <data key="d6">The blood-brain barrier presents a significant challenge in treating brain metastases in breast cancer by limiting drug penetration.</data>
+      <data key="d7">treatment challenge, cancer</data>
+      <data key="d8">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Blood Brain Barrier" target="Grapeseed">
+      <data key="d5">8.0</data>
+      <data key="d6">Grapeseed is noted for its potential to repair the blood-brain barrier, which is critical for effective drug delivery in treatments.</data>
+      <data key="d7">repair, drug delivery</data>
+      <data key="d8">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Blood Brain Barrier" target="Artesunate">
+      <data key="d5">9.0</data>
+      <data key="d6">Artesunate's ability to cross the blood-brain barrier is significant for treating conditions that involve the central nervous system.</data>
+      <data key="d7">drug delivery, treatment efficacy</data>
+      <data key="d8">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Blood Brain Barrier" target="DMSO">
+      <data key="d5">8.0</data>
+      <data key="d6">DMSO is mentioned as a solvent that can enhance the penetration of drugs across the blood-brain barrier.</data>
+      <data key="d7">drug delivery, solvent action</data>
+      <data key="d8">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr. McKinney" target="Sodium Selenite">
+      <data key="d5">16.0</data>
+      <data key="d6">Dr. McKinney recommends Sodium Selenite for its potential to repair DNA mutations and support lymphedema.</data>
+      <data key="d7">cancer support, medical advice</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr. McKinney" target="Soy Isoflavones">
+      <data key="d5">14.0</data>
+      <data key="d6">Dr. McKinney provides guidance on the safe consumption of Soy Isoflavones for women with estrogen-dependent cancers.</data>
+      <data key="d7">dietary advice, cancer prevention</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr. McKinney" target="White Button Mushrooms">
+      <data key="d5">18.0</data>
+      <data key="d6">Dr. McKinney identifies White Button Mushrooms as an effective aromatase inhibitor for hormone-dependent breast cancer.</data>
+      <data key="d7">cancer treatment, dietary intervention</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr. McKinney" target="Vitamin D3 with K2">
+      <data key="d5">16.0</data>
+      <data key="d6">Dr. McKinney prefers Vitamin D3 with K2 over calcium supplements for strengthening bones.</data>
+      <data key="d7">bone health, dietary recommendation</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr. McKinney" target="Cannabis">
+      <data key="d5">14.0</data>
+      <data key="d6">Dr. McKinney acknowledges Cannabis as beneficial for improving bone density.</data>
+      <data key="d7">bone health, alternative treatment</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr. McKinney" target="Cissus Quadrangularis">
+      <data key="d5">14.0</data>
+      <data key="d6">Dr. McKinney discusses the potential benefits of Cissus Quadrangularis for bone health and osteoporosis.</data>
+      <data key="d7">herbal medicine, bone health</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr. McKinney" target="Indole 3 Carbinol">
+      <data key="d5">7.0</data>
+      <data key="d6">Dr. McKinney mentions Indole 3 Carbinol as a compound with potential anti-cancer properties.</data>
+      <data key="d7">cancer treatment, dietary component</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr. McKinney" target="Niclosamide">
+      <data key="d5">8.0</data>
+      <data key="d6">Dr. McKinney prescribes Niclosamide for its potential effects on cancer treatment.</data>
+      <data key="d7">medical treatment, cancer therapy</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr. McKinney" target="EGCG">
+      <data key="d5">7.0</data>
+      <data key="d6">Dr. McKinney discusses EGCG as a beneficial compound with antioxidant properties that may aid in cancer prevention.</data>
+      <data key="d7">antioxidants, cancer prevention</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr. McKinney" target="Microcrystalline Hydroxyapatite Ossein Complex">
+      <data key="d5">8.0</data>
+      <data key="d6">Dr. McKinney recommends Microcrystalline Hydroxyapatite Ossein Complex for its bone growth factors and health benefits.</data>
+      <data key="d7">bone health, supplement recommendation</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Dr. McKinney" target="Zinc">
+      <data key="d5">6.0</data>
+      <data key="d6">Dr. McKinney highlights the role of Zinc in regulating angiogenesis and its importance for health.</data>
+      <data key="d7">mineral importance, health regulation</data>
+      <data key="d8">chunk-17fa5148a048f188a17fb9ca3e127d27</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Indole 3 Carbinol" target="ABCG2">
+      <data key="d5">7.0</data>
+      <data key="d6">Indole 3 Carbinol is known to increase the expression of ABCG2, impacting drug resistance in breast cancer.</data>
+      <data key="d7">hormone regulation, drug resistance</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Indole 3 Carbinol" target="EGCG">
+      <data key="d5">14.0</data>
+      <data key="d6">EGCG and Indole 3 Carbinol are both associated with health benefits and are derived from plant sources.</data>
+      <data key="d7">plant-derived compounds, health benefits</data>
+      <data key="d8">chunk-82d2a533559bae47aaae0d5b20e5718c</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Indole 3 Carbinol" target="YB-1">
+      <data key="d5">6.0</data>
+      <data key="d6">YB-1 and Indole 3 Carbinol may both be investigated for their biological effects and health implications.</data>
+      <data key="d7">health research, biological compounds</data>
+      <data key="d8">chunk-82d2a533559bae47aaae0d5b20e5718c</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="EGCG" target="YB-1">
+      <data key="d5">6.0</data>
+      <data key="d6">YB-1 and EGCG are both compounds that might have health-related studies associated with them.</data>
+      <data key="d7">health benefits, research</data>
+      <data key="d8">chunk-82d2a533559bae47aaae0d5b20e5718c</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="MDRP1-9" target="Histone Protein Acylation Modulators">
+      <data key="d5">14.0</data>
+      <data key="d6">Histone protein acylation modulators can influence the activity of MDRP1-9, potentially reducing drug resistance.</data>
+      <data key="d7">drug resistance, modulation</data>
+      <data key="d8">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="ABCG2" target="P-Glycoprotein">
+      <data key="d5">9.0</data>
+      <data key="d6">Both ABCG2 and P-Glycoprotein are proteins that contribute to drug resistance mechanisms in cancer treatment.</data>
+      <data key="d7">drug resistance, protein function</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="ABCG2" target="Green Tea">
+      <data key="d5">9.0</data>
+      <data key="d6">Green Tea's EGCG can influence the expression of ABCG2, impacting drug resistance in breast cancer treatment.</data>
+      <data key="d7">natural compounds, cancer treatment</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="ABCG2" target="Silymarin from Milk Thistle">
+      <data key="d5">8.0</data>
+      <data key="d6">Silymarin can influence the expression of ABCG2, potentially affecting drug resistance mechanisms in cancer treatment.</data>
+      <data key="d7">natural compounds, drug resistance</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="P-Glycoprotein" target="Acetyl L Carnitine">
+      <data key="d5">12.0</data>
+      <data key="d6">Acetyl L Carnitine may help in delivering medications across the blood-brain barrier, counteracting the effects of P-Glycoprotein.</data>
+      <data key="d7">drug delivery, counteraction</data>
+      <data key="d8">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="P-Glycoprotein" target="Sulforaphane">
+      <data key="d5">7.0</data>
+      <data key="d6">Sulforaphane may influence P-Glycoprotein activity, potentially reducing drug resistance in cancer treatments.</data>
+      <data key="d7">drug resistance, modulation</data>
+      <data key="d8">chunk-85c06ae3e33dd062c6f8cbc3263674c7</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="P-Glycoprotein" target="Acetyl L-Carnitine">
+      <data key="d5">9.0</data>
+      <data key="d6">Acetyl L-Carnitine may aid in overcoming P-Glycoprotein-mediated drug resistance by enhancing drug delivery.</data>
+      <data key="d7">drug delivery, drug resistance</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="P-Glycoprotein" target="Elacridar">
+      <data key="d5">10.0</data>
+      <data key="d6">Elacridar is used to inhibit P-Glycoprotein, thus potentially increasing the effectiveness of chemotherapy drugs.</data>
+      <data key="d7">treatment enhancement, drug resistance</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Histone Protein Acylation Modulators" target="MDRP-1">
+      <data key="d5">8.0</data>
+      <data key="d6">Histone protein acylation modulators can impact the function of MDRP-1, affecting drug resistance in cancer treatment.</data>
+      <data key="d7">drug resistance, protein function</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Prostaglandins" target="COX-2 (Cyclooxygenase-2)">
+      <data key="d5">9.0</data>
+      <data key="d6">COX-2 produces prostaglandins, which are linked to inflammation and cancer cell activity, affecting drug resistance.</data>
+      <data key="d7">inflammation, cancer treatment</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="NSAIDs (Non-Steroidal Anti-Inflammatory Drugs)" target="PGE2">
+      <data key="d5">8.0</data>
+      <data key="d6">NSAIDs can inhibit the production of PGE2, which is involved in inflammation and may affect drug resistance mechanisms.</data>
+      <data key="d7">anti-inflammatory, drug resistance</data>
+      <data key="d8">chunk-b2405fce9bf1e9596eff6dd81273a458</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="EGFR" target="COX2">
+      <data key="d5">7.0</data>
+      <data key="d6">COX2 is involved in the inflammatory response that is heightened in cancers with EGFR overexpression.</data>
+      <data key="d7">inflammation, cancer progression</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="EGFR" target="Invasiveness">
+      <data key="d5">9.0</data>
+      <data key="d6">The invasiveness of breast cancer cells is linked to the overexpression of EGFR, which aids in their metastasis.</data>
+      <data key="d7">cancer behavior, gene expression</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="HER2" target="HER3">
+      <data key="d5">15.0</data>
+      <data key="d6">HER3 supports the signaling mechanisms of HER2, contributing to cancer cell proliferation.&lt;SEP&gt;HER3 works in conjunction with HER2 in promoting tumor growth and metastasis in breast cancer.</data>
+      <data key="d7">gene interaction, cancer proliferation&lt;SEP&gt;gene interaction, tumor growth</data>
+      <data key="d8">chunk-0049dde5f6453f5037ca54e07e32cce4</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Metformin" target="Insulin">
+      <data key="d5">8.0</data>
+      <data key="d6">Metformin is known to improve insulin sensitivity, which is relevant in the context of cancer treatment.</data>
+      <data key="d7">diabetes management, cancer therapy</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="NADPH" target="Breast Cancer Cells">
+      <data key="d5">9.0</data>
+      <data key="d6">NADPH is critical for breast cancer cells' metabolic processes, allowing them to thrive despite treatment challenges.</data>
+      <data key="d7">metabolism, cancer survival</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="GABA" target="Breast Cancer Cells">
+      <data key="d5">8.0</data>
+      <data key="d6">Breast cancer cells can adapt to utilize GABA, enhancing their survival and proliferation in the tumor microenvironment.</data>
+      <data key="d7">cellular adaptation, survival mechanisms</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="GSTAT5" target="Breast Cancer Cells">
+      <data key="d5">9.0</data>
+      <data key="d6">Upregulation of GSTAT5 in breast cancer cells contributes to their resistance against cytotoxic treatments such as chemotherapy.</data>
+      <data key="d7">gene expression, treatment resistance</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="BCL2L1" target="Breast Cancer Cells">
+      <data key="d5">9.0</data>
+      <data key="d6">BCL2L1 expression helps breast cancer cells evade apoptosis, contributing to treatment failure.</data>
+      <data key="d7">apoptosis resistance, cancer progression</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="TWIST1" target="Breast Cancer Cells">
+      <data key="d5">8.0</data>
+      <data key="d6">TWIST1 is involved in the aggressive behavior of breast cancer cells, particularly in TNBC types.</data>
+      <data key="d7">aggressiveness, cancer biology</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer Cells" target="MiR-202-3p">
+      <data key="d5">9.0</data>
+      <data key="d6">Downregulation of MiR-202-3p in breast cancer cells is linked to increased invasiveness and migration to the brain.</data>
+      <data key="d7">cell migration, metastasis</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Breast Cancer Cells" target="MMP-1">
+      <data key="d5">9.0</data>
+      <data key="d6">MMP-1 overexpression in breast cancer cells facilitates their migration to the brain, contributing to metastasis.</data>
+      <data key="d7">metastasis, enzyme activity</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Cyclin D1" target="CDK4 and CDK6">
+      <data key="d5">8.0</data>
+      <data key="d6">Cyclin D1 activates CDK4 and CDK6, which are crucial for cell cycle progression in HER2 positive breast cancer.</data>
+      <data key="d7">cell cycle, cancer proliferation</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="MMP-1" target="Heavy Metals">
+      <data key="d5">7.0</data>
+      <data key="d6">Heavy metals can upregulate MMP-1, which may enhance the invasive potential of breast cancer cells.</data>
+      <data key="d7">environmental factors, cancer progression</data>
+      <data key="d8">chunk-ea5b318e2a8248e37e47eace395c05b5</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Evelyn M. Brosnan" target="Carey K. Anders">
+      <data key="d5">8.0</data>
+      <data key="d6">Evelyn M. Brosnan and Carey K. Anders are collaborators in the research of brain metastasis in breast cancer.</data>
+      <data key="d7">research collaboration, breast cancer</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Evelyn M. Brosnan" target="Lena Secky">
+      <data key="d5">8.0</data>
+      <data key="d6">Evelyn M. Brosnan and Lena Secky are involved in cancer research, particularly in understanding brain metastasis in breast cancer.</data>
+      <data key="d7">research collaboration, breast cancer</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Evelyn M. Brosnan" target="Theresia Thalhammer">
+      <data key="d5">8.0</data>
+      <data key="d6">Evelyn M. Brosnan and Theresia Thalhammer collaborate on research related to therapeutic strategies for breast cancer.</data>
+      <data key="d7">research collaboration, cancer therapy</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Glucose" target="Berberine">
+      <data key="d5">14.0</data>
+      <data key="d6">Berberine is known to affect glucose metabolism, which is important in developing cancer therapies.&lt;SEP&gt;Berberine is known to influence glucose metabolism, which is significant in cancer treatment strategies.</data>
+      <data key="d7">metabolic regulation, cancer therapy&lt;SEP&gt;metabolic regulation, cancer treatment</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Glucose" target="Cancer Feeding Pathways">
+      <data key="d5">9.0</data>
+      <data key="d6">Glucose is a key nutrient in cancer feeding pathways, influencing cancer metabolism and growth.</data>
+      <data key="d7">metabolism, cancer biology</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Fatty Acids" target="Cancer Feeding Pathways">
+      <data key="d5">9.0</data>
+      <data key="d6">Fatty acids are utilized by cancer cells in their feeding pathways, contributing to their energy and growth.</data>
+      <data key="d7">metabolic pathways, cancer growth</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Glutamine" target="Cancer Feeding Pathways">
+      <data key="d5">9.0</data>
+      <data key="d6">Glutamine is another critical nutrient that cancer cells use in their feeding pathways for growth and proliferation.</data>
+      <data key="d7">metabolic pathways, cancer nutrition</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Insulin" target="Cancer Feeding Pathways">
+      <data key="d5">8.0</data>
+      <data key="d6">Insulin plays a key role in cancer metabolism and is a significant factor in cancer feeding pathways.</data>
+      <data key="d7">metabolism, cancer biology</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+    <edge source="Insulin" target="Low GI Diet">
+      <data key="d5">8.0</data>
+      <data key="d6">A Low GI Diet helps manage insulin levels, which is significant in cancer treatment and prevention.</data>
+      <data key="d7">dietary management, cancer</data>
+      <data key="d8">chunk-2c8a13a1d7994bb3d188bcbdc68feefa</data>
+      <data key="d9">Breast Cancer Example ER .pdf</data>
+    </edge>
+  </graph>
+</graphml>
