@@ -9,6 +9,8 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
 - `lightrag_mcp/__init__.py` - Package initialization with metadata and version information
 - `lightrag_mcp/README.md` - Basic package documentation and usage instructions
 - `lightrag_mcp/.pre-commit-config.yaml` - Pre-commit hooks configuration with black, isort, flake8, mypy and quality checks
+- `lightrag_mcp/.env.example` - MCP-specific environment variables for development configuration
+- `lightrag_mcp/.env.test` - Test environment configuration with safe defaults and mock services
 - `.feature-branch-source` - Development tracking file documenting branch creation and progress
 - `.git/info/exclude` - Git exclude file with MCP development artifacts to avoid merge conflicts
 
@@ -69,7 +71,7 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
   - [x] 1.5 Install development tools: `uv add --dev black isort flake8 mypy pre-commit`
   - [x] 1.6 Create `.gitignore` entries for MCP artifacts (`.venv-mcp/`, `lightrag_mcp/__pycache__/`, `.env.mcp`)
   - [x] 1.7 Setup pre-commit hooks: `pre-commit install` with black, isort, flake8, mypy
-  - [ ] 1.8 Create `.env.example` and `.env.test` files for environment configuration
+  - [x] 1.8 Create `.env.example` and `.env.test` files for environment configuration
   - [ ] 1.9 Document development workflow in `docs/development/mcp-development-workflow.md`
   - [ ] 1.10 Setup GitHub Actions workflow for CI/CD (`.github/workflows/mcp-ci.yml`)
   - [ ] 1.11 Configure automated testing, linting, and deployment pipelines
