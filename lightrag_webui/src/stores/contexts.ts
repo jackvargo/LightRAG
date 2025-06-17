@@ -1,14 +1,14 @@
 import { create } from 'zustand'
-import { 
-  ContextInfo, 
+import {
+  ContextInfo,
   ContextStats,
-  getContexts, 
+  getContexts,
   getContextStats,
-  createContext, 
-  switchContext, 
-  renameContext, 
+  createContext,
+  switchContext,
+  renameContext,
   deleteContext,
-  queryGraphs 
+  queryGraphs
 } from '@/api/lightrag'
 import { useGraphStore } from './graph'
 
@@ -19,7 +19,7 @@ interface ContextsState {
   isLoadingStats: boolean
   error: string | null
   isMultiContextSupported: boolean
-  
+
   // Actions
   fetchContexts: () => Promise<void>
   fetchContextStats: (contextName: string) => Promise<ContextStats | null>
@@ -54,7 +54,7 @@ export const useContextsStore = create<ContextsState>((set, get) => ({
     } catch (error) {
       console.warn('contexts store: multi-context not supported, falling back to single-context mode', error)
       // Fall back to single-context mode
-      set({ 
+      set({
         contexts: { 'default': { description: 'Default context', path: '', created_at: new Date().toISOString() } },
         currentContext: 'default',
         isLoading: false,
@@ -63,12 +63,12 @@ export const useContextsStore = create<ContextsState>((set, get) => ({
       })
     }
   },
-  
+
   fetchContextStats: async (contextName: string) => {
     set({ isLoadingStats: true })
     try {
       const stats = await getContextStats(contextName)
-      
+
       // Update the contexts state with the new stats
       const updatedContexts = { ...get().contexts }
       if (updatedContexts[contextName]) {
@@ -78,11 +78,11 @@ export const useContextsStore = create<ContextsState>((set, get) => ({
         }
         set({ contexts: updatedContexts })
       }
-      
+
       set({ isLoadingStats: false })
       return stats
     } catch (error) {
-      set({ 
+      set({
         error: error instanceof Error ? error.message : 'Failed to fetch context statistics',
         isLoadingStats: false
       })
@@ -107,17 +107,17 @@ export const useContextsStore = create<ContextsState>((set, get) => ({
     try {
       const result = await switchContext(name)
       set({ currentContext: name })
-      
+
       // Reset graph store states to ensure clean loading
       useGraphStore.getState().reset()
-      
+
       // Reset fetchAttempted flags to force a fresh data load
       useGraphStore.getState().setGraphDataFetchAttempted(false)
       useGraphStore.getState().setLabelsFetchAttempted(false)
-      
+
       // Refresh the graph after switching context
       await get().refreshGraph()
-      
+
       set({ isLoading: false })
       return true
     } catch (error) {
@@ -136,7 +136,7 @@ export const useContextsStore = create<ContextsState>((set, get) => ({
       set({ error: error instanceof Error ? error.message : 'Failed to rename context', isLoading: false })
     }
   },
-  
+
   deleteContext: async (name: string) => {
     set({ isLoading: true, error: null })
     try {
@@ -152,22 +152,22 @@ export const useContextsStore = create<ContextsState>((set, get) => ({
   refreshGraph: async () => {
     try {
       console.log('Refreshing graph data after context switch')
-      
+
       // Set graph as loading
       useGraphStore.getState().setIsFetching(true)
-      
+
       // Force a fresh data load by clearing last successful query label
       useGraphStore.getState().setLastSuccessfulQueryLabel('')
-      
+
       // Fetch all graph labels first to populate dropdown
       await useGraphStore.getState().fetchAllDatabaseLabels()
-      
+
       // Load the graph data with a default query
       await queryGraphs('*', 3, 1000)
-      
+
       // Finish loading
       useGraphStore.getState().setIsFetching(false)
-      
+
       console.log('Graph data refreshed successfully')
     } catch (error) {
       console.error('Failed to refresh graph:', error)
@@ -175,8 +175,8 @@ export const useContextsStore = create<ContextsState>((set, get) => ({
       set({ error: error instanceof Error ? error.message : 'Failed to refresh graph' })
     }
   },
-  
+
   clearError: () => {
     set({ error: null })
   }
-})) 
+}))

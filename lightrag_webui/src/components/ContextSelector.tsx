@@ -30,12 +30,12 @@ import {
 import Input from "@/components/ui/Input"
 import Badge from "@/components/ui/Badge"
 import Label from "@/components/ui/Label"
-import { 
-  Loader2, 
-  Settings, 
-  Edit, 
-  Trash, 
-  FileBox, 
+import {
+  Loader2,
+  Settings,
+  Edit,
+  Trash,
+  FileBox,
   Database,
 
   PenIcon
@@ -48,20 +48,20 @@ import {
 import { formatDistanceToNow } from 'date-fns'
 
 export function ContextSelector() {
-  const { 
-    contexts, 
-    currentContext, 
+  const {
+    contexts,
+    currentContext,
     isLoading,
     isLoadingStats,
     isMultiContextSupported,
     fetchContexts,
-    fetchContextStats, 
-    createNewContext, 
+    fetchContextStats,
+    createNewContext,
     switchToContext,
     deleteContext,
     renameContext
   } = useContextsStore()
-  
+
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isManageDialogOpen, setIsManageDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -123,49 +123,49 @@ export function ContextSelector() {
       // due to our context.ts store changes and GraphLabels.tsx updates
     }
   }
-  
+
   const handleDeleteContext = async () => {
     if (!contextToDelete) return
-    
+
     await deleteContext(contextToDelete)
     setContextToDelete(null)
     setIsDeleteDialogOpen(false)
   }
-  
+
   const handleRenameContext = async () => {
     if (!contextToRename || !renameValue) return
-    
+
     await renameContext(contextToRename, renameValue)
     setContextToRename(null)
     setRenameValue('')
     setIsRenameDialogOpen(false)
   }
-  
+
   const openDeleteDialog = (contextName: string) => {
     setContextToDelete(contextName)
     setIsDeleteDialogOpen(true)
   }
-  
+
   const openRenameDialog = (contextName: string) => {
     setContextToRename(contextName)
     setRenameValue(contextName) // Initialize with current name
     setIsRenameDialogOpen(true)
   }
-  
+
   const getContextInfo = (name: string) => {
     return contexts[name]
   }
-  
+
   const isDefaultContext = (name: string) => {
     const info = getContextInfo(name)
     return info && info.is_default
   }
-  
+
   const isCurrentContextActive = (name: string) => {
     const info = getContextInfo(name)
     return info && info.is_current
   }
-  
+
   const getContextCreationDate = (name: string) => {
     const info = getContextInfo(name)
     if (info && info.created_at) {
@@ -273,7 +273,7 @@ export function ContextSelector() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
+
       {/* Manage Contexts Button & Dialog */}
       <Popover open={isManageDialogOpen} onOpenChange={setIsManageDialogOpen}>
         <PopoverTrigger asChild>
@@ -319,10 +319,10 @@ export function ContextSelector() {
                       <div>Size: {info.stats.disk_usage_mb.toFixed(1)} MB</div>
                     </div>
                   ) : (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="mt-1 h-6 text-xs px-2" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-1 h-6 text-xs px-2"
                       onClick={() => fetchContextStats(name)}
                       disabled={isLoadingStats}
                     >
@@ -332,18 +332,18 @@ export function ContextSelector() {
                   )}
                 </div>
                 <div className="flex items-center gap-1">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-6 w-6" 
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
                     onClick={() => openRenameDialog(name)}
                   >
                     <PenIcon className="h-3 w-3" />
                   </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-6 w-6 text-red-500" 
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 text-red-500"
                     onClick={() => openDeleteDialog(name)}
                     disabled={Object.keys(contexts).length <= 1}
                   >
@@ -355,14 +355,14 @@ export function ContextSelector() {
           </div>
         </PopoverContent>
       </Popover>
-      
+
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the context "{contextToDelete}" and all its associated data. 
+              This will permanently delete the context "{contextToDelete}" and all its associated data.
               This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -376,7 +376,7 @@ export function ContextSelector() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      
+
       {/* Rename Dialog */}
       <Dialog open={isRenameDialogOpen} onOpenChange={setIsRenameDialogOpen}>
         <DialogContent>
@@ -429,4 +429,4 @@ export function ContextSelector() {
       </AlertDialog>
     </div>
   )
-} 
+}

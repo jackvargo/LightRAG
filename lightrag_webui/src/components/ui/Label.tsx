@@ -24,4 +24,4 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
 
 Label.displayName = 'Label'
 
-export default Label 
+export default Label

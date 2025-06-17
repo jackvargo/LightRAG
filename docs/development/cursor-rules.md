@@ -66,4 +66,4 @@ This file contains AI assistant rules and development patterns specific to the L
 
 ---
 
-*These rules are derived from actual development experience and should be updated as new patterns emerge.* 
+*These rules are derived from actual development experience and should be updated as new patterns emerge.*

@@ -12,7 +12,7 @@ This directory contains development environment setup, workflows, and best pract
 ## 🚀 Quick Start for New Developers
 
 1. **Environment Setup**: Follow [environment-setup.md](./environment-setup.md)
-2. **Development Workflow**: Review [workflow-scripts.md](./workflow-scripts.md) 
+2. **Development Workflow**: Review [workflow-scripts.md](./workflow-scripts.md)
 3. **AI Assistant Setup**: Configure [cursor-rules.md](./cursor-rules.md)
 4. **Architecture Understanding**: Read [architecture-notes.md](./architecture-notes.md)
 
@@ -23,7 +23,7 @@ This directory contains development environment setup, workflows, and best pract
 # Quick code changes (~10s)
 ../LightRAG/reload_server.sh
 
-# Full rebuild (~2-5min) 
+# Full rebuild (~2-5min)
 ../LightRAG/reload_server.sh --build
 
 # Context refresh (~10-20s)
@@ -53,4 +53,4 @@ cd lightrag_webui && npm run dev
 
 ---
 
-*This documentation is maintained alongside the codebase to ensure development practices stay current with project evolution.* 
+*This documentation is maintained alongside the codebase to ensure development practices stay current with project evolution.*

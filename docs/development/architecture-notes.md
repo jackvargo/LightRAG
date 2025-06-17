@@ -15,7 +15,7 @@
 Frontend (Vue.js) :5173
     ↓ HTTP API
 Backend (FastAPI) :9621
-    ↓ File I/O  
+    ↓ File I/O
 Storage (JSON/Files) ./data/contexts/
 ```
 
@@ -34,7 +34,7 @@ data/contexts/
 
 ### Context Switch Flow
 1. **API Call** → Context switch endpoint
-2. **Path Update** → Context manager updates working/input paths  
+2. **Path Update** → Context manager updates working/input paths
 3. **Callback Execution** → RAG instance and storage updated
 4. **Storage Reset** → Force re-initialization of document status storage
 5. **Document Loading** → Load processed files from new context
@@ -70,7 +70,7 @@ data/contexts/
 - Storage performance improvements
 - Context switching performance optimization
 
-### Reliability  
+### Reliability
 - Unit tests for context switching timing scenarios
 - Real-time monitoring and metrics
 - Automated testing for context switching workflows
@@ -88,11 +88,11 @@ Successfully implemented integrated WebUI deployment architecture that serves bo
 
 #### **Technical Solution**
 ```
-Previous: FastAPI (9621) + Vite Dev Server (5173) 
+Previous: FastAPI (9621) + Vite Dev Server (5173)
 Current:  FastAPI (9621) + Integrated Static Serving
 
 Production: Single container serves both API and WebUI
-Development: Preserved separate service workflow  
+Development: Preserved separate service workflow
 ```
 
 #### **Key Architecture Components**
@@ -117,8 +117,8 @@ Development: Preserved separate service workflow
    # Stage 1: Build WebUI assets
    FROM node:20-alpine AS ui-builder
    RUN npm run build-no-bun
-   
-   # Stage 3: Production runtime  
+
+   # Stage 3: Production runtime
    COPY --from=ui-builder /ui/dist /app/static
    ```
 
@@ -146,4 +146,4 @@ This architecture enables seamless transition from development to production whi
 
 ---
 
-*This document should be updated as architectural decisions are made and new patterns emerge.* 
+*This document should be updated as architectural decisions are made and new patterns emerge.*

@@ -4,7 +4,7 @@
 
 ### **Phase 1: Safe Additions (✅ COMPLETE)**
 - ✅ **MinerU Integration** - Document processing enhancement
-- ✅ **Modal Processors** - Advanced document processing architecture  
+- ✅ **Modal Processors** - Advanced document processing architecture
 - ✅ **RagAnything** - Flexible RAG architecture
 - ✅ **K8s Deployment** - Kubernetes deployment configurations
 - ✅ **Requirements Merge** - Combined upstream + your API dependencies
@@ -89,7 +89,7 @@
    ```bash
    # Test backend
    python -c "import lightrag; print('✅ Backend integration successful')"
-   
+
    # Test WebUI build
    cd lightrag_webui && npm run build
    ```
@@ -116,7 +116,7 @@
 
 ### **🔍 Validation Checklist**
 - [ ] Backend starts without errors
-- [ ] WebUI builds and runs successfully  
+- [ ] WebUI builds and runs successfully
 - [ ] Context switching still works
 - [ ] LaTeX formulas render in chat
 - [ ] Mermaid diagrams display correctly
@@ -143,4 +143,4 @@ This integration successfully brings your repository up-to-date with upstream wh
 - **Upstream innovations**: MinerU, LaTeX, Mermaid, citations, timestamps
 - **Your unique features**: Multi-context, production deployment, homelab setup
 
-The integration was designed to be **additive rather than disruptive**, ensuring your existing workflows continue to work while gaining access to the latest LightRAG enhancements. 
+The integration was designed to be **additive rather than disruptive**, ensuring your existing workflows continue to work while gaining access to the latest LightRAG enhancements.

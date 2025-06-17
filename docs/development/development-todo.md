@@ -17,7 +17,7 @@
   - **Notes**: Graph and document pipeline/processing still work correctly
   - **Status**: Investigation needed
 
-- [ ] **Stats Not Calculated/Populated** 
+- [ ] **Stats Not Calculated/Populated**
   - **Issue**: Context stats (Documents, Entities, Relationships, Size) show as 0 or empty
   - **Impact**: Users cannot see context metrics and storage information
   - **Status**: Investigation needed to determine calculation logic

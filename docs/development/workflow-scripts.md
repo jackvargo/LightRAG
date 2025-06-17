@@ -15,7 +15,7 @@ This document provides detailed information about the development scripts and wo
 # FASTEST: Code changes only (~10s)
 ../LightRAG/reload_server.sh
 
-# SLOWEST: Full rebuild (~2-5min)  
+# SLOWEST: Full rebuild (~2-5min)
 ../LightRAG/reload_server.sh --build
 
 # Refresh and reload active context (~10-20s)
@@ -29,7 +29,7 @@ This document provides detailed information about the development scripts and wo
 
 **Quick Mode (Default)**
 - ✅ Python code changes
-- ✅ Configuration updates  
+- ✅ Configuration updates
 - ✅ Bug fixes
 - ✅ Most development iterations
 - ⚡ **Performance**: ~10 seconds
@@ -134,7 +134,7 @@ This document provides detailed information about the development scripts and wo
 
 ### Fastest Development Cycle
 - Keep WebUI running continuously
-- Use quick reload for backend changes  
+- Use quick reload for backend changes
 - Only use `--build` when absolutely necessary
 - Use `--no-follow-logs` for automated processes
 
@@ -147,7 +147,7 @@ This document provides detailed information about the development scripts and wo
 
 ### Container Won't Start
 1. **Check port conflicts**: `./dev-tools.sh status`
-2. **Clean environment**: `./dev-tools.sh cleanup`  
+2. **Clean environment**: `./dev-tools.sh cleanup`
 3. **Full rebuild**: `./reload_server.sh --build`
 
 ### Frontend Can't Connect to Backend
@@ -176,4 +176,4 @@ This document provides detailed information about the development scripts and wo
 
 ---
 
-*Keep this documentation updated as new scripts and workflow improvements are added.* 
+*Keep this documentation updated as new scripts and workflow improvements are added.*
