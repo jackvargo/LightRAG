@@ -1,7 +1,7 @@
 [flake8]
 max-line-length = 88
 max-complexity = 10
-extend-ignore = 
+extend-ignore =
     # Black compatibility
     E203,  # whitespace before ':'
     E501,  # line too long (handled by black)
@@ -15,7 +15,7 @@ extend-ignore =
     D105,  # Missing docstring in magic method
     D107,  # Missing docstring in __init__
 
-exclude = 
+exclude =
     .git,
     __pycache__,
     .venv,
@@ -34,4 +34,4 @@ per-file-ignores =
     # __init__.py files can have unused imports
     __init__.py:F401
     # Configuration files can ignore docstring requirements
-    config.py:D100,D101,D102,D103 
+    config.py:D100,D101,D102,D103

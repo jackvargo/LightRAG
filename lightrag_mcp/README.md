@@ -40,4 +40,4 @@ This package is part of the LightRAG project and requires Python 3.10+.
 
 ## License
 
-MIT License - see LICENSE file for details. 
+MIT License - see LICENSE file for details.

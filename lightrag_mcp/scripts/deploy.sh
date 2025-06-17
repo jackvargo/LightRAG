@@ -29,17 +29,17 @@ command_exists() {
 # Validate environment
 validate_environment() {
     log "Validating deployment environment..."
-    
+
     if ! command_exists uv; then
         log "ERROR: UV package manager not found. Please install UV."
         exit 1
     fi
-    
+
     if ! command_exists docker; then
         log "ERROR: Docker not found. Please install Docker."
         exit 1
     fi
-    
+
     log "✅ Environment validation passed"
 }
 
@@ -47,19 +47,19 @@ validate_environment() {
 build_package() {
     log "Building MCP server package..."
     cd "$PROJECT_DIR"
-    
+
     # Install dependencies if not already installed
     if [ ! -d ".venv" ]; then
         log "Creating virtual environment..."
         uv venv
     fi
-    
+
     log "Installing dependencies..."
     uv sync --dev
-    
+
     log "Building package..."
     uv build
-    
+
     log "✅ Package build completed"
 }
 
@@ -67,12 +67,12 @@ build_package() {
 run_tests() {
     log "Running automated tests..."
     cd "$PROJECT_DIR"
-    
+
     source .venv/bin/activate
-    
+
     # Run unit tests only (integration tests require external services)
     python -m pytest ../tests/mcp/unit/ -v --tb=short || true
-    
+
     log "✅ Tests completed"
 }
 
@@ -80,7 +80,7 @@ run_tests() {
 build_docker_image() {
     log "Building Docker image..."
     cd "$PROJECT_DIR"
-    
+
     # Create Dockerfile if it doesn't exist
     if [ ! -f "Dockerfile" ]; then
         log "Creating basic Dockerfile..."
@@ -105,10 +105,10 @@ EXPOSE 8000
 CMD ["uv", "run", "python", "-m", "lightrag_mcp"]
 EOF
     fi
-    
+
     # Build image
     docker build -t "lightrag-mcp-server:$VERSION" .
-    
+
     log "✅ Docker image built: lightrag-mcp-server:$VERSION"
 }
 
@@ -131,11 +131,11 @@ deploy() {
 # Development deployment
 deploy_development() {
     log "Deploying to development environment..."
-    
+
     # Stop existing container if running
     docker stop lightrag-mcp-dev 2>/dev/null || true
     docker rm lightrag-mcp-dev 2>/dev/null || true
-    
+
     # Run new container
     docker run -d \
         --name lightrag-mcp-dev \
@@ -143,7 +143,7 @@ deploy_development() {
         -p 8001:8000 \
         -e "ENVIRONMENT=development" \
         "lightrag-mcp-server:$VERSION"
-    
+
     log "✅ Development deployment completed"
     log "   Server accessible at: http://localhost:8001"
 }
@@ -151,13 +151,13 @@ deploy_development() {
 # Production deployment
 deploy_production() {
     log "Deploying to production environment..."
-    
+
     # Production deployment would typically involve:
     # - Kubernetes deployment
     # - Docker Swarm
     # - Container registry push
     # - Load balancer configuration
-    
+
     log "⚠️  Production deployment not yet implemented"
     log "   This would involve:"
     log "   - Container registry push"
@@ -169,10 +169,10 @@ deploy_production() {
 # Health check
 health_check() {
     log "Performing health check..."
-    
+
     # Wait for service to start
     sleep 10
-    
+
     # Check if service is responding
     if command_exists curl; then
         if curl -f "http://localhost:8001/health" >/dev/null 2>&1; then
@@ -194,17 +194,17 @@ cleanup() {
 # Main deployment flow
 main() {
     trap cleanup EXIT
-    
+
     validate_environment
     build_package
     run_tests
     build_docker_image
     deploy
-    
+
     if [ "$DEPLOY_ENV" = "development" ]; then
         health_check
     fi
-    
+
     log "🎉 Deployment completed successfully!"
 }
 
@@ -228,4 +228,4 @@ if [ $# -gt 0 ]; then
 fi
 
 # Run main deployment
-main 
+main
