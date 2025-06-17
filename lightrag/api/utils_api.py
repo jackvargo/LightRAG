@@ -2,22 +2,25 @@
 Utility functions for the LightRAG API.
 """
 
-import os
 import argparse
-from typing import Optional, List, Tuple
+import os
 import sys
+from typing import List, Optional, Tuple
+
 from ascii_colors import ASCIIColors
-from lightrag.api import __api_version__ as api_version
-from lightrag import __version__ as core_version
-from lightrag.constants import (
-    DEFAULT_MAX_TOKEN_SUMMARY,
-    DEFAULT_FORCE_LLM_SUMMARY_ON_MERGE,
-)
-from fastapi import HTTPException, Security, Request, status
+from fastapi import HTTPException, Request, Security, status
 from fastapi.security import APIKeyHeader, OAuth2PasswordBearer
 from starlette.status import HTTP_403_FORBIDDEN
+
+from lightrag import __version__ as core_version
+from lightrag.api import __api_version__ as api_version
+from lightrag.constants import (
+    DEFAULT_FORCE_LLM_SUMMARY_ON_MERGE,
+    DEFAULT_MAX_TOKEN_SUMMARY,
+)
+
 from .auth import auth_handler
-from .config import ollama_server_infos, global_args, get_env_value
+from .config import get_env_value, global_args, ollama_server_infos
 
 
 def check_env_file():
@@ -89,9 +92,9 @@ def get_combined_auth_dependency(api_key: Optional[str] = None):
     async def combined_dependency(
         request: Request,
         token: str = Security(oauth2_scheme),
-        api_key_header_value: Optional[str] = None
-        if api_key_header is None
-        else Security(api_key_header),
+        api_key_header_value: Optional[str] = (
+            None if api_key_header is None else Security(api_key_header)
+        ),
     ):
         # 1. Check if path is in whitelist
         path = request.url.path
@@ -175,12 +178,14 @@ def display_splash_screen(args: argparse.Namespace) -> None:
         args: Parsed command line arguments
     """
     # Banner
-    ASCIIColors.cyan(f"""
+    ASCIIColors.cyan(
+        f"""
     ╔══════════════════════════════════════════════════════════════╗
     ║                  🚀 LightRAG Server v{core_version}/{api_version}              ║
     ║          Fast, Lightweight RAG Server Implementation         ║
     ╚══════════════════════════════════════════════════════════════╝
-    """)
+    """
+    )
 
     # Server Configuration
     ASCIIColors.magenta("\n📡 Server Configuration:")
@@ -304,13 +309,15 @@ def display_splash_screen(args: argparse.Namespace) -> None:
         ASCIIColors.yellow(f"{protocol}://localhost:{args.port}/redoc")
 
         ASCIIColors.magenta("\n📝 Note:")
-        ASCIIColors.cyan("""    Since the server is running on 0.0.0.0:
+        ASCIIColors.cyan(
+            """    Since the server is running on 0.0.0.0:
     - Use 'localhost' or '127.0.0.1' for local access
     - Use your machine's IP address for remote access
     - To find your IP address:
       • Windows: Run 'ipconfig' in terminal
       • Linux/Mac: Run 'ifconfig' or 'ip addr' in terminal
-    """)
+    """
+        )
     else:
         base_url = f"{protocol}://{args.host}:{args.port}"
         ASCIIColors.magenta("\n🌐 Server Access Information:")
@@ -324,14 +331,18 @@ def display_splash_screen(args: argparse.Namespace) -> None:
     # Security Notice
     if args.key:
         ASCIIColors.yellow("\n⚠️  Security Notice:")
-        ASCIIColors.white("""    API Key authentication is enabled.
+        ASCIIColors.white(
+            """    API Key authentication is enabled.
     Make sure to include the X-API-Key header in all your requests.
-    """)
+    """
+        )
     if args.auth_accounts:
         ASCIIColors.yellow("\n⚠️  Security Notice:")
-        ASCIIColors.white("""    JWT authentication is enabled.
+        ASCIIColors.white(
+            """    JWT authentication is enabled.
     Make sure to login before making the request, and include the 'Authorization' in the header.
-    """)
+    """
+        )
 
     # Ensure splash output flush to system log
     sys.stdout.flush()

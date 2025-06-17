@@ -1,0 +1,37 @@
+[flake8]
+max-line-length = 88
+max-complexity = 10
+extend-ignore = 
+    # Black compatibility
+    E203,  # whitespace before ':'
+    E501,  # line too long (handled by black)
+    W503,  # line break before binary operator
+    # Docstring formatting
+    D100,  # Missing docstring in public module
+    D101,  # Missing docstring in public class
+    D102,  # Missing docstring in public method
+    D103,  # Missing docstring in public function
+    D104,  # Missing docstring in public package
+    D105,  # Missing docstring in magic method
+    D107,  # Missing docstring in __init__
+
+exclude = 
+    .git,
+    __pycache__,
+    .venv,
+    .venv-mcp,
+    .pytest_cache,
+    .mypy_cache,
+    build,
+    dist,
+    docs/_build,
+    .eggs,
+    *.egg-info
+
+per-file-ignores =
+    # Tests can use longer lines and ignore some style rules
+    tests/*:E501,D100,D101,D102,D103,D104
+    # __init__.py files can have unused imports
+    __init__.py:F401
+    # Configuration files can ignore docstring requirements
+    config.py:D100,D101,D102,D103 

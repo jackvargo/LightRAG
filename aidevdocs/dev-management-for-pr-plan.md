@@ -30,7 +30,7 @@ git checkout feat-multicontext
 This document outlines the strategy for managing development-specific files and configurations while maintaining clean, professional PRs for upstream contributions.
 
 ### **Approach: Option 3 - Development Branch Strategy**
-- **Keep development tools on feature branches** 
+- **Keep development tools on feature branches**
 - **Create clean PR branches without development artifacts**
 - **Maintain development environment in version control for safety**
 - **Clean merge path back to main branch**
@@ -47,7 +47,7 @@ This document outlines the strategy for managing development-specific files and 
 .cursor/                    # Cursor AI assistant rules and configurations
 .cursor/rules/             # Development environment rules
 
-# Development documentation  
+# Development documentation
 aidevdocs/                 # AI development documentation and screenshots
 docs/development/          # Development-specific guides and workflows
 
@@ -96,7 +96,7 @@ git checkout -b feat-multicontext-pr
 
 # Remove development-specific content
 git rm -r .cursor/
-git rm -r aidevdocs/  
+git rm -r aidevdocs/
 git rm -r docs/development/
 git rm .DS_Store
 
@@ -104,7 +104,7 @@ git rm .DS_Store
 git commit -m "prepare: remove development-specific files for upstream PR
 
 - Remove .cursor/ directory (IDE-specific configuration)
-- Remove aidevdocs/ directory (development documentation)  
+- Remove aidevdocs/ directory (development documentation)
 - Remove docs/development/ directory (dev environment guides)
 - Clean branch ready for upstream contribution"
 
@@ -154,7 +154,7 @@ git checkout -b integrate-multicontext-clean
 
 # Manual selective merge of code changes only
 cp -r lightrag/ ../temp-lightrag/
-cp -r lightrag_webui/ ../temp-lightrag_webui/  
+cp -r lightrag_webui/ ../temp-lightrag_webui/
 cp reload_server.sh ../temp-reload_server.sh
 
 # Verify only code changes are included
@@ -167,7 +167,7 @@ git merge integrate-multicontext-clean
 git branch -d integrate-multicontext-clean
 ```
 
-### **Option B: Development Branch Maintenance** 
+### **Option B: Development Branch Maintenance**
 ```bash
 # Keep development branch active for future work
 git checkout feat-multicontext
@@ -185,11 +185,11 @@ git push origin feat-multicontext
 ```
 LightRAG/
 ├── lightrag/              # Core code only
-├── lightrag_webui/        # Frontend code only  
+├── lightrag_webui/        # Frontend code only
 ├── reload_server.sh       # Essential scripts only
 ├── docs/                  # User-facing documentation only
-│   ├── api/              
-│   └── README.md         
+│   ├── api/
+│   └── README.md
 └── README.md             # Project documentation
 ```
 
@@ -200,16 +200,16 @@ LightRAG/
 ├── lightrag_webui/        # Frontend code
 ├── reload_server.sh       # Essential scripts
 ├── .cursor/               # Development environment
-│   └── rules/            
+│   └── rules/
 ├── aidevdocs/             # Development documentation
 │   ├── context-switching-remediation-plan.md
 │   ├── merge-webui-deploy-hardening-plan.md
 │   └── screenshots/
 ├── docs/                  # All documentation
 │   ├── development/       # Dev-specific guides
-│   ├── api/              
-│   └── README.md         
-└── README.md             
+│   ├── api/
+│   └── README.md
+└── README.md
 ```
 
 ---
@@ -252,11 +252,11 @@ git push origin feat-multicontext-pr
 
 ### **✅ Development Benefits**
 - **Safe Environment**: Development tools are version controlled
-- **Team Collaboration**: Other developers can use the same environment  
+- **Team Collaboration**: Other developers can use the same environment
 - **Iterative Improvement**: Development practices improve over time
 - **No Data Loss**: Everything is backed up in git
 
-### **✅ PR Benefits** 
+### **✅ PR Benefits**
 - **Professional Appearance**: Clean, focused contributions
 - **Maintainer Friendly**: No irrelevant files to review
 - **Clear Intent**: Obvious what the contribution adds
@@ -516,7 +516,7 @@ git commit -m "improve: update development environment based on upstream changes
 # As upstream evolves, your development environment should too
 # Document lessons learned in:
 # - aidevdocs/upstream-integration-notes.md
-# - docs/development/environment-setup.md  
+# - docs/development/environment-setup.md
 # - .cursor/rules/development-environemt-management.mdc
 ```
 

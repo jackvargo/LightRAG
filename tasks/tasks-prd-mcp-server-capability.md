@@ -71,7 +71,7 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
   - [x] 1.8 Create `.env.example` and `.env.test` files for environment configuration
   - [x] 1.9 Document development workflow in `docs/development/mcp-development-workflow.md`
   - [x] 1.10 Setup GitHub Actions workflow for CI/CD (`.github/workflows/mcp-ci.yml`)
-  - [ ] 1.11 Configure automated testing, linting, and deployment pipelines
+  - [x] 1.11 Configure automated testing, linting, and deployment pipelines
 
 - [ ] 2.0 Implement LightRAG API Extensions with Tests (Phase 1)
   - [ ] 2.1 Create branch `feature/mcp-lightrag-api-extensions` from main feature branch

@@ -4,27 +4,28 @@ if sys.version_info < (3, 9):
     from typing import AsyncIterator
 else:
     from collections.abc import AsyncIterator
+
 import pipmaster as pm  # Pipmaster for dynamic library install
 
 if not pm.is_installed("aiohttp"):
     pm.install("aiohttp")
 
+from typing import List, Union
+
 import aiohttp
+import numpy as np
 from tenacity import (
     retry,
+    retry_if_exception_type,
     stop_after_attempt,
     wait_exponential,
-    retry_if_exception_type,
 )
 
 from lightrag.exceptions import (
     APIConnectionError,
-    RateLimitError,
     APITimeoutError,
+    RateLimitError,
 )
-
-from typing import Union, List
-import numpy as np
 
 
 @retry(

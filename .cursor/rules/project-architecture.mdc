@@ -1,6 +1,6 @@
 ---
 description: This document contains architectural decisions, design patterns, and technical insights for the LightRAG project.
-globs: 
+globs:
 alwaysApply: false
 ---
 # LightRAG Architecture Notes
@@ -20,7 +20,7 @@ alwaysApply: false
 Frontend (Vue.js) :5173
     ↓ HTTP API
 Backend (FastAPI) :9621
-    ↓ File I/O  
+    ↓ File I/O
 Storage (JSON/Files) ./data/contexts/
 ```
 
@@ -39,7 +39,7 @@ data/contexts/
 
 ### Context Switch Flow
 1. **API Call** → Context switch endpoint
-2. **Path Update** → Context manager updates working/input paths  
+2. **Path Update** → Context manager updates working/input paths
 3. **Callback Execution** → RAG instance and storage updated
 4. **Storage Reset** → Force re-initialization of document status storage
 5. **Document Loading** → Load processed files from new context
@@ -75,7 +75,7 @@ data/contexts/
 - Storage performance improvements
 - Context switching performance optimization
 
-### Reliability  
+### Reliability
 - Unit tests for context switching timing scenarios
 - Real-time monitoring and metrics
 - Automated testing for context switching workflows
@@ -87,4 +87,4 @@ data/contexts/
 
 ---
 
-*This document should be updated as architectural decisions are made and new patterns emerge.* 
+*This document should be updated as architectural decisions are made and new patterns emerge.*

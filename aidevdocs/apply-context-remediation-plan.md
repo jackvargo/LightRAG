@@ -1,8 +1,8 @@
 # Apply Context Switching Remediation Plan
 
-## 🎯 **PROGRESS SUMMARY** 
+## 🎯 **PROGRESS SUMMARY**
 ### ✅ **COMPLETED ACCOMPLISHMENTS**
-- [x] **Context switch callback function** added to `lightrag_server.py` (Fix 1) 
+- [x] **Context switch callback function** added to `lightrag_server.py` (Fix 1)
 - [x] **Callback registration** implemented in `create_app()` (Fix 2)
 - [x] **Storage update method** `_update_storage_configs()` added to `LightRAG` class (Fix 3)
 - [x] **Indexed files loader** `load_indexed_files_from_storage()` added to `DocumentManager` (Fix 4)
@@ -26,7 +26,7 @@
 - **Core Fixes**: 5/5 Complete ✅
 - **Enhanced Methods**: 4/4 Complete ✅
 - **Storage Management**: Complete ✅
-- **Integration**: Complete ✅  
+- **Integration**: Complete ✅
 - **Testing**: Ready for Testing 🔄
 - **Documentation**: Updated ✅
 
@@ -71,25 +71,25 @@ git show backup-complex-implementation -- lightrag/api/routers/document_routes.p
 async def on_context_switch(context_name, context_working_path, previous_context_name=None, context_input_path=None, **kwargs):
     """Update RAG instance and document manager when context switches"""
     from pathlib import Path
-    
+
     logger.info(f"Context switch callback: {previous_context_name} → {context_name}")
-    
+
     # Update RAG working directory
     old_working_dir = rag.working_dir
     rag.working_dir = str(context_working_path)
     logger.info(f"Updated RAG working_dir: {old_working_dir} → {rag.working_dir}")
-    
+
     # Update document manager input directory
     if context_input_path:
-        old_input_dir = doc_manager.input_dir  
+        old_input_dir = doc_manager.input_dir
         doc_manager.input_dir = Path(context_input_path)
         logger.info(f"Updated doc_manager input_dir: {old_input_dir} → {doc_manager.input_dir}")
-        
+
         # Clear indexed files and reload from new context
         doc_manager.indexed_files.clear()
         if hasattr(doc_manager, 'load_indexed_files_from_storage'):
             await doc_manager.load_indexed_files_from_storage(rag)
-    
+
     # Update storage global_configs
     if hasattr(rag, '_update_storage_configs'):
         await rag._update_storage_configs()
@@ -118,16 +118,16 @@ logger.info("Registered context switch callback")
 async def _update_storage_configs(self):
     """Update global_config in all storage instances with current working_dir"""
     from dataclasses import asdict
-    
+
     new_global_config = asdict(self)
-    
+
     # Update all storage instances that have global_config
     storages_to_update = [
-        self.doc_status, self.full_docs, self.text_chunks, 
-        self.entities_vdb, self.relationships_vdb, self.chunks_vdb, 
+        self.doc_status, self.full_docs, self.text_chunks,
+        self.entities_vdb, self.relationships_vdb, self.chunks_vdb,
         self.chunk_entity_relation_graph, self.llm_response_cache
     ]
-    
+
     for storage in storages_to_update:
         if hasattr(storage, 'global_config'):
             storage.global_config.update(new_global_config)
@@ -135,7 +135,7 @@ async def _update_storage_configs(self):
             if hasattr(storage, '_file_name') and hasattr(storage, '__post_init__'):
                 storage.__post_init__()
                 logger.debug(f"Re-initialized storage {type(storage).__name__} with new working_dir")
-    
+
     logger.info(f"Updated global_config in {len([s for s in storages_to_update if hasattr(s, 'global_config')])} storage instances")
 ```
 
@@ -150,23 +150,23 @@ async def load_indexed_files_from_storage(self, rag: Optional['LightRAG'] = None
     if not rag:
         logger.debug("No RAG instance provided, cannot load indexed files from storage")
         return
-        
+
     try:
         from lightrag.base import DocStatus
         processed_docs = await rag.doc_status.get_docs_by_status(DocStatus.PROCESSED)
-        
+
         # Clear current indexed files first
         previous_count = len(self.indexed_files)
-        
+
         for doc_id, doc_info in processed_docs.items():
             if hasattr(doc_info, 'file_path') and doc_info.file_path:
                 # Convert stored file path back to Path object for consistency
                 file_path = self.input_dir / doc_info.file_path
                 if file_path.exists():  # Only add if file still exists
                     self.indexed_files.add(file_path)
-        
+
         logger.info(f"Loaded {len(self.indexed_files)} indexed files from storage (was {previous_count}) for {self.input_dir}")
-        
+
     except Exception as e:
         logger.warning(f"Error loading indexed files from storage: {e}")
         # Don't fail - just continue with empty set (current behavior)
@@ -184,7 +184,7 @@ async def run_scanning_process(rag: LightRAG, doc_manager: DocumentManager):
         # Load existing processed files from storage first
         logger.info("Loading existing processed files from storage...")
         await doc_manager.load_indexed_files_from_storage(rag)
-        
+
         # Now scan for truly new files
         new_files = doc_manager.scan_directory_for_new_files()
         # ... rest of function unchanged
@@ -205,10 +205,10 @@ async def run_scanning_process(rag: LightRAG, doc_manager: DocumentManager):
    ```bash
    # Process files in default context
    curl -X POST http://localhost:9621/documents/scan
-   
+
    # Switch to different context
    curl -X POST http://localhost:9621/contexts/bc_data/switch
-   
+
    # Check logs for callback execution
    # Verify no reprocessing when scanning
    curl -X POST http://localhost:9621/documents/scan
@@ -218,7 +218,7 @@ async def run_scanning_process(rag: LightRAG, doc_manager: DocumentManager):
    ```bash
    # Switch back to original context
    curl -X POST http://localhost:9621/contexts/default/switch
-   
+
    # Verify original files still recognized as processed
    curl -X POST http://localhost:9621/documents/scan
    ```
@@ -244,7 +244,7 @@ from typing import Optional
 
 All new methods include graceful error handling:
 - Missing RAG instance → log and continue
-- Storage errors → log warning and continue  
+- Storage errors → log warning and continue
 - Missing storage methods → conditional checks with `hasattr()`
 
 ## ✅ Step 5: Rollback Strategy

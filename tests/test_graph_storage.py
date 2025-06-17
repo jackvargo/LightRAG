@@ -12,24 +12,25 @@
 """
 
 import asyncio
+import importlib
 import os
 import sys
-import importlib
+
 import numpy as np
-from dotenv import load_dotenv
 from ascii_colors import ASCIIColors
+from dotenv import load_dotenv
 
 # 添加项目根目录到Python路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from lightrag.types import KnowledgeGraph
 from lightrag.kg import (
-    STORAGE_IMPLEMENTATIONS,
     STORAGE_ENV_REQUIREMENTS,
+    STORAGE_IMPLEMENTATIONS,
     STORAGES,
     verify_storage_implementation,
 )
 from lightrag.kg.shared_storage import initialize_share_data
+from lightrag.types import KnowledgeGraph
 
 
 # 模拟的嵌入函数，返回随机向量
@@ -1085,11 +1086,13 @@ async def test_graph_undirected_property(storage):
 async def main():
     """主函数"""
     # 显示程序标题
-    ASCIIColors.cyan("""
+    ASCIIColors.cyan(
+        """
     ╔══════════════════════════════════════════════════════════════╗
     ║                  通用图存储测试程序                          ║
     ╚══════════════════════════════════════════════════════════════╝
-    """)
+    """
+    )
 
     # 检查.env文件
     if not check_env_file():

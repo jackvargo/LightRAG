@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
 # LightRAG Development Rules for Cursor
@@ -8,7 +8,7 @@ alwaysApply: true
 ## Project Structure
 This is a LightRAG development environment with:
 - **Backend**: Python FastAPI service (port 9621)
-- **Frontend**: Vue.js WebUI (port 5173) 
+- **Frontend**: Vue.js WebUI (port 5173)
 - **Data**: Context-based storage in `./data/contexts/`
 - **Docker**: Containerized backend service
 - **Development Tools**: Optimized scripts for fast iteration
@@ -76,14 +76,14 @@ When context switching fails:
 - **Cause**: Incorrect document ID generation in scan
 - **Solution**: Fixed to use content-based MD5 hash like main system
 
-#### Context Switch Failures  
+#### Context Switch Failures
 - **Problem**: Context switch doesn't work
 - **Cause**: Storage instances keep old file paths
 - **Solution**: Reset initialization flags, update global_config in storage instances
 
 #### Container Issues
 - **Problem**: Backend service won't start
-- **Solutions**: 
+- **Solutions**:
   1. Check port conflicts: `./dev-tools.sh status`
   2. Clean environment: `./dev-tools.sh cleanup`
   3. Full rebuild: `./reload_server.sh --build`
@@ -110,7 +110,7 @@ For fastest development:
 
 Key files to check:
 - `lightrag/kg/shared_storage.py` - Storage reset logic
-- `lightrag/lightrag.py` - Working directory updates  
+- `lightrag/lightrag.py` - Working directory updates
 - `lightrag/api/routers/document_routes.py` - Document scanning
 - `lightrag_webui/src/lib/constants.ts` - Frontend API config
 
@@ -122,4 +122,4 @@ Critical environment variables:
 - `WEB_PORT` - Frontend port (default: 5173)
 - `OPENAI_API_KEY` - This is intentionally wrong right now to avoid costly reprocessing until the errors with mutli context are resolved.
 
-Remember: This development environment is optimized for fast iteration. Use the appropriate reload mode for your changes, and always monitor logs to catch issues early. 
+Remember: This development environment is optimized for fast iteration. Use the appropriate reload mode for your changes, and always monitor logs to catch issues early.

@@ -1,5 +1,6 @@
-import setuptools
 from pathlib import Path
+
+import setuptools
 
 
 # Reading the long description from README.md
@@ -89,9 +90,9 @@ setuptools.setup(
     project_urls={  # Additional project metadata
         "Documentation": metadata.get("__url__", ""),
         "Source": metadata.get("__url__", ""),
-        "Tracker": f"{metadata.get('__url__', '')}/issues"
-        if metadata.get("__url__")
-        else "",
+        "Tracker": (
+            f"{metadata.get('__url__', '')}/issues" if metadata.get("__url__") else ""
+        ),
     },
     extras_require={
         "api": requirements + read_api_requirements(),

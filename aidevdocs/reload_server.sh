@@ -84,6 +84,3 @@ if [ "$NO_FOLLOW_LOGS" = true ]; then
 fi
 
 docker compose logs -f
-
-
-    

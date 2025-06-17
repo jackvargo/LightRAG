@@ -9,7 +9,7 @@ The goal is to create an enhanced RAG tool that exposes proprietary documentatio
 ## Goals
 
 1. **Developer Acceleration**: Enable developers to quickly research system capabilities, best practices, design patterns, and coding standards through their IDE
-2. **Knowledge Accessibility**: Provide employees with easy access to project execution methodologies (SOPs) and "how-to" guidance  
+2. **Knowledge Accessibility**: Provide employees with easy access to project execution methodologies (SOPs) and "how-to" guidance
 3. **Enhanced Context**: Deliver graph-based relationship discovery alongside traditional document retrieval for richer context
 4. **Seamless Integration**: Offer native MCP protocol support for any compatible development environment
 5. **Multi-Context Support**: Enable access to different knowledge repositories through LightRAG's existing multi-context capability
@@ -23,7 +23,7 @@ The goal is to create an enhanced RAG tool that exposes proprietary documentatio
 - As a **code reviewer**, I want to quickly retrieve full documentation sections so that I can verify implementation against standards
 - As a **developer**, I want real-time streaming of search results so that I can see information as it becomes available
 
-### Knowledge Worker User Stories  
+### Knowledge Worker User Stories
 - As a **project manager**, I want to search SOPs and methodologies so that I can provide accurate guidance to team members
 - As a **new employee**, I want to discover related processes and procedures so that I can understand the full context of my work
 - As a **quality assurance specialist**, I want to access testing guidelines and standards so that I can ensure compliance
@@ -65,12 +65,12 @@ The goal is to create an enhanced RAG tool that exposes proprietary documentatio
 20. All content retrieval tools MUST offer optional relationship "depth" parameters to include related entities and relationships
 21. The system MUST return relationship data alongside content to minimize additional API calls
 
-### Real-time Communication  
+### Real-time Communication
 22. The system MUST stream query results in real-time as they are processed by LightRAG
 23. The system MUST provide status updates during long-running operations (especially context switching which involves storage reinitialization)
 24. The system MUST support both SSE (for streaming results) and WebSocket (for bidirectional communication)
 
-### Caching and Performance  
+### Caching and Performance
 25. The system MUST implement session-based caching to avoid redundant LightRAG API calls
 26. The system MUST provide a `clear_cache` tool for explicit cache management
 27. The system MUST set appropriate HTTP cache headers for client-side optimization
@@ -126,7 +126,7 @@ The goal is to create an enhanced RAG tool that exposes proprietary documentatio
 
 ### Performance Requirements
 - **User Experience**: Provide real-time status updates and progress indicators for long-running operations to keep users informed
-- **Concurrent Users**: Support 10-50 concurrent sessions initially  
+- **Concurrent Users**: Support 10-50 concurrent sessions initially
 - **Cache Hit Ratio**: Target 60%+ cache hit ratio for repeated queries
 - **Error Rate**: Maintain <1% error rate under normal load
 
@@ -175,20 +175,20 @@ Based on codebase analysis, the following capabilities are available and can be 
 ### **Required LightRAG API Extensions**
 To fully support the MCP server requirements, these endpoints need to be added to LightRAG:
 
-1. **Document Content Retrieval**: 
+1. **Document Content Retrieval**:
    - `GET /documents/{doc_id}/content` - retrieve raw document content with MIME type
    - Must return original file content with proper headers
-   
-2. **Processed Chunk Access**: 
+
+2. **Processed Chunk Access**:
    - `GET /documents/{doc_id}/chunks` - retrieve processed text chunks as JSON array
    - Include chunk metadata (position, size, relationships)
-   
-3. **Enhanced Search**: 
+
+3. **Enhanced Search**:
    - Modify existing search endpoints to return document IDs with content snippets
    - Include source document metadata in all search responses
-   
-4. **Relationship Data**: 
-   - Add optional `include_relationships` parameter to query endpoints  
+
+4. **Relationship Data**:
+   - Add optional `include_relationships` parameter to query endpoints
    - Return relationship depth data alongside content responses
 
 ### **MCP Server Architecture Decisions**
@@ -205,11 +205,11 @@ Based on current LightRAG capabilities and MCP specification research:
 ## Implementation Decisions (Finalized)
 
 ### **1. Relationship Depth Configuration**
-- **Default**: Return single nearest nodes (depth=1)  
+- **Default**: Return single nearest nodes (depth=1)
 - **Maximum**: Up to 5 nodes deep for relationship exploration
 - **Implementation**: Configurable per query with reasonable defaults to prevent performance issues
 
-### **2. Document ID Format** 
+### **2. Document ID Format**
 - **Standard**: Use LightRAG's internal document status IDs directly
 - **Benefit**: Maintains consistency with existing LightRAG API and reduces ID mapping complexity
 
@@ -217,7 +217,7 @@ Based on current LightRAG capabilities and MCP specification research:
 - **Configuration**: JSON-configurable at server level for organizational customization
 - **Built-in Templates**:
   - Documentation search workflows
-  - Architecture discovery patterns  
+  - Architecture discovery patterns
   - Best practice validation prompts
   - Code review guidance templates
   - **User Story Context Builder**: Compile context relevant to new user stories and existing code elements
@@ -231,10 +231,10 @@ Based on current LightRAG capabilities and MCP specification research:
 - **Manual Control**: Provide explicit cache clearing command/tool
 - **Scope**: Session-based cache tied to connection lifetime
 
-### **6. Resource Content Handling** 
+### **6. Resource Content Handling**
 Following [MCP Resource Specification](https://modelcontextprotocol.io/specification/2025-03-26/server/resources):
 - **Text Content**: Documents served as `text/plain` or appropriate MIME type with full content
-- **Binary Content**: Files served as base64-encoded blobs with proper MIME types  
+- **Binary Content**: Files served as base64-encoded blobs with proper MIME types
 - **Large Files**: Use standard HTTP content-length headers; chunking handled by MCP client
 - **URI Scheme**: Use `file://` scheme for document resources as per MCP standard
 
@@ -267,4 +267,4 @@ After Phase 1 is complete and tested:
 2. **Tool Implementation** - All specified MCP tools using enhanced LightRAG API
 3. **Resource Implementation** - Document and chunk exposure as MCP resources
 4. **Prompt Templates** - Configurable JSON-based prompt system
-5. **Session Management** - Redis-based caching and session handling 
+5. **Session Management** - Redis-based caching and session handling

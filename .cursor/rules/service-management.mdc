@@ -1,6 +1,5 @@
 ---
-description: 
+description:
 globs: docker-compose.yml
 alwaysApply: false
 ---
- 

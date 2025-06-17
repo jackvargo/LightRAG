@@ -16,7 +16,7 @@ When the user says "Start dev testing", "start dev environment", "begin testing"
    - Clean up old containers: `docker system prune -f`
    - Ensure proxy network exists: `docker network create proxy 2>/dev/null || true`
 
-2. **Development Environment Launch**  
+2. **Development Environment Launch**
    - Start development profile: `docker compose --profile dev up -d`
    - Wait for backend to be ready (30 seconds)
    - Health check: `curl -f http://localhost:9621/health`
@@ -39,7 +39,7 @@ When the user says "Start dev testing", "start dev environment", "begin testing"
 
 ### Success Criteria:
 - Backend container running on port 9621
-- WebUI dev server running on port 5173  
+- WebUI dev server running on port 5173
 - Health endpoints responding
 - No critical errors in logs
 - Browser testing ready

@@ -19,14 +19,14 @@ services:
       # Traefik routing
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_proxy"
-      
+
       # HTTPS Router
       - "traefik.http.routers.portainer.rule=Host(`portainer.flipgoal.xyz`)"
       - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.tls.certresolver=le"
       - "traefik.http.routers.portainer.service=portainer-svc"
       - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
-      
+
       # Security Headers Middleware
       - "traefik.http.middlewares.portainer-secure-headers.headers.browserXssFilter=true"
       - "traefik.http.middlewares.portainer-secure-headers.headers.contentTypeNosniff=true"
@@ -34,10 +34,10 @@ services:
       - "traefik.http.middlewares.portainer-secure-headers.headers.stsIncludeSubdomains=true"
       - "traefik.http.middlewares.portainer-secure-headers.headers.stsPreload=true"
       - "traefik.http.middlewares.portainer-secure-headers.headers.stsSeconds=31536000"
-      
+
       # Apply Security Headers
       - "traefik.http.routers.portainer.middlewares=portainer-secure-headers"
-      
+
       # HTTP Router (for redirect)
       - "traefik.http.routers.portainer-http.rule=Host(`portainer.flipgoal.xyz`)"
       - "traefik.http.routers.portainer-http.entrypoints=web"

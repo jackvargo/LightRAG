@@ -1,26 +1,28 @@
 from __future__ import annotations
-import weakref
 
 import asyncio
-import html
 import csv
+import html
 import json
 import logging
 import logging.handlers
 import os
 import re
+import weakref
 from dataclasses import dataclass
 from functools import wraps
 from hashlib import md5
-from typing import Any, Protocol, Callable, TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, Callable, List, Protocol
+
 import numpy as np
-from lightrag.prompt import PROMPTS
 from dotenv import load_dotenv
+
 from lightrag.constants import (
-    DEFAULT_LOG_MAX_BYTES,
     DEFAULT_LOG_BACKUP_COUNT,
     DEFAULT_LOG_FILENAME,
+    DEFAULT_LOG_MAX_BYTES,
 )
+from lightrag.prompt import PROMPTS
 
 
 def get_env_value(
@@ -876,12 +878,16 @@ async def get_best_cached_response(
                         "event": "cache_rejected_by_llm",
                         "type": cache_type,
                         "mode": mode,
-                        "original_question": original_prompt[:100] + "..."
-                        if len(original_prompt) > 100
-                        else original_prompt,
-                        "cached_question": best_prompt[:100] + "..."
-                        if len(best_prompt) > 100
-                        else best_prompt,
+                        "original_question": (
+                            original_prompt[:100] + "..."
+                            if len(original_prompt) > 100
+                            else original_prompt
+                        ),
+                        "cached_question": (
+                            best_prompt[:100] + "..."
+                            if len(best_prompt) > 100
+                            else best_prompt
+                        ),
                         "similarity_score": round(best_similarity, 4),
                         "threshold": similarity_threshold,
                     }
@@ -1030,12 +1036,14 @@ async def save_to_cache(hashing_kv, cache_data: CacheData):
     mode_cache[cache_data.args_hash] = {
         "return": cache_data.content,
         "cache_type": cache_data.cache_type,
-        "embedding": cache_data.quantized.tobytes().hex()
-        if cache_data.quantized is not None
-        else None,
-        "embedding_shape": cache_data.quantized.shape
-        if cache_data.quantized is not None
-        else None,
+        "embedding": (
+            cache_data.quantized.tobytes().hex()
+            if cache_data.quantized is not None
+            else None
+        ),
+        "embedding_shape": (
+            cache_data.quantized.shape if cache_data.quantized is not None else None
+        ),
         "embedding_min": cache_data.min_val,
         "embedding_max": cache_data.max_val,
         "original_prompt": cache_data.prompt,
