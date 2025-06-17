@@ -20,12 +20,11 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
 - `tests/api/test_document_routes.py` - Unit tests for new document endpoints
 - `tests/api/test_query_extensions.py` - Unit tests for enhanced query functionality
 
+### Development and CI/CD Files
+- `docs/development/mcp-development-workflow.md` - Comprehensive development workflow documentation with setup, testing, and deployment procedures
+
 ### Development and CI/CD Files (Planned)
 - `.github/workflows/mcp-ci.yml` - GitHub Actions workflow for automated testing and deployment
-- `.env.example` - Example environment variables for development setup
-- `.env.test` - Test environment configuration
-- `.pre-commit-config.yaml` - Pre-commit hooks configuration
-- `docs/development/mcp-development-workflow.md` - Development workflow documentation
 
 ### Phase 2: MCP Server Implementation
 - `lightrag_mcp/` - New directory for MCP server implementation
@@ -72,7 +71,7 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
   - [x] 1.6 Create `.gitignore` entries for MCP artifacts (`.venv-mcp/`, `lightrag_mcp/__pycache__/`, `.env.mcp`)
   - [x] 1.7 Setup pre-commit hooks: `pre-commit install` with black, isort, flake8, mypy
   - [x] 1.8 Create `.env.example` and `.env.test` files for environment configuration
-  - [ ] 1.9 Document development workflow in `docs/development/mcp-development-workflow.md`
+  - [x] 1.9 Document development workflow in `docs/development/mcp-development-workflow.md`
   - [ ] 1.10 Setup GitHub Actions workflow for CI/CD (`.github/workflows/mcp-ci.yml`)
   - [ ] 1.11 Configure automated testing, linting, and deployment pipelines
 
