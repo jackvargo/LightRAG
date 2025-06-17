@@ -3,50 +3,22 @@ This module contains all document-related routes for the LightRAG API.
 """
 
 import asyncio
+from lightrag.utils import logger
+import aiofiles
 import shutil
 import traceback
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
-
-import aiofiles
 import pipmaster as pm
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Any, Literal
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
 from pydantic import BaseModel, Field, field_validator
-from pyuca import Collator
+import os
 
 from lightrag import LightRAG
-from lightrag.api.utils_api import get_combined_auth_dependency
 from lightrag.base import DocProcessingStatus, DocStatus
-from lightrag.utils import logger
-
+from lightrag.api.utils_api import get_combined_auth_dependency
 from ..config import global_args
-
-
-# Function to format datetime to ISO format string with timezone information
-def format_datetime(dt: Any) -> Optional[str]:
-    """Format datetime to ISO format string with timezone information
-
-    Args:
-        dt: Datetime object, string, or None
-
-    Returns:
-        ISO format string with timezone information, or None if input is None
-    """
-    if dt is None:
-        return None
-    if isinstance(dt, str):
-        return dt
-
-    # Check if datetime object has timezone information
-    if isinstance(dt, datetime):
-        # If datetime object has no timezone info (naive datetime), add UTC timezone
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-
-    # Return ISO format string with timezone information
-    return dt.isoformat()
-
 
 router = APIRouter(
     prefix="/documents",
@@ -86,30 +58,22 @@ class InsertTextRequest(BaseModel):
 
     Attributes:
         text: The text content to be inserted into the RAG system
-        file_source: Source of the text (optional)
     """
 
     text: str = Field(
         min_length=1,
         description="The text to insert",
     )
-    file_source: str = Field(default=None, min_length=0, description="File Source")
 
     @field_validator("text", mode="after")
     @classmethod
-    def strip_text_after(cls, text: str) -> str:
+    def strip_after(cls, text: str) -> str:
         return text.strip()
-
-    @field_validator("file_source", mode="after")
-    @classmethod
-    def strip_source_after(cls, file_source: str) -> str:
-        return file_source.strip()
 
     class Config:
         json_schema_extra = {
             "example": {
-                "text": "This is a sample text to be inserted into the RAG system.",
-                "file_source": "Source of the text (optional)",
+                "text": "This is a sample text to be inserted into the RAG system."
             }
         }
 
@@ -119,26 +83,17 @@ class InsertTextsRequest(BaseModel):
 
     Attributes:
         texts: List of text contents to be inserted into the RAG system
-        file_sources: Sources of the texts (optional)
     """
 
     texts: list[str] = Field(
         min_length=1,
         description="The texts to insert",
     )
-    file_sources: list[str] = Field(
-        default=None, min_length=0, description="Sources of the texts"
-    )
 
     @field_validator("texts", mode="after")
     @classmethod
-    def strip_texts_after(cls, texts: list[str]) -> list[str]:
+    def strip_after(cls, texts: list[str]) -> list[str]:
         return [text.strip() for text in texts]
-
-    @field_validator("file_sources", mode="after")
-    @classmethod
-    def strip_sources_after(cls, file_sources: list[str]) -> list[str]:
-        return [file_source.strip() for file_source in file_sources]
 
     class Config:
         json_schema_extra = {
@@ -146,10 +101,7 @@ class InsertTextsRequest(BaseModel):
                 "texts": [
                     "This is the first text to be inserted.",
                     "This is the second text to be inserted.",
-                ],
-                "file_sources": [
-                    "First file source (optional)",
-                ],
+                ]
             }
         }
 
@@ -255,6 +207,14 @@ Attributes:
 
 
 class DocStatusResponse(BaseModel):
+    @staticmethod
+    def format_datetime(dt: Any) -> Optional[str]:
+        if dt is None:
+            return None
+        if isinstance(dt, str):
+            return dt
+        return dt.isoformat()
+
     id: str = Field(description="Document identifier")
     content_summary: str = Field(description="Summary of document content")
     content_length: int = Field(description="Length of document content in characters")
@@ -340,7 +300,7 @@ class PipelineStatusResponse(BaseModel):
         autoscanned: Whether auto-scan has started
         busy: Whether the pipeline is currently busy
         job_name: Current job name (e.g., indexing files/indexing texts)
-        job_start: Job start time as ISO format string with timezone (optional)
+        job_start: Job start time as ISO format string (optional)
         docs: Total number of documents to be indexed
         batchs: Number of batches for processing documents
         cur_batch: Current processing batch
@@ -362,17 +322,13 @@ class PipelineStatusResponse(BaseModel):
     history_messages: Optional[List[str]] = None
     update_status: Optional[dict] = None
 
-    @field_validator("job_start", mode="before")
-    @classmethod
-    def parse_job_start(cls, value):
-        """Process datetime and return as ISO format string with timezone"""
-        return format_datetime(value)
-
     class Config:
         extra = "allow"  # Allow additional fields from the pipeline status
 
 
 class DocumentManager:
+    """Manages document scanning and processing in a separate background process."""
+
     def __init__(
         self,
         input_dir: str,
@@ -438,6 +394,46 @@ class DocumentManager:
 
     def is_supported_file(self, filename: str) -> bool:
         return any(filename.lower().endswith(ext) for ext in self.supported_extensions)
+
+    async def load_indexed_files_from_storage(self, rag: Optional['LightRAG'] = None) -> None:
+        """Load processed file paths from document status storage into indexed_files"""
+        if not rag:
+            logger.debug("No RAG instance provided, cannot load indexed files from storage")
+            return
+            
+        try:
+            from lightrag.base import DocStatus
+            
+            # Get processed docs from current storage
+            processed_docs = await rag.doc_status.get_docs_by_status(DocStatus.PROCESSED)
+            
+            # Clear current indexed files first
+            previous_count = len(self.indexed_files)
+            
+            for doc_id, doc_info in processed_docs.items():
+                if hasattr(doc_info, 'file_path') and doc_info.file_path:
+                    # Convert stored file path back to Path object for consistency
+                    file_path = self.input_dir / doc_info.file_path
+                    if file_path.exists():  # Only add if file still exists
+                        self.indexed_files.add(file_path)
+            
+            logger.info(f"Loaded {len(self.indexed_files)} indexed files from storage (was {previous_count}) for {self.input_dir}")
+            
+        except Exception as e:
+            logger.warning(f"Error loading indexed files from storage: {e}")
+            # Don't fail - just continue with empty set (current behavior)
+
+    def update_input_directory(self, new_input_dir: str | Path):
+        """Update the input directory for the document manager."""
+        self.input_dir = Path(new_input_dir)
+        self.input_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"DocumentManager input directory updated to: {self.input_dir}")
+    
+    def reset_frontend_state(self):
+        """Reset frontend-facing state tracking."""
+        # Clear the indexed files tracking to force re-scanning
+        self.indexed_files.clear()
+        logger.info("DocumentManager frontend state reset - cleared indexed files tracking")
 
 
 async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
@@ -520,9 +516,7 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 if global_args.document_loading_engine == "DOCLING":
                     if not pm.is_installed("docling"):  # type: ignore
                         pm.install("docling")
-                    from docling.document_converter import (
-                        DocumentConverter,  # type: ignore
-                    )
+                    from docling.document_converter import DocumentConverter  # type: ignore
 
                     converter = DocumentConverter()
                     result = converter.convert(file_path)
@@ -530,9 +524,8 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 else:
                     if not pm.is_installed("pypdf2"):  # type: ignore
                         pm.install("pypdf2")
-                    from io import BytesIO
-
                     from PyPDF2 import PdfReader  # type: ignore
+                    from io import BytesIO
 
                     pdf_file = BytesIO(file)
                     reader = PdfReader(pdf_file)
@@ -542,22 +535,16 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 if global_args.document_loading_engine == "DOCLING":
                     if not pm.is_installed("docling"):  # type: ignore
                         pm.install("docling")
-                    from docling.document_converter import (
-                        DocumentConverter,  # type: ignore
-                    )
+                    from docling.document_converter import DocumentConverter  # type: ignore
 
                     converter = DocumentConverter()
                     result = converter.convert(file_path)
                     content = result.document.export_to_markdown()
                 else:
                     if not pm.is_installed("python-docx"):  # type: ignore
-                        try:
-                            pm.install("python-docx")
-                        except Exception:
-                            pm.install("docx")
-                    from io import BytesIO
-
+                        pm.install("docx")
                     from docx import Document  # type: ignore
+                    from io import BytesIO
 
                     docx_file = BytesIO(file)
                     doc = Document(docx_file)
@@ -568,9 +555,7 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 if global_args.document_loading_engine == "DOCLING":
                     if not pm.is_installed("docling"):  # type: ignore
                         pm.install("docling")
-                    from docling.document_converter import (
-                        DocumentConverter,  # type: ignore
-                    )
+                    from docling.document_converter import DocumentConverter  # type: ignore
 
                     converter = DocumentConverter()
                     result = converter.convert(file_path)
@@ -578,9 +563,8 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 else:
                     if not pm.is_installed("python-pptx"):  # type: ignore
                         pm.install("pptx")
-                    from io import BytesIO
-
                     from pptx import Presentation  # type: ignore
+                    from io import BytesIO
 
                     pptx_file = BytesIO(file)
                     prs = Presentation(pptx_file)
@@ -592,9 +576,7 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 if global_args.document_loading_engine == "DOCLING":
                     if not pm.is_installed("docling"):  # type: ignore
                         pm.install("docling")
-                    from docling.document_converter import (
-                        DocumentConverter,  # type: ignore
-                    )
+                    from docling.document_converter import DocumentConverter  # type: ignore
 
                     converter = DocumentConverter()
                     result = converter.convert(file_path)
@@ -602,9 +584,8 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 else:
                     if not pm.is_installed("openpyxl"):  # type: ignore
                         pm.install("openpyxl")
-                    from io import BytesIO
-
                     from openpyxl import load_workbook  # type: ignore
+                    from io import BytesIO
 
                     xlsx_file = BytesIO(file)
                     wb = load_workbook(xlsx_file)
@@ -673,12 +654,8 @@ async def pipeline_index_files(rag: LightRAG, file_paths: List[Path]):
     try:
         enqueued = False
 
-        # Create Collator for Unicode sorting
-        collator = Collator()
-        sorted_file_paths = sorted(file_paths, key=lambda p: collator.sort_key(str(p)))
-
         # Process files sequentially
-        for file_path in sorted_file_paths:
+        for file_path in file_paths:
             if await pipeline_enqueue_file(rag, file_path):
                 enqueued = True
 
@@ -690,25 +667,16 @@ async def pipeline_index_files(rag: LightRAG, file_paths: List[Path]):
         logger.error(traceback.format_exc())
 
 
-async def pipeline_index_texts(
-    rag: LightRAG, texts: List[str], file_sources: List[str] = None
-):
+async def pipeline_index_texts(rag: LightRAG, texts: List[str]):
     """Index a list of texts
 
     Args:
         rag: LightRAG instance
         texts: The texts to index
-        file_sources: Sources of the texts
     """
     if not texts:
         return
-    if file_sources is not None:
-        if len(file_sources) != 0 and len(file_sources) != len(texts):
-            [
-                file_sources.append("unknown_source")
-                for _ in range(len(file_sources), len(texts))
-            ]
-    await rag.apipeline_enqueue_documents(input=texts, file_paths=file_sources)
+    await rag.apipeline_enqueue_documents(texts)
     await rag.apipeline_process_enqueue_documents()
 
 
@@ -739,6 +707,11 @@ async def save_temp_file(input_dir: Path, file: UploadFile = File(...)) -> Path:
 async def run_scanning_process(rag: LightRAG, doc_manager: DocumentManager):
     """Background task to scan and index documents"""
     try:
+        # Load existing processed files from storage first
+        logger.info("Loading existing processed files from storage...")
+        await doc_manager.load_indexed_files_from_storage(rag)
+        
+        # Now scan for truly new files
         new_files = doc_manager.scan_directory_for_new_files()
         total_files = len(new_files)
         logger.info(f"Found {total_files} new files to index.")
@@ -746,9 +719,27 @@ async def run_scanning_process(rag: LightRAG, doc_manager: DocumentManager):
         if not new_files:
             return
 
-        # Process all files at once
-        await pipeline_index_files(rag, new_files)
-        logger.info(f"Scanning process completed: {total_files} files Processed.")
+        # Get MAX_PARALLEL_INSERT from global_args
+        max_parallel = global_args.max_parallel_insert
+        # Calculate batch size as 2 * MAX_PARALLEL_INSERT
+        batch_size = 2 * max_parallel
+
+        # Process files in batches
+        for i in range(0, total_files, batch_size):
+            batch_files = new_files[i : i + batch_size]
+            batch_num = i // batch_size + 1
+            total_batches = (total_files + batch_size - 1) // batch_size
+
+            logger.info(
+                f"Processing batch {batch_num}/{total_batches} with {len(batch_files)} files"
+            )
+            await pipeline_index_files(rag, batch_files)
+
+            # Log progress
+            processed = min(i + batch_size, total_files)
+            logger.info(
+                f"Processed {processed}/{total_files} files ({processed/total_files*100:.1f}%)"
+            )
 
     except Exception as e:
         logger.error(f"Error during scanning process: {str(e)}")
@@ -859,12 +850,7 @@ def create_document_routes(
             HTTPException: If an error occurs during text processing (500).
         """
         try:
-            background_tasks.add_task(
-                pipeline_index_texts,
-                rag,
-                [request.text],
-                file_sources=[request.file_source],
-            )
+            background_tasks.add_task(pipeline_index_texts, rag, [request.text])
             return InsertResponse(
                 status="success",
                 message="Text successfully received. Processing will continue in background.",
@@ -899,12 +885,7 @@ def create_document_routes(
             HTTPException: If an error occurs during text processing (500).
         """
         try:
-            background_tasks.add_task(
-                pipeline_index_texts,
-                rag,
-                request.texts,
-                file_sources=request.file_sources,
-            )
+            background_tasks.add_task(pipeline_index_texts, rag, request.texts)
             return InsertResponse(
                 status="success",
                 message="Text successfully received. Processing will continue in background.",
@@ -1234,8 +1215,8 @@ def create_document_routes(
         """
         try:
             from lightrag.kg.shared_storage import (
-                get_all_update_flags_status,
                 get_namespace_data,
+                get_all_update_flags_status,
             )
 
             pipeline_status = await get_namespace_data("pipeline_status")
@@ -1265,10 +1246,9 @@ def create_document_routes(
             if "history_messages" in status_dict:
                 status_dict["history_messages"] = list(status_dict["history_messages"])
 
-            # Ensure job_start is properly formatted as a string with timezone information
-            if "job_start" in status_dict and status_dict["job_start"]:
-                # Use format_datetime to ensure consistent formatting
-                status_dict["job_start"] = format_datetime(status_dict["job_start"])
+            # Format the job_start time if it exists
+            if status_dict.get("job_start"):
+                status_dict["job_start"] = str(status_dict["job_start"])
 
             return PipelineStatusResponse(**status_dict)
         except Exception as e:
@@ -1318,8 +1298,12 @@ def create_document_routes(
                             content_summary=doc_status.content_summary,
                             content_length=doc_status.content_length,
                             status=doc_status.status,
-                            created_at=format_datetime(doc_status.created_at),
-                            updated_at=format_datetime(doc_status.updated_at),
+                            created_at=DocStatusResponse.format_datetime(
+                                doc_status.created_at
+                            ),
+                            updated_at=DocStatusResponse.format_datetime(
+                                doc_status.updated_at
+                            ),
                             chunks_count=doc_status.chunks_count,
                             error=doc_status.error,
                             metadata=doc_status.metadata,

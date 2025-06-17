@@ -518,6 +518,78 @@ class LightRAG:
             self._storages_status = StoragesStatus.FINALIZED
             logger.debug("Finalized Storages")
 
+    async def _update_storage_configs(self):
+        """Update global_config in all storage instances with current working_dir"""
+        from dataclasses import asdict
+        
+        new_global_config = asdict(self)
+        new_working_dir = new_global_config['working_dir']
+        
+        # Update all storage instances that have global_config
+        storages_to_update = [
+            self.doc_status, self.full_docs, self.text_chunks, 
+            self.entities_vdb, self.relationships_vdb, self.chunks_vdb, 
+            self.chunk_entity_relation_graph, self.llm_response_cache
+        ]
+        
+        updated_count = 0
+        for storage in storages_to_update:
+            if hasattr(storage, 'global_config'):
+                storage.global_config.update(new_global_config)
+                updated_count += 1
+                
+                # Simply update the file path if storage supports it
+                if hasattr(storage, 'update_working_dir'):
+                    storage.update_working_dir(new_working_dir)
+        
+        logger.info(f"Updated global_config in {updated_count} storage instances")
+
+    async def update_working_dir(self, new_working_dir: str) -> None:
+        """
+        Update the working directory for LightRAG to support context switching.
+        
+        Args:
+            new_working_dir: New working directory path to use
+        """
+        logger.info(f"Updating working directory from {self.working_dir} to {new_working_dir}")
+        
+        # Save the current storage state
+        prev_state = self._storages_status
+        
+        # Finalize current storages if initialized
+        if self._storages_status == StoragesStatus.INITIALIZED:
+            await self.finalize_storages()
+        
+        # Update the working directory
+        self.working_dir = new_working_dir
+        
+        # CRITICAL: Update storage configurations with new working directory
+        await self._update_storage_configs()
+        
+        # Reset the storages status to create and reinitialize
+        self._storages_status = StoragesStatus.CREATED
+        
+        # Re-initialize if we were previously initialized
+        if prev_state == StoragesStatus.INITIALIZED:
+            await self.initialize_storages()
+            
+        logger.info(f"Successfully updated working directory to {new_working_dir}")
+    
+    async def reload_storages(self) -> None:
+        """
+        Reload all storages to refresh data after context switch.
+        This forces a complete reload of all databases and indexes.
+        """
+        logger.info("Reloading all storages")
+        
+        # Only reload if storages are initialized
+        if self._storages_status == StoragesStatus.INITIALIZED:
+            # Close and open storages to refresh data
+            await self.finalize_storages()
+            await self.initialize_storages()
+            
+        logger.info("Successfully reloaded all storages")
+
     async def get_graph_labels(self):
         text = await self.chunk_entity_relation_graph.get_all_labels()
         return text
@@ -841,6 +913,35 @@ class LightRAG:
                 to_process_docs.update(processing_docs)
                 to_process_docs.update(failed_docs)
                 to_process_docs.update(pending_docs)
+
+                # Safety check: Remove any documents that are actually processed on disk
+                # This prevents reprocessing when shared memory is corrupted after context switch
+                if hasattr(self.doc_status, '_file_name') and hasattr(self.doc_status, 'global_config'):
+                    try:
+                        import json
+                        from pathlib import Path
+                        
+                        # Check the actual file on disk for processed status
+                        working_dir = Path(self.doc_status.global_config.get("working_dir", "."))
+                        status_file = working_dir / self.doc_status._file_name
+                        
+                        if status_file.exists():
+                            with open(status_file, 'r') as f:
+                                disk_data = json.load(f)
+                            
+                            # Remove any doc that is marked as "processed" on disk
+                            docs_to_remove = []
+                            for doc_id in to_process_docs.keys():
+                                if doc_id in disk_data and disk_data[doc_id].get('status') == 'processed':
+                                    docs_to_remove.append(doc_id)
+                                    logger.info(f"Skipping reprocessing of {doc_id} - already processed on disk")
+                            
+                            for doc_id in docs_to_remove:
+                                del to_process_docs[doc_id]
+                                
+                    except Exception as e:
+                        logger.warning(f"Error checking disk status for processed docs: {e}")
+                        # Continue with normal processing if disk check fails
 
                 if not to_process_docs:
                     logger.info("No documents to process")

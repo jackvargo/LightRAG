@@ -1,0 +1,18 @@
+# Testing dependencies for LightRAG API
+pytest>=8.0.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.12.0
+pytest-cov>=4.0.0
+pytest-xdist>=3.5.0
+httpx>=0.25.0
+fastapi[test]>=0.104.0
+
+# For API testing
+requests>=2.31.0
+starlette>=0.27.0
+
+# Optional: for performance testing
+pytest-benchmark>=4.0.0
+
+# Optional: for HTML test reports  
+pytest-html>=4.1.0 

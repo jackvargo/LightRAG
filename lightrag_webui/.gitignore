@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Memory data files
+data/
+
+# Local configuration and development files
+config.local.yml
+.env.local
+CLAUDE.md
+CLAUDE_plan*.md

@@ -31,6 +31,7 @@ from lightrag.api.routers.document_routes import (
     run_scanning_process,
 )
 from lightrag.api.routers.graph_routes import create_graph_routes
+from lightrag.api.routers.context_routes import router as context_router
 from lightrag.api.routers.ollama_api import OllamaAPI
 from lightrag.api.routers.query_routes import create_query_routes
 from lightrag.api.utils_api import (
@@ -47,9 +48,11 @@ from lightrag.kg.shared_storage import (
     get_namespace_data,
     get_pipeline_status_lock,
     initialize_pipeline_status,
+    reset_all_storage_namespaces_for_context_switch,
 )
 from lightrag.types import GPTKeywordExtractionFormat
 from lightrag.utils import EmbeddingFunc, get_env_value, logger, set_verbose_debug
+from lightrag.contexts.context_manager import ContextManager
 
 from .config import (
     get_default_host,
@@ -113,8 +116,29 @@ def create_app(args):
     # Check if API key is provided either through env var or args
     api_key = os.getenv("LIGHTRAG_API_KEY") or args.key
 
-    # Initialize document manager
-    doc_manager = DocumentManager(args.input_dir)
+    # Initialize context manager first to get the current context paths
+    context_manager = ContextManager.get_instance()
+    
+    # Get the current context's working and input directories, fallback to args if no context
+    current_working_path, current_input_path = context_manager.get_context_paths()
+    
+    # Use context-specific working directory if available
+    if current_working_path:
+        context_working_dir = str(current_working_path)
+        logger.info(f"Using context-specific working directory: {context_working_dir}")
+        args.working_dir = context_working_dir
+    else:
+        logger.info(f"No context working path found, using default: {args.working_dir}")
+    
+    # Use context-specific input directory if available 
+    doc_input_dir = str(current_input_path) if current_input_path else args.input_dir
+    if current_input_path:
+        logger.info(f"Using context-specific input directory: {doc_input_dir}")
+    else:
+        logger.info(f"No context input path found, using default: {args.input_dir}")
+
+    # Initialize document manager with context-aware input directory
+    doc_manager = DocumentManager(doc_input_dir)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -370,9 +394,68 @@ def create_app(args):
         )
 
     # Add routes
+    # Add this function after rag and doc_manager are created
+    async def on_context_switch(context_name, context_working_path, previous_context_name=None, context_input_path=None, **kwargs):
+        """Update RAG instance and document manager when context switches"""
+        logger.info(f"Context switch callback: {previous_context_name} → {context_name}")
+        
+        try:
+            # Reset storage namespaces first to ensure clean context switch
+            await reset_all_storage_namespaces_for_context_switch()
+            logger.info("Reset storage namespaces for context switch")
+            
+            # Update RAG working directory
+            if hasattr(rag, 'update_working_dir'):
+                await rag.update_working_dir(str(context_working_path))
+                logger.info(f"Updated RAG working directory to: {context_working_path}")
+            else:
+                # Fallback approach - manually update working_dir
+                rag.working_dir = str(context_working_path)
+                logger.info(f"Manually updated RAG working_dir to: {context_working_path}")
+            
+            # Force reload document status storage from new context files
+            if hasattr(rag.doc_status, 'initialize'):
+                await rag.doc_status.initialize()
+                logger.info("Force reloaded document status storage from new context")
+            
+            # Update document manager input directory  
+            if hasattr(doc_manager, 'update_input_directory'):
+                doc_manager.update_input_directory(context_input_path)
+                logger.info(f"DocumentManager input directory updated to: {context_input_path}")
+                
+            # Reset frontend state and load indexed files from new context
+            if hasattr(doc_manager, 'reset_frontend_state'):
+                doc_manager.reset_frontend_state()
+                
+            if hasattr(doc_manager, 'load_indexed_files_from_storage'):
+                await doc_manager.load_indexed_files_from_storage(rag)
+                logger.info("Loaded indexed files from new context storage")
+            
+            # Reload storages to refresh data if method available
+            if hasattr(rag, 'reload_storages'):
+                await rag.reload_storages()
+                logger.info("Reloaded all storages after context switch")
+                
+            logger.info(f"Context switch completed successfully: {previous_context_name} → {context_name}")
+            
+        except Exception as e:
+            logger.error(f"Error during context switch callback: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            raise  # Re-raise to propagate the error
+
+    # Register the callback
+    ContextManager.register_context_switch_callback(on_context_switch)
+    logger.info("Registered context switch callback")
+
     app.include_router(create_document_routes(rag, doc_manager, api_key))
     app.include_router(create_query_routes(rag, api_key, args.top_k))
     app.include_router(create_graph_routes(rag, api_key))
+    
+    # Context router now has individual route-level auth dependencies
+    logger.info(f"Registering context router. Auth configured: {auth_configured}")
+    logger.info(f"API key configured: {bool(api_key)}")
+    app.include_router(context_router)
 
     # Add Ollama API routes
     ollama_api = OllamaAPI(rag, top_k=args.top_k, api_key=api_key)

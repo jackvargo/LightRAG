@@ -36,6 +36,18 @@ class JsonDocStatusStorage(DocStatusStorage):
         self._storage_lock = None
         self.storage_updated = None
 
+    def update_working_dir(self, new_working_dir: str):
+        """Update file path when working directory changes"""
+        self._file_name = os.path.join(new_working_dir, f"kv_store_{self.namespace}.json")
+        logger.info(f"Updated JsonDocStatusStorage file path to: {self._file_name}")
+        
+        # Force reload data from the new file path
+        if self._data is not None:
+            loaded_data = load_json(self._file_name) or {}
+            self._data.clear()
+            self._data.update(loaded_data)
+            logger.info(f"Force reloaded {len(loaded_data)} items from new storage file: {self._file_name}")
+
     async def initialize(self):
         """Initialize storage data"""
         self._storage_lock = get_storage_lock()

@@ -25,10 +25,10 @@ export type LightragGraphType = {
 }
 
 export type LightragStatus = {
-  status: 'healthy'
-  working_directory: string
-  input_directory: string
-  configuration: {
+  status: 'healthy' | 'success' | 'error'
+  working_directory?: string
+  input_directory?: string
+  configuration?: {
     llm_binding: string
     llm_binding_host: string
     llm_model: string
@@ -45,9 +45,10 @@ export type LightragStatus = {
   core_version?: string
   api_version?: string
   auth_mode?: 'enabled' | 'disabled'
-  pipeline_busy: boolean
+  pipeline_busy?: boolean
   webui_title?: string
   webui_description?: string
+  message?: string
 }
 
 export type LightragDocumentsScanProgress = {
@@ -65,16 +66,17 @@ export type LightragDocumentsScanProgress = {
  * - "global": Utilizes global knowledge.
  * - "hybrid": Combines local and global retrieval methods.
  * - "mix": Integrates knowledge graph and vector retrieval.
- * - "bypass": Bypasses knowledge retrieval and directly uses the LLM.
  */
-export type QueryMode = 'naive' | 'local' | 'global' | 'hybrid' | 'mix' | 'bypass'
+export type QueryMode = 'naive' | 'local' | 'global' | 'hybrid' | 'mix'
 
-export type Message = {
+export interface Message {
   role: 'user' | 'assistant' | 'system'
   content: string
+  context?: string[]
+  prompt?: string
 }
 
-export type QueryRequest = {
+export interface QueryRequest {
   query: string
   /** Specifies the retrieval mode. */
   mode: QueryMode
@@ -94,6 +96,10 @@ export type QueryRequest = {
   max_token_for_global_context?: number
   /** Maximum number of tokens allocated for entity descriptions in local retrieval. */
   max_token_for_local_context?: number
+  /** List of high-level keywords to prioritize in retrieval. */
+  hl_keywords?: string[]
+  /** List of low-level keywords to refine retrieval focus. */
+  ll_keywords?: string[]
   /**
    * Stores past conversation history to maintain context.
    * Format: [{"role": "user/assistant", "content": "message"}].
@@ -101,8 +107,6 @@ export type QueryRequest = {
   conversation_history?: Message[]
   /** Number of complete conversation turns (user-assistant pairs) to consider in the response context. */
   history_turns?: number
-  /** User-provided prompt for the query. If provided, this will be used instead of the default value from prompt template. */
-  user_prompt?: string
 }
 
 export type QueryResponse = {
@@ -173,6 +177,28 @@ export type LoginResponse = {
 export const InvalidApiKeyError = 'Invalid API Key'
 export const RequireApiKeError = 'API Key required'
 
+// Context-related types
+export interface ContextInfo {
+  description: string
+  path: string
+  created_at: string
+  is_default?: boolean
+  is_current?: boolean
+  stats?: ContextStats
+}
+
+export interface ContextStats {
+  documents_count: number
+  entities_count: number
+  relationships_count: number
+  disk_usage_mb: number
+}
+
+export interface ContextsResponse {
+  contexts: Record<string, ContextInfo>
+  current_context: string | null
+}
+
 // Axios instance
 const axiosInstance = axios.create({
   baseURL: backendBaseUrl,
@@ -182,7 +208,7 @@ const axiosInstance = axios.create({
 })
 
 // Interceptor: add api key and check authentication
-axiosInstance.interceptors.request.use((config) => {
+axiosInstance.interceptors.request.use((config: any) => {
   const apiKey = useSettingsStore.getState().apiKey
   const token = localStorage.getItem('LIGHTRAG-API-TOKEN');
 
@@ -196,9 +222,9 @@ axiosInstance.interceptors.request.use((config) => {
   return config
 })
 
-// Interceptor：hanle error
+// Interceptor：handle error
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response: any) => response,
   (error: AxiosError) => {
     if (error.response) {
       if (error.response?.status === 401) {
@@ -243,10 +269,10 @@ export const checkHealth = async (): Promise<
   try {
     const response = await axiosInstance.get('/health')
     return response.data
-  } catch (error) {
+  } catch (e) {
     return {
       status: 'error',
-      message: errorMessage(error)
+      message: errorMessage(e)
     }
   }
 }
@@ -276,185 +302,65 @@ export const queryTextStream = async (
   onChunk: (chunk: string) => void,
   onError?: (error: string) => void
 ) => {
-  const apiKey = useSettingsStore.getState().apiKey;
-  const token = localStorage.getItem('LIGHTRAG-API-TOKEN');
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/x-ndjson',
-  };
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-  if (apiKey) {
-    headers['X-API-Key'] = apiKey;
-  }
-
   try {
-    const response = await fetch(`${backendBaseUrl}/query/stream`, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify(request),
-    });
+    let buffer = ''
+    await axiosInstance
+      .post('/query/stream', request, {
+        responseType: 'text',
+        headers: {
+          Accept: 'application/x-ndjson'
+        },
+        transformResponse: [
+          (data: string) => {
+            // Accumulate the data and process complete lines
+            buffer += data
+            const lines = buffer.split('\n')
+            // Keep the last potentially incomplete line in the buffer
+            buffer = lines.pop() || ''
 
-    if (!response.ok) {
-      // Handle 401 Unauthorized error specifically
-      if (response.status === 401) {
-        // For consistency with axios interceptor, navigate to login page
-        navigationService.navigateToLogin();
-
-        // Create a specific authentication error
-        const authError = new Error('Authentication required');
-        throw authError;
-      }
-
-      // Handle other common HTTP errors with specific messages
-      let errorBody = 'Unknown error';
-      try {
-        errorBody = await response.text(); // Try to get error details from body
-      } catch { /* ignore */ }
-
-      // Format error message similar to axios interceptor for consistency
-      const url = `${backendBaseUrl}/query/stream`;
-      throw new Error(
-        `${response.status} ${response.statusText}\n${JSON.stringify(
-          { error: errorBody }
-        )}\n${url}`
-      );
-    }
-
-    if (!response.body) {
-      throw new Error('Response body is null');
-    }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) {
-        break; // Stream finished
-      }
-
-      // Decode the chunk and add to buffer
-      buffer += decoder.decode(value, { stream: true }); // stream: true handles multi-byte chars split across chunks
-
-      // Process complete lines (NDJSON)
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || ''; // Keep potentially incomplete line in buffer
-
-      for (const line of lines) {
-        if (line.trim()) {
-          try {
-            const parsed = JSON.parse(line);
-            if (parsed.response) {
-              onChunk(parsed.response);
-            } else if (parsed.error && onError) {
-              onError(parsed.error);
+            for (const line of lines) {
+              if (line.trim()) {
+                try {
+                  const parsed = JSON.parse(line)
+                  if (parsed.response) {
+                    onChunk(parsed.response)
+                  } else if (parsed.error && onError) {
+                    onError(parsed.error)
+                  }
+                } catch (e) {
+                  console.error('Error parsing stream chunk:', e)
+                  if (onError) onError('Error parsing server response')
+                }
+              }
             }
-          } catch (error) {
-            console.error('Error parsing stream chunk:', line, error);
-            if (onError) onError(`Error parsing server response: ${line}`);
+            return data
           }
-        }
-      }
-    }
+        ]
+      })
+      .catch((error: any) => {
+        if (onError) onError(errorMessage(error))
+      })
 
-    // Process any remaining data in the buffer after the stream ends
+    // Process any remaining data in the buffer
     if (buffer.trim()) {
       try {
-        const parsed = JSON.parse(buffer);
+        const parsed = JSON.parse(buffer)
         if (parsed.response) {
-          onChunk(parsed.response);
+          onChunk(parsed.response)
         } else if (parsed.error && onError) {
-          onError(parsed.error);
+          onError(parsed.error)
         }
-      } catch (error) {
-        console.error('Error parsing final chunk:', buffer, error);
-        if (onError) onError(`Error parsing final server response: ${buffer}`);
+      } catch (e) {
+        console.error('Error parsing final chunk:', e)
+        if (onError) onError('Error parsing server response')
       }
     }
-
   } catch (error) {
-    const message = errorMessage(error);
-
-    // Check if this is an authentication error
-    if (message === 'Authentication required') {
-      // Already navigated to login page in the response.status === 401 block
-      console.error('Authentication required for stream request');
-      if (onError) {
-        onError('Authentication required');
-      }
-      return; // Exit early, no need for further error handling
-    }
-
-    // Check for specific HTTP error status codes in the error message
-    const statusCodeMatch = message.match(/^(\d{3})\s/);
-    if (statusCodeMatch) {
-      const statusCode = parseInt(statusCodeMatch[1], 10);
-
-      // Handle specific status codes with user-friendly messages
-      let userMessage = message;
-
-      switch (statusCode) {
-      case 403:
-        userMessage = 'You do not have permission to access this resource (403 Forbidden)';
-        console.error('Permission denied for stream request:', message);
-        break;
-      case 404:
-        userMessage = 'The requested resource does not exist (404 Not Found)';
-        console.error('Resource not found for stream request:', message);
-        break;
-      case 429:
-        userMessage = 'Too many requests, please try again later (429 Too Many Requests)';
-        console.error('Rate limited for stream request:', message);
-        break;
-      case 500:
-      case 502:
-      case 503:
-      case 504:
-        userMessage = `Server error, please try again later (${statusCode})`;
-        console.error('Server error for stream request:', message);
-        break;
-      default:
-        console.error('Stream request failed with status code:', statusCode, message);
-      }
-
-      if (onError) {
-        onError(userMessage);
-      }
-      return;
-    }
-
-    // Handle network errors (like connection refused, timeout, etc.)
-    if (message.includes('NetworkError') ||
-        message.includes('Failed to fetch') ||
-        message.includes('Network request failed')) {
-      console.error('Network error for stream request:', message);
-      if (onError) {
-        onError('Network connection error, please check your internet connection');
-      }
-      return;
-    }
-
-    // Handle JSON parsing errors during stream processing
-    if (message.includes('Error parsing') || message.includes('SyntaxError')) {
-      console.error('JSON parsing error in stream:', message);
-      if (onError) {
-        onError('Error processing response data');
-      }
-      return;
-    }
-
-    // Handle other errors
-    console.error('Unhandled stream error:', message);
-    if (onError) {
-      onError(message);
-    } else {
-      console.error('No error handler provided for stream error:', message);
-    }
+    const message = errorMessage(error)
+    console.error('Stream request failed:', message)
+    if (onError) onError(message)
   }
-};
+}
 
 export const insertText = async (text: string): Promise<DocActionResponse> => {
   const response = await axiosInstance.post('/documents/text', { text })
@@ -480,7 +386,7 @@ export const uploadDocument = async (
     // prettier-ignore
     onUploadProgress:
       onUploadProgress !== undefined
-        ? (progressEvent) => {
+        ? (progressEvent: any) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!)
           onUploadProgress(percentCompleted)
         }
@@ -591,57 +497,33 @@ export const loginToServer = async (username: string, password: string): Promise
   return response.data;
 }
 
-/**
- * Updates an entity's properties in the knowledge graph
- * @param entityName The name of the entity to update
- * @param updatedData Dictionary containing updated attributes
- * @param allowRename Whether to allow renaming the entity (default: false)
- * @returns Promise with the updated entity information
- */
-export const updateEntity = async (
-  entityName: string,
-  updatedData: Record<string, any>,
-  allowRename: boolean = false
-): Promise<DocActionResponse> => {
-  const response = await axiosInstance.post('/graph/entity/edit', {
-    entity_name: entityName,
-    updated_data: updatedData,
-    allow_rename: allowRename
-  })
+// Context API functions
+export const getContexts = async (): Promise<ContextsResponse> => {
+  const response = await axiosInstance.get('/contexts')
   return response.data
 }
 
-/**
- * Updates a relation's properties in the knowledge graph
- * @param sourceEntity The source entity name
- * @param targetEntity The target entity name
- * @param updatedData Dictionary containing updated attributes
- * @returns Promise with the updated relation information
- */
-export const updateRelation = async (
-  sourceEntity: string,
-  targetEntity: string,
-  updatedData: Record<string, any>
-): Promise<DocActionResponse> => {
-  const response = await axiosInstance.post('/graph/relation/edit', {
-    source_id: sourceEntity,
-    target_id: targetEntity,
-    updated_data: updatedData
-  })
+export const getContextStats = async (contextName: string): Promise<ContextStats> => {
+  const response = await axiosInstance.get(`/contexts/${contextName}/stats`)
   return response.data
 }
 
-/**
- * Checks if an entity name already exists in the knowledge graph
- * @param entityName The entity name to check
- * @returns Promise with boolean indicating if the entity exists
- */
-export const checkEntityNameExists = async (entityName: string): Promise<boolean> => {
-  try {
-    const response = await axiosInstance.get(`/graph/entity/exists?name=${encodeURIComponent(entityName)}`)
-    return response.data.exists
-  } catch (error) {
-    console.error('Error checking entity name:', error)
-    return false
-  }
+export const createContext = async (name: string, description: string): Promise<{ status: string; message: string }> => {
+  const response = await axiosInstance.post('/contexts', { name, description })
+  return response.data
+}
+
+export const switchContext = async (name: string): Promise<{ status: string; message: string }> => {
+  const response = await axiosInstance.post(`/contexts/${name}/switch`)
+  return response.data
+}
+
+export const renameContext = async (oldName: string, newName: string): Promise<{ status: string; message: string }> => {
+  const response = await axiosInstance.put(`/contexts/${oldName}/rename`, { new_name: newName })
+  return response.data
+}
+
+export const deleteContext = async (name: string): Promise<{ status: string; message: string }> => {
+  const response = await axiosInstance.delete(`/contexts/${name}`)
+  return response.data
 }
