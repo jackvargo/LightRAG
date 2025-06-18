@@ -282,7 +282,6 @@ class BaseKVStorage(StorageNameSpace, ABC):
              True: if the cache drop successfully
              False: if the cache drop failed, or the cache mode is not supported
         """
-        return False
 
 
 @dataclass
@@ -578,6 +577,10 @@ class DocProcessingStatus:
     """Additional metadata"""
     mime_type: str | None = None
     """MIME type of the document (e.g., text/plain, application/pdf)"""
+    file_exists: bool | None = None
+    """Task 2.5.1: Whether the original file still exists on disk"""
+    file_size: int | None = None
+    """Task 2.5.2: File size in bytes for content size information"""
 
 
 @dataclass

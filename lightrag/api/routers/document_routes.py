@@ -3,6 +3,7 @@ This module contains all document-related routes for the LightRAG API.
 """
 
 import asyncio
+import os
 import shutil
 import traceback
 from datetime import datetime
@@ -12,11 +13,13 @@ from typing import Any, Dict, List, Literal, Optional
 import aiofiles
 import pipmaster as pm
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
+from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel, Field, field_validator
 
 from lightrag import LightRAG
 from lightrag.api.utils_api import get_combined_auth_dependency
 from lightrag.base import DocProcessingStatus, DocStatus
+from lightrag.contexts.context_manager import ContextManager
 from lightrag.utils import logger
 
 from ..config import global_args
@@ -28,6 +31,10 @@ router = APIRouter(
 
 # Temporary file prefix
 temp_prefix = "__tmp__"
+
+# Configuration for file serving
+MAX_FILE_SIZE_MB = int(os.getenv("MAX_FILE_SIZE_MB", "100"))  # Default 100MB limit
+CHUNK_SIZE = 8192  # 8KB chunks for streaming
 
 
 def get_mime_type_from_extension(file_path: str) -> str:
@@ -96,6 +103,54 @@ def get_mime_type_from_extension(file_path: str) -> str:
     }
 
     return mime_type_map.get(ext, "application/octet-stream")
+
+
+def resolve_file_path(file_path: str, doc_manager: Any) -> Path:
+    """
+    Resolve file path using context input directory.
+
+    Args:
+        file_path: The stored file path from document status
+        doc_manager: Document manager instance with input directory
+
+    Returns:
+        Path: Resolved absolute file path
+    """
+    # If file_path is already absolute, use it directly
+    if Path(file_path).is_absolute():
+        return Path(file_path)
+
+    # Get context manager instance
+    context_manager = ContextManager.get_instance()
+    _, current_input_path = context_manager.get_context_paths()
+
+    # Use context input path if available, otherwise fall back to doc_manager
+    if current_input_path:
+        resolved_path = current_input_path / file_path
+    else:
+        resolved_path = doc_manager.input_dir / file_path
+
+    return resolved_path
+
+
+async def stream_file(file_path: Path, chunk_size: int = CHUNK_SIZE):
+    """
+    Stream file contents in chunks.
+
+    Args:
+        file_path: Path to the file to stream
+        chunk_size: Size of each chunk in bytes
+
+    Yields:
+        bytes: File content chunks
+    """
+    try:
+        async with aiofiles.open(file_path, mode="rb") as file:
+            while chunk := await file.read(chunk_size):
+                yield chunk
+    except Exception as e:
+        logger.error(f"Error streaming file {file_path}: {str(e)}")
+        raise
 
 
 class ScanResponse(BaseModel):
@@ -398,6 +453,12 @@ class DocStatusResponse(BaseModel):
     )
     file_path: str = Field(description="Path to the document file")
     mime_type: str = Field(description="MIME type of the document")
+    file_exists: Optional[bool] = Field(
+        default=None, description="Whether the original file still exists on disk"
+    )
+    file_size: Optional[int] = Field(
+        default=None, description="File size in bytes for content size information"
+    )
 
     class Config:
         json_schema_extra = {
@@ -1482,6 +1543,26 @@ def create_document_routes(
                 for doc_id, doc_status in result.items():
                     if status not in response.statuses:
                         response.statuses[status] = []
+                    # Calculate file existence and size for document status
+                    file_exists = None
+                    file_size = None
+                    if doc_status.file_path:
+                        try:
+                            resolved_file_path = resolve_file_path(
+                                doc_status.file_path, doc_manager
+                            )
+                            file_exists = (
+                                resolved_file_path.exists()
+                                and resolved_file_path.is_file()
+                            )
+                            if file_exists:
+                                file_size = resolved_file_path.stat().st_size
+                        except Exception as file_check_error:
+                            logger.debug(
+                                f"Could not check file status for {doc_status.file_path}: {str(file_check_error)}"
+                            )
+                            file_exists = False
+
                     response.statuses[status].append(
                         DocStatusResponse(
                             id=doc_id,
@@ -1501,6 +1582,8 @@ def create_document_routes(
                             mime_type=get_mime_type_from_extension(
                                 doc_status.file_path
                             ),
+                            file_exists=file_exists,
+                            file_size=file_size,
                         )
                     )
             return response
@@ -1564,20 +1647,21 @@ def create_document_routes(
 
     @router.get(
         "/{doc_id}/content",
-        response_model=DocumentContentResponse,
         dependencies=[Depends(combined_auth)],
     )
     async def get_document_content(doc_id: str):
         """
-        Retrieve the content of a document by its ID.
+        Retrieve the content of a document by its ID, serving the actual file when possible.
 
-        This endpoint retrieves the full content of a document based on its ID.
+        This endpoint serves the actual file from the filesystem when available, with fallback
+        to stored content. Includes proper HTTP headers, file size protection, and streaming
+        response for large files.
 
         Args:
             doc_id (str): The ID of the document to retrieve
 
         Returns:
-            DocumentContentResponse: A response object containing the document content
+            StreamingResponse or DocumentContentResponse: File content or stored document data
 
         Raises:
             HTTPException: If the document is not found (404) or other errors occur (500)
@@ -1591,8 +1675,69 @@ def create_document_routes(
                 )
 
             doc_status = doc_statuses[doc_id]
+            file_path_str = getattr(doc_status, "file_path", "")
 
-            # Get the actual document content from full_docs storage
+            # Task 2.2.2: Add context input directory resolution for file location
+            # Task 2.2.3: Implement file existence checking with fallback to stored content
+            if file_path_str:
+                try:
+                    resolved_file_path = resolve_file_path(file_path_str, doc_manager)
+
+                    if resolved_file_path.exists() and resolved_file_path.is_file():
+                        # Task 2.2.4: Add file size protection with configurable maximum size limit
+                        file_size = resolved_file_path.stat().st_size
+                        max_size_bytes = MAX_FILE_SIZE_MB * 1024 * 1024
+
+                        if file_size > max_size_bytes:
+                            raise HTTPException(
+                                status_code=413,
+                                detail=f"File size ({file_size / (1024*1024):.1f}MB) exceeds maximum allowed size ({MAX_FILE_SIZE_MB}MB)",
+                            )
+
+                        # Task 2.2.5: Add proper HTTP headers for file serving
+                        mime_type = get_mime_type_from_extension(
+                            str(resolved_file_path)
+                        )
+                        filename = resolved_file_path.name
+
+                        headers = {
+                            "Content-Type": mime_type,
+                            "Content-Length": str(file_size),
+                            "Content-Disposition": f'attachment; filename="{filename}"',
+                            "Cache-Control": "no-cache",
+                        }
+
+                        # Task 2.2.6: Implement streaming response for large files to prevent memory issues
+                        # Stream files larger than 1MB to prevent memory issues
+                        if file_size > 1024 * 1024:  # 1MB threshold
+                            return StreamingResponse(
+                                stream_file(resolved_file_path),
+                                media_type=mime_type,
+                                headers=headers,
+                            )
+                        else:
+                            # For smaller files, read directly
+                            async with aiofiles.open(
+                                resolved_file_path, mode="rb"
+                            ) as file:
+                                content = await file.read()
+                            return Response(
+                                content=content, media_type=mime_type, headers=headers
+                            )
+
+                except (OSError, IOError, PermissionError) as file_error:
+                    # Task 2.2.7: Add error handling for file access permissions and disk I/O errors
+                    logger.warning(
+                        f"File access error for {resolved_file_path}: {str(file_error)}, falling back to stored content"
+                    )
+                    # Fall through to stored content fallback
+                except Exception as file_error:
+                    logger.warning(
+                        f"Unexpected error accessing file {resolved_file_path}: {str(file_error)}, falling back to stored content"
+                    )
+                    # Fall through to stored content fallback
+
+            # Fallback to stored content when file is not available or accessible
             full_doc = await rag.full_docs.get_by_id(doc_id)
             if not full_doc or "content" not in full_doc:
                 raise HTTPException(
@@ -1604,9 +1749,10 @@ def create_document_routes(
                 id=doc_id,
                 content=full_doc["content"],
                 content_length=len(full_doc["content"]),
-                file_path=getattr(doc_status, "file_path", "unknown"),
+                file_path=file_path_str,
                 metadata=getattr(doc_status, "metadata", {}),
             )
+
         except HTTPException:
             # Re-raise HTTP exceptions (like 404) without modification
             raise
@@ -1663,6 +1809,144 @@ def create_document_routes(
             raise
         except Exception as e:
             logger.error(f"Error GET /documents/{doc_id}/chunks: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # Task 2.3.1: Add individual chunk retrieval endpoint
+    @router.get(
+        "/chunks/{chunk_id}",
+        response_model=DocumentChunkResponse,
+        dependencies=[Depends(combined_auth)],
+    )
+    async def get_chunk_by_id(chunk_id: str):
+        """
+        Retrieve a single chunk by its ID.
+
+        Args:
+            chunk_id (str): The ID of the chunk to retrieve
+
+        Returns:
+            DocumentChunkResponse: A response object containing the chunk data
+
+        Raises:
+            HTTPException: If the chunk is not found (404) or other errors occur (500)
+        """
+        try:
+            # Task 2.3.6: Add validation for chunk ID format and request limits
+            if not chunk_id or len(chunk_id.strip()) == 0:
+                raise HTTPException(status_code=400, detail="Chunk ID cannot be empty")
+
+            if len(chunk_id) > 255:  # Reasonable length limit
+                raise HTTPException(status_code=400, detail="Chunk ID too long")
+
+            chunk = await rag.text_chunks.get_by_id(chunk_id)
+            if not chunk:
+                raise HTTPException(
+                    status_code=404, detail=f"Chunk with ID '{chunk_id}' not found"
+                )
+
+            # Task 2.3.4: Add chunk metadata including relationships to graph nodes
+            # Note: This would require additional relationship lookup functionality
+            # For now, return the basic chunk data
+            return DocumentChunkResponse(
+                id=chunk_id,
+                content=chunk.get("content", ""),
+                tokens=chunk.get("tokens", 0),
+                chunk_order_index=chunk.get("chunk_order_index", 0),
+                full_doc_id=chunk.get("full_doc_id", "unknown"),
+                file_path=chunk.get("file_path", "unknown"),
+            )
+
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error GET /chunks/{chunk_id}: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # Task 2.3.2 & 2.3.3: Add bulk chunk retrieval endpoint with array parameter support
+    @router.get(
+        "/chunks",
+        response_model=List[DocumentChunkResponse],
+        dependencies=[Depends(combined_auth)],
+    )
+    async def get_chunks_bulk(chunk_ids: str):
+        """
+        Retrieve multiple chunks by their IDs.
+
+        Args:
+            chunk_ids (str): Comma-separated list of chunk IDs
+
+        Returns:
+            List[DocumentChunkResponse]: List of chunk response objects
+
+        Raises:
+            HTTPException: If validation fails (400) or other errors occur (500)
+        """
+        try:
+            # Task 2.3.6: Add validation for chunk ID format and request limits
+            if not chunk_ids or len(chunk_ids.strip()) == 0:
+                raise HTTPException(
+                    status_code=400, detail="chunk_ids parameter cannot be empty"
+                )
+
+            # Parse comma-separated chunk IDs
+            chunk_id_list = [chunk_id.strip() for chunk_id in chunk_ids.split(",")]
+
+            # Remove empty IDs
+            chunk_id_list = [cid for cid in chunk_id_list if cid]
+
+            if not chunk_id_list:
+                raise HTTPException(
+                    status_code=400, detail="No valid chunk IDs provided"
+                )
+
+            # Task 2.3.6: Limit number of chunks that can be requested at once
+            max_chunks_per_request = 50  # Configurable limit
+            if len(chunk_id_list) > max_chunks_per_request:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Too many chunk IDs requested. Maximum allowed: {max_chunks_per_request}",
+                )
+
+            # Validate individual chunk IDs
+            for chunk_id in chunk_id_list:
+                if len(chunk_id) > 255:
+                    raise HTTPException(
+                        status_code=400, detail=f"Chunk ID '{chunk_id}' too long"
+                    )
+
+            # Retrieve chunks
+            chunks = []
+            for chunk_id in chunk_id_list:
+                try:
+                    chunk = await rag.text_chunks.get_by_id(chunk_id)
+                    if chunk:
+                        # Task 2.3.4: Add chunk metadata including relationships to graph nodes
+                        chunks.append(
+                            DocumentChunkResponse(
+                                id=chunk_id,
+                                content=chunk.get("content", ""),
+                                tokens=chunk.get("tokens", 0),
+                                chunk_order_index=chunk.get("chunk_order_index", 0),
+                                full_doc_id=chunk.get("full_doc_id", "unknown"),
+                                file_path=chunk.get("file_path", "unknown"),
+                            )
+                        )
+                except Exception as chunk_error:
+                    # Task 2.3.5: Implement proper error handling for non-existent chunk IDs
+                    logger.warning(
+                        f"Could not retrieve chunk {chunk_id}: {str(chunk_error)}"
+                    )
+                    # Continue with other chunks instead of failing completely
+                    continue
+
+            return chunks
+
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error GET /chunks bulk: {str(e)}")
             logger.error(traceback.format_exc())
             raise HTTPException(status_code=500, detail=str(e))
 

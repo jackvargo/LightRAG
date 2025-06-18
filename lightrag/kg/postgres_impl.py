@@ -2388,18 +2388,18 @@ TABLES = {
     },
     "LIGHTRAG_DOC_STATUS": {
         "ddl": """CREATE TABLE LIGHTRAG_DOC_STATUS (
-                    workspace varchar(255) NOT NULL,
-                    id varchar(255) NOT NULL,
-                    content TEXT NULL,
-                    content_summary varchar(255) NULL,
-                    content_length int4 NULL,
-                    chunks_count int4 NULL,
-                    status varchar(64) NULL,
-                    file_path TEXT NULL,
-                    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NULL,
-                    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NULL,
-                    CONSTRAINT LIGHTRAG_DOC_STATUS_PK PRIMARY KEY (workspace, id)
-                    )"""
+                   workspace varchar(255) NOT NULL,
+                   id varchar(255) NOT NULL,
+                   content TEXT NULL,
+                   content_summary varchar(255) NULL,
+                   content_length int4 NULL,
+                   chunks_count int4 NULL,
+                   status varchar(64) NULL,
+                   file_path TEXT NULL,
+                   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NULL,
+                   updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NULL,
+                   CONSTRAINT LIGHTRAG_DOC_STATUS_PK PRIMARY KEY (workspace, id)
+                  )"""
     },
 }
 

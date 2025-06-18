@@ -283,6 +283,12 @@ class MongoDocStatusStorage(DocStatusStorage):
                 chunks_count=doc.get("chunks_count", -1),
                 file_path=doc.get("file_path", doc["_id"]),
                 mime_type=doc.get("mime_type", "application/octet-stream"),
+                file_exists=doc.get(
+                    "file_exists"
+                ),  # Task 2.5.3: Handle new field with None default
+                file_size=doc.get(
+                    "file_size"
+                ),  # Task 2.5.3: Handle new field with None default
             )
             for doc in result
         }

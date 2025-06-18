@@ -1893,14 +1893,14 @@ class LightRAG:
     async def aget_relationships_for_query(
         self, query: str, param: QueryParam
     ) -> list[dict]:
-        """Get relationships relevant to a query.
+        """Get relationships relevant to a query with chunk references for MCP graph exploration.
 
         Args:
             query: The search query
             param: Query parameters
 
         Returns:
-            List of relationship dictionaries
+            List of relationship dictionaries with chunk_ids field for graph node references
         """
         try:
             from .operate import _get_edge_data, _get_node_data, get_keywords_from_query
@@ -1943,9 +1943,10 @@ class LightRAG:
                 )
                 relationships_context.extend(relations_context or [])
 
-            # Remove duplicates based on entity1-entity2 pairs
+            # Remove duplicates based on entity1-entity2 pairs and enhance with chunk references
             seen_relationships = set()
             unique_relationships = []
+
             for rel in relationships_context:
                 # Create a unique key from entity pair (normalize order)
                 entity1 = rel.get("entity1", "")
@@ -1954,10 +1955,64 @@ class LightRAG:
 
                 if key not in seen_relationships:
                     seen_relationships.add(key)
-                    unique_relationships.append(rel)
+
+                    # Task 2.4.1: Add chunk_ids field to relationship responses for graph node references
+                    # Task 2.4.2: Ensure relationship data includes chunk references for MCP graph exploration
+                    enhanced_rel = rel.copy()
+
+                    # Extract chunk IDs from source_id field (chunks are referenced in relationships)
+                    source_id = rel.get("source_id", "")
+                    if source_id:
+                        # Split source_id by GRAPH_FIELD_SEP to get individual chunk IDs
+                        from .constants import GRAPH_FIELD_SEP
+
+                        chunk_ids = [
+                            chunk_id.strip()
+                            for chunk_id in source_id.split(GRAPH_FIELD_SEP)
+                            if chunk_id.strip()
+                        ]
+                        enhanced_rel["chunk_ids"] = chunk_ids
+                    else:
+                        enhanced_rel["chunk_ids"] = []
+
+                    # Task 2.4.3: Optimize relationship queries to include relevant chunk metadata
+                    if enhanced_rel["chunk_ids"]:
+                        # Add chunk metadata for better MCP exploration
+                        chunk_metadata = []
+                        for chunk_id in enhanced_rel["chunk_ids"][
+                            :5
+                        ]:  # Limit to first 5 chunks to prevent response bloat
+                            try:
+                                chunk_data = await self.text_chunks.get_by_id(chunk_id)
+                                if chunk_data:
+                                    chunk_meta = {
+                                        "chunk_id": chunk_id,
+                                        "full_doc_id": chunk_data.get(
+                                            "full_doc_id", "unknown"
+                                        ),
+                                        "file_path": chunk_data.get(
+                                            "file_path", "unknown"
+                                        ),
+                                        "tokens": chunk_data.get("tokens", 0),
+                                        "chunk_order_index": chunk_data.get(
+                                            "chunk_order_index", 0
+                                        ),
+                                    }
+                                    chunk_metadata.append(chunk_meta)
+                            except Exception as chunk_error:
+                                logger.debug(
+                                    f"Could not retrieve metadata for chunk {chunk_id}: {str(chunk_error)}"
+                                )
+                                continue
+
+                        enhanced_rel["chunk_metadata"] = chunk_metadata
+                    else:
+                        enhanced_rel["chunk_metadata"] = []
+
+                    unique_relationships.append(enhanced_rel)
 
             logger.debug(
-                f"Found {len(unique_relationships)} unique relationships for query"
+                f"Found {len(unique_relationships)} unique relationships with chunk references for query"
             )
             return unique_relationships
 
