@@ -528,3 +528,35 @@ export const deleteContext = async (name: string): Promise<{ status: string; mes
   const response = await axiosInstance.delete(`/contexts/${name}`)
   return response.data
 }
+
+// Graph editing functions
+export const updateEntity = async (
+  entityId: string,
+  updatedData: Record<string, any>,
+  refreshGraph: boolean = false
+): Promise<{ status: string; message: string }> => {
+  const response = await axiosInstance.put(`/graph/entities/${entityId}`, {
+    ...updatedData,
+    refresh_graph: refreshGraph
+  })
+  return response.data
+}
+
+export const updateRelation = async (
+  sourceId: string,
+  targetId: string,
+  updatedData: Record<string, any>
+): Promise<{ status: string; message: string }> => {
+  const response = await axiosInstance.put(`/graph/relationships/${sourceId}/${targetId}`, updatedData)
+  return response.data
+}
+
+export const checkEntityNameExists = async (entityName: string): Promise<boolean> => {
+  try {
+    const response = await axiosInstance.get(`/graph/entities/check/${encodeURIComponent(entityName)}`)
+    return response.data.exists
+  } catch (error) {
+    console.error('Error checking entity name:', error)
+    return false
+  }
+}
