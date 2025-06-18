@@ -3,7 +3,7 @@ import os
 import sys
 from multiprocessing import Manager
 from multiprocessing.synchronize import Lock as ProcessLock
-from typing import Any, Dict, Generic, Optional, TypeVar, Union
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 
 
 # Define a direct print function for critical logs that must be visible in all processes
@@ -24,15 +24,17 @@ def direct_log(message, level="INFO", enable_output: bool = True):
 T = TypeVar("T")
 LockType = Union[ProcessLock, asyncio.Lock]
 
-_is_multiprocess = None
-_workers = None
-_manager = None
-_initialized = None
+_is_multiprocess: Optional[bool] = None
+_workers: Optional[int] = None
+_manager: Optional[Any] = None  # Using Any to avoid Manager type validation issues
+_initialized: Optional[bool] = None
 
 # shared data for storage across processes
 _shared_dicts: Optional[Dict[str, Any]] = None
 _init_flags: Optional[Dict[str, bool]] = None  # namespace -> initialized
-_update_flags: Optional[Dict[str, bool]] = None  # namespace -> updated
+_update_flags: Optional[Dict[str, List[Any]]] = (
+    None  # namespace -> list of update flags
+)
 
 # locks for mutex access
 _storage_lock: Optional[LockType] = None
@@ -50,12 +52,14 @@ class UnifiedLock(Generic[T]):
 
     def __init__(
         self,
-        lock: Union[ProcessLock, asyncio.Lock],
+        lock: Optional[Union[ProcessLock, asyncio.Lock]],
         is_async: bool,
         name: str = "unnamed",
         enable_logging: bool = True,
         async_lock: Optional[asyncio.Lock] = None,
     ):
+        if lock is None:
+            raise ValueError(f"Lock cannot be None for {name}")
         self._lock = lock
         self._is_async = is_async
         self._pid = os.getpid()  # for debug only
@@ -84,7 +88,7 @@ class UnifiedLock(Generic[T]):
 
             # Then acquire the main lock
             if self._is_async:
-                await self._lock.acquire()
+                await self._lock.acquire()  # type: ignore[misc]
             else:
                 self._lock.acquire()
 
@@ -213,7 +217,13 @@ class UnifiedLock(Generic[T]):
 
 def get_internal_lock(enable_logging: bool = False) -> UnifiedLock:
     """return unified storage lock for data consistency"""
-    async_lock = _async_locks.get("internal_lock") if _is_multiprocess else None
+    if _internal_lock is None:
+        raise ValueError("Internal lock not initialized")
+    async_lock = (
+        _async_locks.get("internal_lock")
+        if (_is_multiprocess and _async_locks)
+        else None
+    )
     return UnifiedLock(
         lock=_internal_lock,
         is_async=not _is_multiprocess,
@@ -225,7 +235,13 @@ def get_internal_lock(enable_logging: bool = False) -> UnifiedLock:
 
 def get_storage_lock(enable_logging: bool = False) -> UnifiedLock:
     """return unified storage lock for data consistency"""
-    async_lock = _async_locks.get("storage_lock") if _is_multiprocess else None
+    if _storage_lock is None:
+        raise ValueError("Storage lock not initialized")
+    async_lock = (
+        _async_locks.get("storage_lock")
+        if (_is_multiprocess and _async_locks)
+        else None
+    )
     return UnifiedLock(
         lock=_storage_lock,
         is_async=not _is_multiprocess,
@@ -237,7 +253,13 @@ def get_storage_lock(enable_logging: bool = False) -> UnifiedLock:
 
 def get_pipeline_status_lock(enable_logging: bool = False) -> UnifiedLock:
     """return unified storage lock for data consistency"""
-    async_lock = _async_locks.get("pipeline_status_lock") if _is_multiprocess else None
+    if _pipeline_status_lock is None:
+        raise ValueError("Pipeline status lock not initialized")
+    async_lock = (
+        _async_locks.get("pipeline_status_lock")
+        if (_is_multiprocess and _async_locks)
+        else None
+    )
     return UnifiedLock(
         lock=_pipeline_status_lock,
         is_async=not _is_multiprocess,
@@ -249,7 +271,13 @@ def get_pipeline_status_lock(enable_logging: bool = False) -> UnifiedLock:
 
 def get_graph_db_lock(enable_logging: bool = False) -> UnifiedLock:
     """return unified graph database lock for ensuring atomic operations"""
-    async_lock = _async_locks.get("graph_db_lock") if _is_multiprocess else None
+    if _graph_db_lock is None:
+        raise ValueError("Graph database lock not initialized")
+    async_lock = (
+        _async_locks.get("graph_db_lock")
+        if (_is_multiprocess and _async_locks)
+        else None
+    )
     return UnifiedLock(
         lock=_graph_db_lock,
         is_async=not _is_multiprocess,
@@ -261,7 +289,13 @@ def get_graph_db_lock(enable_logging: bool = False) -> UnifiedLock:
 
 def get_data_init_lock(enable_logging: bool = False) -> UnifiedLock:
     """return unified data initialization lock for ensuring atomic data initialization"""
-    async_lock = _async_locks.get("data_init_lock") if _is_multiprocess else None
+    if _data_init_lock is None:
+        raise ValueError("Data initialization lock not initialized")
+    async_lock = (
+        _async_locks.get("data_init_lock")
+        if (_is_multiprocess and _async_locks)
+        else None
+    )
     return UnifiedLock(
         lock=_data_init_lock,
         is_async=not _is_multiprocess,
@@ -303,14 +337,14 @@ def initialize_share_data(workers: int = 1):
     if workers > 1:
         _is_multiprocess = True
         _manager = Manager()
-        _internal_lock = _manager.Lock()
-        _storage_lock = _manager.Lock()
-        _pipeline_status_lock = _manager.Lock()
-        _graph_db_lock = _manager.Lock()
-        _data_init_lock = _manager.Lock()
-        _shared_dicts = _manager.dict()
-        _init_flags = _manager.dict()
-        _update_flags = _manager.dict()
+        _internal_lock = _manager.Lock()  # type: ignore[assignment]
+        _storage_lock = _manager.Lock()  # type: ignore[assignment]
+        _pipeline_status_lock = _manager.Lock()  # type: ignore[assignment]
+        _graph_db_lock = _manager.Lock()  # type: ignore[assignment]
+        _data_init_lock = _manager.Lock()  # type: ignore[assignment]
+        _shared_dicts = _manager.dict()  # type: ignore[assignment]
+        _init_flags = _manager.dict()  # type: ignore[assignment]
+        _update_flags = _manager.dict()  # type: ignore[assignment]
 
         # Initialize async locks for multiprocess mode
         _async_locks = {
@@ -384,7 +418,7 @@ async def get_update_flag(namespace: str):
     async with get_internal_lock():
         if namespace not in _update_flags:
             if _is_multiprocess and _manager is not None:
-                _update_flags[namespace] = _manager.list()
+                _update_flags[namespace] = _manager.list()  # type: ignore[assignment]
             else:
                 _update_flags[namespace] = []
             direct_log(
@@ -399,7 +433,7 @@ async def get_update_flag(namespace: str):
                 def __init__(self, initial_value=False):
                     self.value = initial_value
 
-            new_update_flag = MutableBoolean(False)
+            new_update_flag = MutableBoolean(False)  # type: ignore[assignment]
 
         _update_flags[namespace].append(new_update_flag)
         return new_update_flag
@@ -415,8 +449,9 @@ async def set_all_update_flags(namespace: str):
         if namespace not in _update_flags:
             raise ValueError(f"Namespace {namespace} not found in update flags")
         # Update flags for both modes
-        for i in range(len(_update_flags[namespace])):
-            _update_flags[namespace][i].value = True
+        flags_list = _update_flags[namespace]
+        for i in range(len(flags_list)):
+            flags_list[i].value = True
 
 
 async def clear_all_update_flags(namespace: str):
@@ -429,29 +464,30 @@ async def clear_all_update_flags(namespace: str):
         if namespace not in _update_flags:
             raise ValueError(f"Namespace {namespace} not found in update flags")
         # Update flags for both modes
-        for i in range(len(_update_flags[namespace])):
-            _update_flags[namespace][i].value = False
+        flags_list = _update_flags[namespace]
+        for i in range(len(flags_list)):
+            flags_list[i].value = False
 
 
-async def get_all_update_flags_status() -> Dict[str, list]:
+async def get_all_update_flags_status() -> Dict[str, List[bool]]:
     """
     Get update flags status for all namespaces.
 
     Returns:
-        Dict[str, list]: A dictionary mapping namespace names to lists of update flag statuses
+        Dict[str, List[bool]]: A dictionary mapping namespace names to lists of update flag statuses
     """
     if _update_flags is None:
         return {}
 
-    result = {}
+    result: Dict[str, List[bool]] = {}
     async with get_internal_lock():
         for namespace, flags in _update_flags.items():
-            worker_statuses = []
+            worker_statuses: List[bool] = []
             for flag in flags:
                 if _is_multiprocess:
                     worker_statuses.append(flag.value)
                 else:
-                    worker_statuses.append(flag)
+                    worker_statuses.append(flag.value)
             result[namespace] = worker_statuses
 
     return result
@@ -502,32 +538,38 @@ async def get_namespace_data(namespace: str) -> Dict[str, Any]:
 
 async def reset_all_storage_namespaces_for_context_switch():
     """
-    Reset all storage namespace initialization flags and clear shared data 
+    Reset all storage namespace initialization flags and clear shared data
     to force complete reload from disk during context switch.
-    
-    This function addresses the core issue where storage namespaces remain 
+
+    This function addresses the core issue where storage namespaces remain
     "initialized" across context switches, preventing proper data reload.
     """
     global _init_flags, _shared_dicts
-    
+
     if _init_flags is None or _shared_dicts is None:
         direct_log(
             f"Process {os.getpid()}: Storage not initialized, cannot reset namespaces",
-            level="WARNING"
+            level="WARNING",
         )
         return
-    
+
     async with get_internal_lock():
         # Define all storage namespaces that need to be reset
         storage_namespaces = [
-            "full_docs", "text_chunks", "entities", "relationships",
-            "chunks", "chunk_entity_relation", "llm_response_cache", "doc_status"
+            "full_docs",
+            "text_chunks",
+            "entities",
+            "relationships",
+            "chunks",
+            "chunk_entity_relation",
+            "llm_response_cache",
+            "doc_status",
         ]
-        
+
         direct_log(
             f"Process {os.getpid()}: Starting context switch storage reset for namespaces: {storage_namespaces}"
         )
-        
+
         # Reset initialization flags to force reload
         reset_count = 0
         for namespace in storage_namespaces:
@@ -539,7 +581,7 @@ async def reset_all_storage_namespaces_for_context_switch():
                     direct_log(
                         f"Process {os.getpid()}: Reset initialization flag for namespace: [{namespace}]"
                     )
-            
+
             # Clear shared data for the namespace
             if namespace in _shared_dicts:
                 data_count = len(_shared_dicts[namespace])
@@ -548,7 +590,7 @@ async def reset_all_storage_namespaces_for_context_switch():
                     direct_log(
                         f"Process {os.getpid()}: Cleared {data_count} items from namespace: [{namespace}]"
                     )
-        
+
         direct_log(
             f"Process {os.getpid()}: Context switch storage reset complete - reset {reset_count} namespaces"
         )

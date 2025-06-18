@@ -68,7 +68,6 @@ from .utils import (
     clean_text,
     compute_mdhash_id,
     convert_response_to_json,
-    get_content_summary,
     lazy_external_import,
     logger,
     priority_limit_async_func_call,
@@ -82,6 +81,67 @@ load_dotenv(dotenv_path=".env", override=False)
 # TODO: TO REMOVE @Yannick
 config = configparser.ConfigParser()
 config.read("config.ini", "utf-8")
+
+
+def get_mime_type_from_path(file_path: str) -> str:
+    """Get MIME type based on file extension."""
+    import mimetypes
+    from pathlib import Path
+
+    # Initialize mimetypes if not already done
+    mimetypes.init()
+
+    # Get the file extension
+    ext = Path(file_path).suffix.lower()
+
+    # Try to get MIME type from mimetypes module
+    mime_type, _ = mimetypes.guess_type(file_path)
+
+    if mime_type:
+        return mime_type
+
+    # Fallback for common types not always detected by mimetypes
+    mime_type_map = {
+        ".txt": "text/plain",
+        ".md": "text/markdown",
+        ".pdf": "application/pdf",
+        ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ".rtf": "application/rtf",
+        ".odt": "application/vnd.oasis.opendocument.text",
+        ".tex": "application/x-tex",
+        ".epub": "application/epub+zip",
+        ".html": "text/html",
+        ".htm": "text/html",
+        ".csv": "text/csv",
+        ".json": "application/json",
+        ".xml": "application/xml",
+        ".yaml": "application/x-yaml",
+        ".yml": "application/x-yaml",
+        ".log": "text/plain",
+        ".conf": "text/plain",
+        ".ini": "text/plain",
+        ".properties": "text/plain",
+        ".sql": "application/sql",
+        ".bat": "application/x-msdos-program",
+        ".sh": "application/x-shellscript",
+        ".c": "text/x-c",
+        ".cpp": "text/x-c++",
+        ".py": "text/x-python",
+        ".java": "text/x-java",
+        ".js": "application/javascript",
+        ".ts": "application/typescript",
+        ".swift": "text/x-swift",
+        ".go": "text/x-go",
+        ".rb": "text/x-ruby",
+        ".php": "application/x-httpd-php",
+        ".css": "text/css",
+        ".scss": "text/x-scss",
+        ".less": "text/x-less",
+    }
+
+    return mime_type_map.get(ext, "application/octet-stream")
 
 
 @final
@@ -521,73 +581,80 @@ class LightRAG:
     async def _update_storage_configs(self):
         """Update global_config in all storage instances with current working_dir"""
         from dataclasses import asdict
-        
+
         new_global_config = asdict(self)
-        new_working_dir = new_global_config['working_dir']
-        
+        new_working_dir = new_global_config["working_dir"]
+
         # Update all storage instances that have global_config
         storages_to_update = [
-            self.doc_status, self.full_docs, self.text_chunks, 
-            self.entities_vdb, self.relationships_vdb, self.chunks_vdb, 
-            self.chunk_entity_relation_graph, self.llm_response_cache
+            self.doc_status,
+            self.full_docs,
+            self.text_chunks,
+            self.entities_vdb,
+            self.relationships_vdb,
+            self.chunks_vdb,
+            self.chunk_entity_relation_graph,
+            self.llm_response_cache,
         ]
-        
+
         updated_count = 0
         for storage in storages_to_update:
-            if hasattr(storage, 'global_config'):
+            if hasattr(storage, "global_config"):
                 storage.global_config.update(new_global_config)
                 updated_count += 1
-                
+
                 # Simply update the file path if storage supports it
-                if hasattr(storage, 'update_working_dir'):
+                if hasattr(storage, "update_working_dir"):
                     storage.update_working_dir(new_working_dir)
-        
+
         logger.info(f"Updated global_config in {updated_count} storage instances")
 
     async def update_working_dir(self, new_working_dir: str) -> None:
         """
         Update the working directory for LightRAG to support context switching.
-        
+
         Args:
             new_working_dir: New working directory path to use
         """
-        logger.info(f"Updating working directory from {self.working_dir} to {new_working_dir}")
-        
+        logger.info(
+            f"Updating working directory from {self.working_dir} to {new_working_dir}"
+        )
+
         # Save the current storage state
         prev_state = self._storages_status
-        
+
         # Finalize current storages if initialized
         if self._storages_status == StoragesStatus.INITIALIZED:
             await self.finalize_storages()
-        
+
         # Update the working directory
         self.working_dir = new_working_dir
-        
+
         # CRITICAL: Update storage configurations with new working directory
         await self._update_storage_configs()
-        
+
         # Reset the storages status to create and reinitialize
         self._storages_status = StoragesStatus.CREATED
-        
+
         # Re-initialize if we were previously initialized
         if prev_state == StoragesStatus.INITIALIZED:
             await self.initialize_storages()
-            
+
         logger.info(f"Successfully updated working directory to {new_working_dir}")
-    
+
     async def reload_storages(self) -> None:
         """
         Reload all storages to refresh data after context switch.
         This forces a complete reload of all databases and indexes.
         """
         logger.info("Reloading all storages")
-        
+
         # Only reload if storages are initialized
         if self._storages_status == StoragesStatus.INITIALIZED:
             # Close and open storages to refresh data
             await self.finalize_storages()
             await self.initialize_storages()
-            
+
         logger.info("Successfully reloaded all storages")
 
     async def get_graph_labels(self):
@@ -781,103 +848,109 @@ class LightRAG:
             # If no file paths provided, use placeholder
             file_paths = ["unknown_source"] * len(input)
 
-        # 1. Validate ids if provided or generate MD5 hash IDs
-        if ids is not None:
-            # Check if the number of IDs matches the number of documents
+        # Helper function to get MIME type from file path
+        def get_mime_type_from_path(file_path: str) -> str:
+            """Get MIME type based on file extension."""
+            import mimetypes
+            from pathlib import Path
+
+            # Initialize mimetypes if not already done
+            mimetypes.init()
+
+            # Get the file extension
+            ext = Path(file_path).suffix.lower()
+
+            # Try to get MIME type from mimetypes module
+            mime_type, _ = mimetypes.guess_type(file_path)
+
+            if mime_type:
+                return mime_type
+
+            # Fallback for common types not always detected by mimetypes
+            mime_type_map = {
+                ".txt": "text/plain",
+                ".md": "text/markdown",
+                ".pdf": "application/pdf",
+                ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ".rtf": "application/rtf",
+                ".odt": "application/vnd.oasis.opendocument.text",
+                ".tex": "application/x-tex",
+                ".epub": "application/epub+zip",
+                ".html": "text/html",
+                ".htm": "text/html",
+                ".csv": "text/csv",
+                ".json": "application/json",
+                ".xml": "application/xml",
+                ".yaml": "application/x-yaml",
+                ".yml": "application/x-yaml",
+                ".log": "text/plain",
+                ".conf": "text/plain",
+                ".ini": "text/plain",
+                ".properties": "text/plain",
+                ".sql": "application/sql",
+                ".bat": "application/x-msdos-program",
+                ".sh": "application/x-shellscript",
+                ".c": "text/x-c",
+                ".cpp": "text/x-c++",
+                ".py": "text/x-python",
+                ".java": "text/x-java",
+                ".js": "application/javascript",
+                ".ts": "application/typescript",
+                ".swift": "text/x-swift",
+                ".go": "text/x-go",
+                ".rb": "text/x-ruby",
+                ".php": "application/x-httpd-php",
+                ".css": "text/css",
+                ".scss": "text/x-scss",
+                ".less": "text/x-less",
+            }
+
+            return mime_type_map.get(ext, "application/octet-stream")
+
+        # Generate MD5 hash IDs for documents if not provided
+        if ids is None:
+            ids = [compute_mdhash_id(content, prefix="doc-") for content in input]
+        else:
             if len(ids) != len(input):
                 raise ValueError("Number of IDs must match the number of documents")
 
-            # Check if IDs are unique
-            if len(ids) != len(set(ids)):
-                raise ValueError("IDs must be unique")
+        # Create a dictionary with document data, filtering out duplicates
+        unique_doc_data = {}
+        for i, (doc_id, content, file_path) in enumerate(zip(ids, input, file_paths)):
+            if doc_id not in unique_doc_data:
+                # Get MIME type for the file
+                mime_type = get_mime_type_from_path(file_path)
 
-            # Generate contents dict of IDs provided by user and documents
-            contents = {
-                id_: {"content": doc, "file_path": path}
-                for id_, doc, path in zip(ids, input, file_paths)
-            }
-        else:
-            # Clean input text and remove duplicates
-            cleaned_input = [
-                (clean_text(doc), path) for doc, path in zip(input, file_paths)
-            ]
-            unique_content_with_paths = {}
-
-            # Keep track of unique content and their paths
-            for content, path in cleaned_input:
-                if content not in unique_content_with_paths:
-                    unique_content_with_paths[content] = path
-
-            # Generate contents dict of MD5 hash IDs and documents with paths
-            contents = {
-                compute_mdhash_id(content, prefix="doc-"): {
+                unique_doc_data[doc_id] = {
                     "content": content,
-                    "file_path": path,
+                    "content_summary": content[:100]
+                    + ("..." if len(content) > 100 else ""),
+                    "content_length": len(content),
+                    "status": DocStatus.PENDING,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                    "file_path": file_path,
+                    "mime_type": mime_type,
                 }
-                for content, path in unique_content_with_paths.items()
-            }
 
-        # 2. Remove duplicate contents
-        unique_contents = {}
-        for id_, content_data in contents.items():
-            content = content_data["content"]
-            file_path = content_data["file_path"]
-            if content not in unique_contents:
-                unique_contents[content] = (id_, file_path)
+        # Filter out existing documents
+        keys_to_process = await self.doc_status.filter_keys(set(unique_doc_data.keys()))
 
-        # Reconstruct contents with unique content
-        contents = {
-            id_: {"content": content, "file_path": file_path}
-            for content, (id_, file_path) in unique_contents.items()
+        # Enqueue document status
+        filtered_doc_data = {
+            doc_id: doc_data
+            for doc_id, doc_data in unique_doc_data.items()
+            if doc_id in keys_to_process
         }
 
-        # 3. Generate document initial status
-        new_docs: dict[str, Any] = {
-            id_: {
-                "status": DocStatus.PENDING,
-                "content": content_data["content"],
-                "content_summary": get_content_summary(content_data["content"]),
-                "content_length": len(content_data["content"]),
-                "created_at": datetime.now(timezone.utc).isoformat(),
-                "updated_at": datetime.now(timezone.utc).isoformat(),
-                "file_path": content_data[
-                    "file_path"
-                ],  # Store file path in document status
-            }
-            for id_, content_data in contents.items()
-        }
-
-        # 4. Filter out already processed documents
-        # Get docs ids
-        all_new_doc_ids = set(new_docs.keys())
-        # Exclude IDs of documents that are already in progress
-        unique_new_doc_ids = await self.doc_status.filter_keys(all_new_doc_ids)
-
-        # Log ignored document IDs
-        ignored_ids = [
-            doc_id for doc_id in unique_new_doc_ids if doc_id not in new_docs
-        ]
-        if ignored_ids:
-            logger.warning(
-                f"Ignoring {len(ignored_ids)} document IDs not found in new_docs"
-            )
-            for doc_id in ignored_ids:
-                logger.warning(f"Ignored document ID: {doc_id}")
-
-        # Filter new_docs to only include documents with unique IDs
-        new_docs = {
-            doc_id: new_docs[doc_id]
-            for doc_id in unique_new_doc_ids
-            if doc_id in new_docs
-        }
-
-        if not new_docs:
-            logger.info("No new unique documents were found.")
-            return
-
-        # 5. Store status document
-        await self.doc_status.upsert(new_docs)
-        logger.info(f"Stored {len(new_docs)} new unique documents")
+        # Call insert for all documents if we have some to process
+        if filtered_doc_data:
+            await self.doc_status.upsert(filtered_doc_data)
+            logger.info(f"Enqueued {len(filtered_doc_data)} documents for processing")
+        else:
+            logger.info("No new documents to enqueue (all already exist)")
 
     async def apipeline_process_enqueue_documents(
         self,
@@ -916,31 +989,42 @@ class LightRAG:
 
                 # Safety check: Remove any documents that are actually processed on disk
                 # This prevents reprocessing when shared memory is corrupted after context switch
-                if hasattr(self.doc_status, '_file_name') and hasattr(self.doc_status, 'global_config'):
+                if hasattr(self.doc_status, "_file_name") and hasattr(
+                    self.doc_status, "global_config"
+                ):
                     try:
                         import json
                         from pathlib import Path
-                        
+
                         # Check the actual file on disk for processed status
-                        working_dir = Path(self.doc_status.global_config.get("working_dir", "."))
+                        working_dir = Path(
+                            self.doc_status.global_config.get("working_dir", ".")
+                        )
                         status_file = working_dir / self.doc_status._file_name
-                        
+
                         if status_file.exists():
-                            with open(status_file, 'r') as f:
+                            with open(status_file, "r") as f:
                                 disk_data = json.load(f)
-                            
+
                             # Remove any doc that is marked as "processed" on disk
                             docs_to_remove = []
                             for doc_id in to_process_docs.keys():
-                                if doc_id in disk_data and disk_data[doc_id].get('status') == 'processed':
+                                if (
+                                    doc_id in disk_data
+                                    and disk_data[doc_id].get("status") == "processed"
+                                ):
                                     docs_to_remove.append(doc_id)
-                                    logger.info(f"Skipping reprocessing of {doc_id} - already processed on disk")
-                            
+                                    logger.info(
+                                        f"Skipping reprocessing of {doc_id} - already processed on disk"
+                                    )
+
                             for doc_id in docs_to_remove:
                                 del to_process_docs[doc_id]
-                                
+
                     except Exception as e:
-                        logger.warning(f"Error checking disk status for processed docs: {e}")
+                        logger.warning(
+                            f"Error checking disk status for processed docs: {e}"
+                        )
                         # Continue with normal processing if disk check fails
 
                 if not to_process_docs:
@@ -1024,6 +1108,11 @@ class LightRAG:
                                 status_doc, "file_path", "unknown_source"
                             )
 
+                            # Get MIME type from status document or detect from file path
+                            mime_type = getattr(status_doc, "mime_type", None)
+                            if not mime_type:
+                                mime_type = get_mime_type_from_path(file_path)
+
                             async with pipeline_status_lock:
                                 # Update processed file count and save current file number
                                 processed_count += 1
@@ -1073,6 +1162,7 @@ class LightRAG:
                                                 timezone.utc
                                             ).isoformat(),
                                             "file_path": file_path,
+                                            "mime_type": mime_type,
                                         }
                                     }
                                 )
@@ -1143,6 +1233,7 @@ class LightRAG:
                                             timezone.utc
                                         ).isoformat(),
                                         "file_path": file_path,
+                                        "mime_type": mime_type,
                                     }
                                 }
                             )
@@ -1180,6 +1271,7 @@ class LightRAG:
                                             timezone.utc
                                         ).isoformat(),
                                         "file_path": file_path,
+                                        "mime_type": mime_type,
                                     }
                                 }
                             )
@@ -1221,6 +1313,7 @@ class LightRAG:
                                         "created_at": status_doc.created_at,
                                         "updated_at": datetime.now().isoformat(),
                                         "file_path": file_path,
+                                        "mime_type": mime_type,
                                     }
                                 }
                             )
@@ -1762,6 +1855,115 @@ class LightRAG:
 
         # Return the dictionary containing statuses only for the found document IDs
         return found_statuses
+
+    async def aget_chunks_by_doc_id(self, doc_id: str) -> list[dict]:
+        """Get chunks for a specific document ID.
+
+        Args:
+            doc_id: The document ID to get chunks for
+
+        Returns:
+            List of chunk data dictionaries with id, content, tokens, chunk_order_index, full_doc_id, file_path
+        """
+        try:
+            # Get all chunks from storage
+            all_chunks = await self.text_chunks.get_all()
+
+            # Filter chunks by full_doc_id
+            document_chunks = []
+            for chunk_id, chunk_data in all_chunks.items():
+                if (
+                    isinstance(chunk_data, dict)
+                    and chunk_data.get("full_doc_id") == doc_id
+                ):
+                    # Add the chunk ID to the chunk data
+                    chunk_with_id = {"id": chunk_id, **chunk_data}
+                    document_chunks.append(chunk_with_id)
+
+            # Sort chunks by chunk_order_index for consistent ordering
+            document_chunks.sort(key=lambda x: x.get("chunk_order_index", 0))
+
+            logger.debug(f"Found {len(document_chunks)} chunks for document {doc_id}")
+            return document_chunks
+
+        except Exception as e:
+            logger.error(f"Error retrieving chunks for document {doc_id}: {e}")
+            return []
+
+    async def aget_relationships_for_query(
+        self, query: str, param: QueryParam
+    ) -> list[dict]:
+        """Get relationships relevant to a query.
+
+        Args:
+            query: The search query
+            param: Query parameters
+
+        Returns:
+            List of relationship dictionaries
+        """
+        try:
+            from .operate import _get_edge_data, _get_node_data, get_keywords_from_query
+
+            # Extract keywords from query like the main query process does
+            global_config = asdict(self)
+            hl_keywords, ll_keywords = await get_keywords_from_query(
+                query=query,
+                query_param=param,
+                global_config=global_config,
+                hashing_kv=self.llm_response_cache,
+            )
+
+            relationships_context = []
+
+            # Get relationships based on query mode
+            if param.mode in ["global", "hybrid", "mix"]:
+                # Use global query logic to get edge data
+                entities_context, relations_context, text_units_context = (
+                    await _get_edge_data(
+                        hl_keywords,
+                        self.chunk_entity_relation_graph,
+                        self.relationships_vdb,
+                        self.text_chunks,
+                        param,
+                    )
+                )
+                relationships_context.extend(relations_context or [])
+
+            if param.mode in ["local", "hybrid", "mix"]:
+                # Use local query logic to get node data which also includes relations
+                entities_context, relations_context, text_units_context = (
+                    await _get_node_data(
+                        ll_keywords,
+                        self.chunk_entity_relation_graph,
+                        self.entities_vdb,
+                        self.text_chunks,
+                        param,
+                    )
+                )
+                relationships_context.extend(relations_context or [])
+
+            # Remove duplicates based on entity1-entity2 pairs
+            seen_relationships = set()
+            unique_relationships = []
+            for rel in relationships_context:
+                # Create a unique key from entity pair (normalize order)
+                entity1 = rel.get("entity1", "")
+                entity2 = rel.get("entity2", "")
+                key = tuple(sorted([entity1, entity2]))
+
+                if key not in seen_relationships:
+                    seen_relationships.add(key)
+                    unique_relationships.append(rel)
+
+            logger.debug(
+                f"Found {len(unique_relationships)} unique relationships for query"
+            )
+            return unique_relationships
+
+        except Exception as e:
+            logger.error(f"Error retrieving relationships for query: {e}")
+            return []
 
     # TODO: Deprecated (Deleting documents can cause hallucinations in RAG.)
     # Document delete is not working properly for most of the storage implementations.

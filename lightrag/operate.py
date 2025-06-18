@@ -7,7 +7,7 @@ import re
 import time
 from collections import Counter, defaultdict
 from functools import partial
-from typing import Any, AsyncIterator
+from typing import Any, AsyncIterator, Callable, Optional
 
 from dotenv import load_dotenv
 
@@ -103,7 +103,7 @@ async def _handle_entity_relation_summary(
     entity_or_relation_name: str,
     description: str,
     global_config: dict,
-    pipeline_status: dict = None,
+    pipeline_status: Optional[dict[Any, Any]] = None,
     pipeline_status_lock=None,
     llm_response_cache: BaseKVStorage | None = None,
 ) -> str:
@@ -111,7 +111,7 @@ async def _handle_entity_relation_summary(
     For each entity or relation, input is the combined description of already existing description and new description.
     If too long, use LLM to summarize.
     """
-    use_llm_func: callable = global_config["llm_model_func"]
+    use_llm_func: Callable = global_config["llm_model_func"]
     # Apply higher priority (8) to entity/relation summary tasks
     use_llm_func = partial(use_llm_func, _priority=8)
 
@@ -125,7 +125,7 @@ async def _handle_entity_relation_summary(
 
     tokens = tokenizer.encode(description)
 
-    ### summarize is not determined here anymore (It's determined by num_fragment now)
+    # summarize is not determined here anymore (It's determined by num_fragment now)
     # if len(tokens) < summary_max_tokens:  # No need for summary
     #     return description
 
@@ -642,7 +642,7 @@ async def extract_entities(
     pipeline_status_lock=None,
     llm_response_cache: BaseKVStorage | None = None,
 ) -> list:
-    use_llm_func: callable = global_config["llm_model_func"]
+    use_llm_func: Callable = global_config["llm_model_func"]
     entity_extract_max_gleaning = global_config["entity_extract_max_gleaning"]
 
     ordered_chunks = list(chunks.items())

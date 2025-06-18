@@ -360,7 +360,7 @@ class PGKVStorage(BaseKVStorage):
             await ClientManager.release_client(self.db)
             self.db = None
 
-    ################ QUERY METHODS ################
+    # QUERY METHODS
     async def get_all(self) -> dict[str, Any]:
         """Get all data from storage
 
@@ -468,7 +468,7 @@ class PGKVStorage(BaseKVStorage):
             )
             raise
 
-    ################ INSERT METHODS ################
+    # INSERT METHODS
     async def upsert(self, data: dict[str, dict[str, Any]]) -> None:
         logger.debug(f"Inserting {len(data)} to {self.namespace}")
         if not data:
@@ -716,7 +716,7 @@ class PGVectorStorage(BaseVectorStorage):
 
             await self.db.execute(upsert_sql, data)
 
-    #################### query method ###############
+    # query method
     async def query(
         self, query: str, top_k: int, ids: list[str] | None = None
     ) -> list[dict[str, Any]]:
@@ -985,6 +985,7 @@ class PGDocStatusStorage(DocStatusStorage):
                 updated_at=element["updated_at"],
                 chunks_count=element["chunks_count"],
                 file_path=element["file_path"],
+                mime_type=element.get("mime_type", "application/octet-stream"),
             )
             for element in result
         }
@@ -2326,7 +2327,7 @@ TABLES = {
                     meta JSONB,
                     create_time TIMESTAMP(0),
                     update_time TIMESTAMP(0),
-	                CONSTRAINT LIGHTRAG_DOC_FULL_PK PRIMARY KEY (workspace, id)
+                    CONSTRAINT LIGHTRAG_DOC_FULL_PK PRIMARY KEY (workspace, id)
                     )"""
     },
     "LIGHTRAG_DOC_CHUNKS": {
@@ -2341,7 +2342,7 @@ TABLES = {
                     file_path VARCHAR(256),
                     create_time TIMESTAMP(0) WITH TIME ZONE,
                     update_time TIMESTAMP(0) WITH TIME ZONE,
-	                CONSTRAINT LIGHTRAG_DOC_CHUNKS_PK PRIMARY KEY (workspace, id)
+                    CONSTRAINT LIGHTRAG_DOC_CHUNKS_PK PRIMARY KEY (workspace, id)
                     )"""
     },
     "LIGHTRAG_VDB_ENTITY": {
@@ -2355,7 +2356,7 @@ TABLES = {
                     update_time TIMESTAMP(0) WITH TIME ZONE,
                     chunk_ids VARCHAR(255)[] NULL,
                     file_path TEXT NULL,
-	                CONSTRAINT LIGHTRAG_VDB_ENTITY_PK PRIMARY KEY (workspace, id)
+                    CONSTRAINT LIGHTRAG_VDB_ENTITY_PK PRIMARY KEY (workspace, id)
                     )"""
     },
     "LIGHTRAG_VDB_RELATION": {
@@ -2370,35 +2371,35 @@ TABLES = {
                     update_time TIMESTAMP(0) WITH TIME ZONE,
                     chunk_ids VARCHAR(255)[] NULL,
                     file_path TEXT NULL,
-	                CONSTRAINT LIGHTRAG_VDB_RELATION_PK PRIMARY KEY (workspace, id)
+                    CONSTRAINT LIGHTRAG_VDB_RELATION_PK PRIMARY KEY (workspace, id)
                     )"""
     },
     "LIGHTRAG_LLM_CACHE": {
         "ddl": """CREATE TABLE LIGHTRAG_LLM_CACHE (
-	                workspace varchar(255) NOT NULL,
-	                id varchar(255) NOT NULL,
-	                mode varchar(32) NOT NULL,
+                    workspace varchar(255) NOT NULL,
+                    id varchar(255) NOT NULL,
+                    mode varchar(32) NOT NULL,
                     original_prompt TEXT,
                     return_value TEXT,
                     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     update_time TIMESTAMP,
-	                CONSTRAINT LIGHTRAG_LLM_CACHE_PK PRIMARY KEY (workspace, mode, id)
+                    CONSTRAINT LIGHTRAG_LLM_CACHE_PK PRIMARY KEY (workspace, mode, id)
                     )"""
     },
     "LIGHTRAG_DOC_STATUS": {
         "ddl": """CREATE TABLE LIGHTRAG_DOC_STATUS (
-	               workspace varchar(255) NOT NULL,
-	               id varchar(255) NOT NULL,
-	               content TEXT NULL,
-	               content_summary varchar(255) NULL,
-	               content_length int4 NULL,
-	               chunks_count int4 NULL,
-	               status varchar(64) NULL,
-	               file_path TEXT NULL,
-	               created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NULL,
-	               updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NULL,
-	               CONSTRAINT LIGHTRAG_DOC_STATUS_PK PRIMARY KEY (workspace, id)
-	              )"""
+                    workspace varchar(255) NOT NULL,
+                    id varchar(255) NOT NULL,
+                    content TEXT NULL,
+                    content_summary varchar(255) NULL,
+                    content_length int4 NULL,
+                    chunks_count int4 NULL,
+                    status varchar(64) NULL,
+                    file_path TEXT NULL,
+                    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NULL,
+                    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NULL,
+                    CONSTRAINT LIGHTRAG_DOC_STATUS_PK PRIMARY KEY (workspace, id)
+                    )"""
     },
 }
 

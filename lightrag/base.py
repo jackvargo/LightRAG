@@ -100,6 +100,9 @@ class QueryParam:
     If proivded, this will be use instead of the default vaulue from prompt template.
     """
 
+    include_relationships: bool = False
+    """If True, includes relationship data in the query response."""
+
 
 @dataclass
 class StorageNameSpace(ABC):
@@ -279,6 +282,7 @@ class BaseKVStorage(StorageNameSpace, ABC):
              True: if the cache drop successfully
              False: if the cache drop failed, or the cache mode is not supported
         """
+        return False
 
 
 @dataclass
@@ -572,6 +576,8 @@ class DocProcessingStatus:
     """Error message if failed"""
     metadata: dict[str, Any] = field(default_factory=dict)
     """Additional metadata"""
+    mime_type: str | None = None
+    """MIME type of the document (e.g., text/plain, application/pdf)"""
 
 
 @dataclass

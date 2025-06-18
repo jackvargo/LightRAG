@@ -14,11 +14,21 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
 - `.feature-branch-source` - Development tracking file documenting branch creation and progress
 - `.git/info/exclude` - Git exclude file with MCP development artifacts to avoid merge conflicts
 
-### Phase 1: LightRAG API Extensions (Planned)
-- `lightrag/api/routers/document_routes.py` - Add document content and chunk retrieval endpoints
-- `lightrag/api/routers/query_routes.py` - Add relationship data to query responses
-- `tests/api/test_document_routes.py` - Unit tests for new document endpoints
-- `tests/api/test_query_extensions.py` - Unit tests for enhanced query functionality
+### Phase 1: LightRAG API Extensions (In Progress)
+- `lightrag/api/routers/document_routes.py` - Added document content and chunks retrieval endpoints, MIME type detection utility function, and updated DocStatusResponse model with mime_type field
+- `lightrag/lightrag.py` - Added aget_chunks_by_doc_id, aget_relationships_for_query methods, and get_mime_type_from_path utility. Updated document processing pipeline to include MIME type detection and storage
+- `lightrag/api/routers/query_routes.py` - Added include_relationships parameter to QueryRequest model and relationships field to QueryResponse model; updated both query endpoints to return relationship data when requested
+- `lightrag/base.py` - Added mime_type field to DocProcessingStatus dataclass
+- `lightrag/kg/json_doc_status_impl.py` - Updated to handle mime_type field with default fallback
+- `lightrag/kg/mongo_impl.py` - Updated to handle mime_type field with default fallback
+- `lightrag/kg/postgres_impl.py` - Updated to handle mime_type field with default fallback
+- `lightrag_webui/src/api/lightrag.ts` - Updated DocStatusResponse TypeScript type to include mime_type field
+- `tests/api/__init__.py` - Created API test module initialization
+- `tests/api/conftest.py` - Created shared fixtures for API testing with mock instances and test data
+- `tests/api/test_document_routes.py` - Comprehensive unit tests for document content and chunks endpoints, MIME type detection, and error handling
+- `tests/api/test_query_extensions.py` - Comprehensive unit tests for query endpoints with relationships parameter and streaming functionality
+- `tests/pytest.ini` - Pytest configuration with custom markers and async support
+- `tests/requirements.txt` - Testing dependencies including pytest, fastapi test client, and coverage tools
 
 ### Development and CI/CD Files
 - `docs/development/mcp-development-workflow.md` - Comprehensive development workflow documentation with setup, testing, and deployment procedures
@@ -74,15 +84,53 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
   - [x] 1.11 Configure automated testing, linting, and deployment pipelines
 
 - [ ] 2.0 Implement LightRAG API Extensions with Tests (Phase 1)
-  - [ ] 2.1 Create branch `feature/mcp-lightrag-api-extensions` from main feature branch
-  - [ ] 2.2 Add document content retrieval endpoint `GET /documents/{doc_id}/content`
-  - [ ] 2.3 Add processed chunks endpoint `GET /documents/{doc_id}/chunks`
-  - [ ] 2.4 Modify query endpoints to include optional `include_relationships` parameter
-  - [ ] 2.5 Update document status models to include MIME type and file path metadata
-  - [ ] 2.6 Create comprehensive test suite for new endpoints using pytest
-  - [ ] 2.7 Test document content retrieval with various file types (PDF, TXT, DOCX)
-  - [ ] 2.8 Test chunk retrieval and validate chunk metadata structure
-  - [ ] 2.9 Test relationship data inclusion in query responses
+  - [x] 2.1 Create branch `feature/mcp-lightrag-api-extensions` from main feature branch
+  - [x] 2.2 Add document content retrieval endpoint `GET /documents/{doc_id}/content`
+    - [ ] 2.2.1 Modify endpoint to serve actual files from document filepath
+    - [ ] 2.2.2 Add context input directory resolution for file location
+    - [ ] 2.2.3 Implement file existence checking with fallback to stored content
+    - [ ] 2.2.4 Add file size protection with configurable maximum size limit
+    - [ ] 2.2.5 Add proper HTTP headers for file serving (Content-Type, Content-Length, Content-Disposition)
+    - [ ] 2.2.6 Implement streaming response for large files to prevent memory issues
+    - [ ] 2.2.7 Add error handling for file access permissions and disk I/O errors
+  - [x] 2.3 Add processed chunks endpoint `GET /documents/{doc_id}/chunks`
+    - [ ] 2.3.1 Add individual chunk retrieval endpoint `GET /chunks/{chunk_id}`
+    - [ ] 2.3.2 Add bulk chunk retrieval endpoint `GET /chunks?chunk_ids={id1,id2,id3}`
+    - [ ] 2.3.3 Support array parameter for multiple chunk IDs in single request
+    - [ ] 2.3.4 Add chunk metadata including relationships to graph nodes
+    - [ ] 2.3.5 Implement proper error handling for non-existent chunk IDs
+    - [ ] 2.3.6 Add validation for chunk ID format and request limits
+  - [x] 2.4 Modify query endpoints to include optional `include_relationships` parameter
+    - [ ] 2.4.1 Add chunk_ids field to relationship responses for graph node references
+    - [ ] 2.4.2 Ensure relationship data includes chunk references for MCP graph exploration
+    - [ ] 2.4.3 Optimize relationship queries to include relevant chunk metadata
+  - [x] 2.5 Update document status models to include MIME type and file path metadata
+    - [ ] 2.5.1 Add file_exists field to document status for file availability tracking
+    - [ ] 2.5.2 Add file_size field to document status for content size information
+    - [ ] 2.5.3 Update all storage implementations to handle new fields
+  - [x] 2.6 Create comprehensive test suite for new endpoints using pytest
+    - [ ] 2.6.1 Add tests for file serving functionality with various file types
+    - [ ] 2.6.2 Add tests for file size limits and streaming responses
+    - [ ] 2.6.3 Add tests for individual and bulk chunk retrieval
+    - [ ] 2.6.4 Add tests for chunk ID validation and error scenarios
+    - [ ] 2.6.5 Add tests for file fallback behavior when original files are missing
+    - [ ] 2.6.6 Add tests for context input directory resolution
+  - [x] 2.7 Test document content retrieval with various file types (PDF, TXT, DOCX)
+    - [ ] 2.7.1 Test actual file serving for different MIME types
+    - [ ] 2.7.2 Test file size protection with large documents
+    - [ ] 2.7.3 Test streaming response behavior for large files
+    - [ ] 2.7.4 Test fallback behavior when original files are deleted
+    - [ ] 2.7.5 Test proper HTTP headers for different file types
+  - [x] 2.8 Test chunk retrieval and validate chunk metadata structure
+    - [ ] 2.8.1 Test individual chunk retrieval by ID
+    - [ ] 2.8.2 Test bulk chunk retrieval with multiple IDs
+    - [ ] 2.8.3 Test chunk metadata including graph node references
+    - [ ] 2.8.4 Test error handling for invalid chunk IDs
+    - [ ] 2.8.5 Test request limits for bulk chunk retrieval
+  - [x] 2.9 Test relationship data inclusion in query responses
+    - [ ] 2.9.1 Test chunk references in relationship responses
+    - [ ] 2.9.2 Test graph node to chunk mapping accuracy
+    - [ ] 2.9.3 Test relationship data with MCP graph exploration workflow
   - [ ] 2.10 Create API documentation updates for new endpoints
   - [ ] 2.11 Run full LightRAG test suite to ensure no regressions
   - [ ] 2.12 Submit pull request with Phase 1 changes for review and merge

@@ -131,6 +131,7 @@ export type DocStatusResponse = {
   error?: string
   metadata?: Record<string, any>
   file_path: string
+  mime_type: string
 }
 
 export type DocsStatusesResponse = {

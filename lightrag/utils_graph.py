@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any, cast
+from typing import Any, Dict, Optional, Set, cast
 
 from .base import StorageNameSpace
 from .kg.shared_storage import get_graph_db_lock
@@ -641,8 +641,8 @@ async def amerge_entities(
     relationships_vdb,
     source_entities: list[str],
     target_entity: str,
-    merge_strategy: dict[str, str] = None,
-    target_entity_data: dict[str, Any] = None,
+    merge_strategy: Optional[dict[str, str]] = None,
+    target_entity_data: Optional[dict[str, Any]] = None,
 ) -> dict[str, Any]:
     """Asynchronously merge multiple entities into one entity.
 
@@ -746,7 +746,9 @@ async def amerge_entities(
                 logger.info(f"Updated existing target entity '{target_entity}'")
 
             # 6. Recreate all relationships, pointing to the target entity
-            relation_updates = {}  # Track relationships that need to be merged
+            relation_updates: Dict[str, Dict[str, Any]] = (
+                {}
+            )  # Track relationships that need to be merged
             relations_to_delete = []
 
             for src, tgt, edge_data in all_relations:
@@ -903,7 +905,7 @@ def _merge_entity_attributes(
     merged_data = {}
 
     # Collect all possible keys
-    all_keys = set()
+    all_keys: Set[str] = set()
     for data in entity_data_list:
         all_keys.update(data.keys())
 
@@ -919,21 +921,24 @@ def _merge_entity_attributes(
         strategy = merge_strategy.get(key, "keep_first")
 
         if strategy == "concatenate":
-            merged_data[key] = "\n\n".join(values)
+            # Filter out None values and convert to strings
+            string_values = [str(v) for v in values if v is not None]
+            merged_data[key] = "\n\n".join(string_values)
         elif strategy == "keep_first":
-            merged_data[key] = values[0]
+            merged_data[key] = str(values[0]) if values[0] is not None else ""
         elif strategy == "keep_last":
-            merged_data[key] = values[-1]
+            merged_data[key] = str(values[-1]) if values[-1] is not None else ""
         elif strategy == "join_unique":
             # Handle fields separated by GRAPH_FIELD_SEP
             unique_items = set()
             for value in values:
-                items = value.split(GRAPH_FIELD_SEP)
-                unique_items.update(items)
+                if value is not None:
+                    items = str(value).split(GRAPH_FIELD_SEP)
+                    unique_items.update(items)
             merged_data[key] = GRAPH_FIELD_SEP.join(unique_items)
         else:
             # Default strategy
-            merged_data[key] = values[0]
+            merged_data[key] = str(values[0]) if values[0] is not None else ""
 
     return merged_data
 
@@ -953,7 +958,7 @@ def _merge_relation_attributes(
     merged_data = {}
 
     # Collect all possible keys
-    all_keys = set()
+    all_keys: Set[str] = set()
     for data in relation_data_list:
         all_keys.update(data.keys())
 
@@ -973,25 +978,27 @@ def _merge_relation_attributes(
         if strategy == "concatenate":
             merged_data[key] = "\n\n".join(str(v) for v in values)
         elif strategy == "keep_first":
-            merged_data[key] = values[0]
+            merged_data[key] = str(values[0]) if values[0] is not None else ""
         elif strategy == "keep_last":
-            merged_data[key] = values[-1]
+            merged_data[key] = str(values[-1]) if values[-1] is not None else ""
         elif strategy == "join_unique":
             # Handle fields separated by GRAPH_FIELD_SEP
             unique_items = set()
             for value in values:
-                items = str(value).split(GRAPH_FIELD_SEP)
-                unique_items.update(items)
+                if value is not None:
+                    items = str(value).split(GRAPH_FIELD_SEP)
+                    unique_items.update(items)
             merged_data[key] = GRAPH_FIELD_SEP.join(unique_items)
         elif strategy == "max":
             # For numeric fields like weight
             try:
-                merged_data[key] = max(float(v) for v in values)
+                max_value = max(float(v) for v in values if v is not None)
+                merged_data[key] = str(max_value)
             except (ValueError, TypeError):
-                merged_data[key] = values[0]
+                merged_data[key] = str(values[0]) if values[0] is not None else ""
         else:
             # Default strategy
-            merged_data[key] = values[0]
+            merged_data[key] = str(values[0]) if values[0] is not None else ""
 
     return merged_data
 

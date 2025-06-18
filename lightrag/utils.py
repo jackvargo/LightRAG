@@ -12,7 +12,7 @@ import weakref
 from dataclasses import dataclass
 from functools import wraps
 from hashlib import md5
-from typing import TYPE_CHECKING, Any, Callable, List, Protocol
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Protocol, Union
 
 import numpy as np
 from dotenv import load_dotenv
@@ -26,8 +26,8 @@ from lightrag.prompt import PROMPTS
 
 
 def get_env_value(
-    env_key: str, default: any, value_type: type = str, special_none: bool = False
-) -> any:
+    env_key: str, default: Any, value_type: type = str, special_none: bool = False
+) -> Any:
     """
     Get value from environment variable with type conversion
 
@@ -99,7 +99,7 @@ def set_verbose_debug(enabled: bool):
     VERBOSE_DEBUG = enabled
 
 
-statistic_data = {"llm_call": 0, "llm_cache": 0, "embed_call": 0}
+statistic_data: Dict[str, int] = {"llm_call": 0, "llm_cache": 0, "embed_call": 0}
 
 # Initialize logger
 logger = logging.getLogger("lightrag")
@@ -236,7 +236,7 @@ class UnlimitedSemaphore:
 class EmbeddingFunc:
     embedding_dim: int
     max_token_size: int
-    func: callable
+    func: Callable
     # concurrent_limit: int = 16
 
     async def __call__(self, *args, **kwargs) -> np.ndarray:
@@ -246,9 +246,9 @@ class EmbeddingFunc:
 def locate_json_string_body_from_string(content: str) -> str | None:
     """Locate the JSON string body from a string"""
     try:
-        maybe_json_str = re.search(r"{.*}", content, re.DOTALL)
-        if maybe_json_str is not None:
-            maybe_json_str = maybe_json_str.group(0)
+        maybe_json_match = re.search(r"{.*}", content, re.DOTALL)
+        if maybe_json_match is not None:
+            maybe_json_str = maybe_json_match.group(0)
             maybe_json_str = maybe_json_str.replace("\\n", "")
             maybe_json_str = maybe_json_str.replace("\n", "")
             maybe_json_str = maybe_json_str.replace("'", '"')
@@ -267,6 +267,7 @@ def locate_json_string_body_from_string(content: str) -> str | None:
         #     json.loads(maybe_json_str)
 
         return None
+    return None
 
 
 def convert_response_to_json(response: str) -> dict[str, Any]:
@@ -432,7 +433,7 @@ def priority_limit_async_func_call(max_size: int, max_queue_size: int = 1000):
             If not, it performs a one-time initialization of all worker threads
             and starts the health check system.
             """
-            nonlocal initialized, worker_health_check_task, tasks, reinit_count
+            nonlocal initialized, worker_health_check_task, reinit_count
 
             if initialized:
                 return
@@ -742,7 +743,7 @@ def truncate_list_by_token_size(
     key: Callable[[Any], str],
     max_token_size: int,
     tokenizer: Tokenizer,
-) -> list[int]:
+) -> list[Any]:
     """Truncate a list of data by token size"""
     if max_token_size <= 0:
         return []
@@ -802,7 +803,7 @@ async def get_best_cached_response(
     if not mode_cache:
         return None
 
-    best_similarity = -1
+    best_similarity = -1.0
     best_response = None
     best_prompt = None
     best_cache_id = None
@@ -814,14 +815,20 @@ async def get_best_cached_response(
             continue
 
         # Check if cache data is valid
-        if cache_data["embedding"] is None:
+        if cache_data.get("embedding") is None:
             continue
 
         try:
             # Safely convert cached embedding
+            embedding_data = cache_data.get("embedding")
+            embedding_shape = cache_data.get("embedding_shape")
+
+            if embedding_data is None or embedding_shape is None:
+                continue
+
             cached_quantized = np.frombuffer(
-                bytes.fromhex(cache_data["embedding"]), dtype=np.uint8
-            ).reshape(cache_data["embedding_shape"])
+                bytes.fromhex(embedding_data), dtype=np.uint8
+            ).reshape(embedding_shape)
 
             # Ensure min_val and max_val are valid float values
             embedding_min = cache_data.get("embedding_min")
@@ -885,8 +892,8 @@ async def get_best_cached_response(
                         ),
                         "cached_question": (
                             best_prompt[:100] + "..."
-                            if len(best_prompt) > 100
-                            else best_prompt
+                            if best_prompt and len(best_prompt) > 100
+                            else (best_prompt or "")
                         ),
                         "similarity_score": round(best_similarity, 4),
                         "threshold": similarity_threshold,
@@ -899,7 +906,9 @@ async def get_best_cached_response(
                 return None  # Return None directly when LLM check fails
 
         prompt_display = (
-            best_prompt[:50] + "..." if len(best_prompt) > 50 else best_prompt
+            best_prompt[:50] + "..."
+            if best_prompt and len(best_prompt) > 50
+            else (best_prompt or "")
         )
         log_data = {
             "event": "cache_hit",
@@ -978,9 +987,12 @@ async def handle_cache(
         mode_cache = await hashing_kv.get_by_mode_and_id(mode, args_hash) or {}
     else:
         mode_cache = await hashing_kv.get_by_id(mode) or {}
-    if args_hash in mode_cache:
-        logger.debug(f"Non-embedding cached hit(mode:{mode} type:{cache_type})")
-        return mode_cache[args_hash]["return"], None, None, None
+
+    if mode_cache and args_hash in mode_cache:
+        cache_entry = mode_cache[args_hash]
+        if isinstance(cache_entry, dict) and "return" in cache_entry:
+            logger.debug(f"Non-embedding cached hit(mode:{mode} type:{cache_type})")
+            return cache_entry["return"], None, None, None
 
     logger.debug(f"Non-embedding cached missed(mode:{mode} type:{cache_type})")
     return None, None, None, None
@@ -1521,9 +1533,12 @@ def lazy_external_import(module_name: str, class_name: str) -> Callable[..., Any
     # Get the caller's module and package
     import inspect
 
-    caller_frame = inspect.currentframe().f_back
-    module = inspect.getmodule(caller_frame)
-    package = module.__package__ if module else None
+    caller_frame = inspect.currentframe()
+    if caller_frame is not None and caller_frame.f_back is not None:
+        module_ = inspect.getmodule(caller_frame.f_back)
+        package = module_.__package__ if module_ else None
+    else:
+        package = None
 
     def import_class(*args: Any, **kwargs: Any):
         import importlib
@@ -1537,10 +1552,10 @@ def lazy_external_import(module_name: str, class_name: str) -> Callable[..., Any
 
 async def use_llm_func_with_cache(
     input_text: str,
-    use_llm_func: callable,
+    use_llm_func: Callable,
     llm_response_cache: "BaseKVStorage | None" = None,
-    max_tokens: int = None,
-    history_messages: list[dict[str, str]] = None,
+    max_tokens: int | None = None,
+    history_messages: list[dict[str, str]] | None = None,
     cache_type: str = "extract",
 ) -> str:
     """Call LLM function with cache support
@@ -1675,7 +1690,7 @@ def normalize_extracted_info(name: str, is_entity=False) -> str:
 
     if is_entity:
         # remove Chinese quotes
-        name = name.replace("“", "").replace("”", "").replace("‘", "").replace("’", "")
+        name = name.replace(""", "").replace(""", "").replace("'", "").replace("'", "")
         # remove English queotes in and around chinese
         name = re.sub(r"['\"]+(?=[\u4e00-\u9fa5])", "", name)
         name = re.sub(r"(?<=[\u4e00-\u9fa5])['\"]+", "", name)

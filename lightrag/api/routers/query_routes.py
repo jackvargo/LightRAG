@@ -88,6 +88,11 @@ class QueryRequest(BaseModel):
         description="User-provided prompt for the query. If provided, this will be used instead of the default value from prompt template.",
     )
 
+    include_relationships: Optional[bool] = Field(
+        default=False,
+        description="If True, includes relationship data in the query response.",
+    )
+
     @field_validator("query", mode="after")
     @classmethod
     def query_strip_after(cls, query: str) -> str:
@@ -122,6 +127,10 @@ class QueryResponse(BaseModel):
     response: str = Field(
         description="The generated response",
     )
+    relationships: Optional[List[Dict[str, Any]]] = Field(
+        default=None,
+        description="Relationship data if include_relationships was True",
+    )
 
 
 def create_query_routes(rag, api_key: Optional[str] = None, top_k: int = 60):
@@ -149,15 +158,24 @@ def create_query_routes(rag, api_key: Optional[str] = None, top_k: int = 60):
             param = request.to_query_params(False)
             response = await rag.aquery(request.query, param=param)
 
+            # Get relationships if requested
+            relationships = None
+            if request.include_relationships:
+                relationships = await rag.aget_relationships_for_query(
+                    request.query, param
+                )
+
             # If response is a string (e.g. cache hit), return directly
             if isinstance(response, str):
-                return QueryResponse(response=response)
+                return QueryResponse(response=response, relationships=relationships)
 
             if isinstance(response, dict):
                 result = json.dumps(response, indent=2)
-                return QueryResponse(response=result)
+                return QueryResponse(response=result, relationships=relationships)
             else:
-                return QueryResponse(response=str(response))
+                return QueryResponse(
+                    response=str(response), relationships=relationships
+                )
         except Exception as e:
             trace_exception(e)
             raise HTTPException(status_code=500, detail=str(e))
@@ -178,18 +196,34 @@ def create_query_routes(rag, api_key: Optional[str] = None, top_k: int = 60):
             param = request.to_query_params(True)
             response = await rag.aquery(request.query, param=param)
 
+            # Get relationships if requested (for streaming, we get them once and include in first chunk)
+            relationships = None
+            if request.include_relationships:
+                relationships = await rag.aget_relationships_for_query(
+                    request.query, param
+                )
+
             from fastapi.responses import StreamingResponse
 
             async def stream_generator():
+                first_chunk_sent = False
                 if isinstance(response, str):
-                    # If it's a string, send it all at once
-                    yield f"{json.dumps({'response': response})}\n"
+                    # If it's a string, send it all at once with relationships
+                    result = {"response": response}
+                    if relationships is not None:
+                        result["relationships"] = relationships
+                    yield f"{json.dumps(result)}\n"
                 else:
                     # If it's an async generator, send chunks one by one
                     try:
                         async for chunk in response:
                             if chunk:  # Only send non-empty content
-                                yield f"{json.dumps({'response': chunk})}\n"
+                                result = {"response": chunk}
+                                # Include relationships in the first chunk only
+                                if not first_chunk_sent and relationships is not None:
+                                    result["relationships"] = relationships
+                                    first_chunk_sent = True
+                                yield f"{json.dumps(result)}\n"
                     except Exception as e:
                         logging.error(f"Streaming error: {str(e)}")
                         yield f"{json.dumps({'error': str(e)})}\n"

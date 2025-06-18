@@ -38,15 +38,19 @@ class JsonDocStatusStorage(DocStatusStorage):
 
     def update_working_dir(self, new_working_dir: str):
         """Update file path when working directory changes"""
-        self._file_name = os.path.join(new_working_dir, f"kv_store_{self.namespace}.json")
+        self._file_name = os.path.join(
+            new_working_dir, f"kv_store_{self.namespace}.json"
+        )
         logger.info(f"Updated JsonDocStatusStorage file path to: {self._file_name}")
-        
+
         # Force reload data from the new file path
         if self._data is not None:
             loaded_data = load_json(self._file_name) or {}
             self._data.clear()
             self._data.update(loaded_data)
-            logger.info(f"Force reloaded {len(loaded_data)} items from new storage file: {self._file_name}")
+            logger.info(
+                f"Force reloaded {len(loaded_data)} items from new storage file: {self._file_name}"
+            )
 
     async def initialize(self):
         """Initialize storage data"""
@@ -103,6 +107,9 @@ class JsonDocStatusStorage(DocStatusStorage):
                         # If file_path is not in data, use document id as file path
                         if "file_path" not in data:
                             data["file_path"] = "no-file-path"
+                        # If mime_type is not in data, set default
+                        if "mime_type" not in data:
+                            data["mime_type"] = "application/octet-stream"
                         result[k] = DocProcessingStatus(**data)
                     except KeyError as e:
                         logger.error(f"Missing required field for document {k}: {e}")

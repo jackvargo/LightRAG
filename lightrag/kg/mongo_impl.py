@@ -282,6 +282,7 @@ class MongoDocStatusStorage(DocStatusStorage):
                 updated_at=doc.get("updated_at"),
                 chunks_count=doc.get("chunks_count", -1),
                 file_path=doc.get("file_path", doc["_id"]),
+                mime_type=doc.get("mime_type", "application/octet-stream"),
             )
             for doc in result
         }
@@ -991,7 +992,7 @@ class MongoVectorDBStorage(BaseVectorStorage):
             await self._data.create_search_index(search_index_model)
             logger.info("Vector index created successfully.")
 
-        except PyMongoError as _:
+        except PyMongoError:
             logger.debug("vector index already exist")
 
     async def upsert(self, data: dict[str, dict[str, Any]]) -> None:

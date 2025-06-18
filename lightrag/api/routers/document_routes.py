@@ -3,21 +3,22 @@ This module contains all document-related routes for the LightRAG API.
 """
 
 import asyncio
-from lightrag.utils import logger
-import aiofiles
 import shutil
 import traceback
-import pipmaster as pm
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Literal
+from typing import Any, Dict, List, Literal, Optional
+
+import aiofiles
+import pipmaster as pm
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
 from pydantic import BaseModel, Field, field_validator
-import os
 
 from lightrag import LightRAG
-from lightrag.base import DocProcessingStatus, DocStatus
 from lightrag.api.utils_api import get_combined_auth_dependency
+from lightrag.base import DocProcessingStatus, DocStatus
+from lightrag.utils import logger
+
 from ..config import global_args
 
 router = APIRouter(
@@ -27,6 +28,74 @@ router = APIRouter(
 
 # Temporary file prefix
 temp_prefix = "__tmp__"
+
+
+def get_mime_type_from_extension(file_path: str) -> str:
+    """Get MIME type based on file extension.
+
+    Args:
+        file_path: Path to the file or filename
+
+    Returns:
+        MIME type string
+    """
+    import mimetypes
+    from pathlib import Path
+
+    # Initialize mimetypes if not already done
+    mimetypes.init()
+
+    # Get the file extension
+    ext = Path(file_path).suffix.lower()
+
+    # Try to get MIME type from mimetypes module
+    mime_type, _ = mimetypes.guess_type(file_path)
+
+    if mime_type:
+        return mime_type
+
+    # Fallback for common types not always detected by mimetypes
+    mime_type_map = {
+        ".txt": "text/plain",
+        ".md": "text/markdown",
+        ".pdf": "application/pdf",
+        ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ".rtf": "application/rtf",
+        ".odt": "application/vnd.oasis.opendocument.text",
+        ".tex": "application/x-tex",
+        ".epub": "application/epub+zip",
+        ".html": "text/html",
+        ".htm": "text/html",
+        ".csv": "text/csv",
+        ".json": "application/json",
+        ".xml": "application/xml",
+        ".yaml": "application/x-yaml",
+        ".yml": "application/x-yaml",
+        ".log": "text/plain",
+        ".conf": "text/plain",
+        ".ini": "text/plain",
+        ".properties": "text/plain",
+        ".sql": "application/sql",
+        ".bat": "application/x-msdos-program",
+        ".sh": "application/x-shellscript",
+        ".c": "text/x-c",
+        ".cpp": "text/x-c++",
+        ".py": "text/x-python",
+        ".java": "text/x-java",
+        ".js": "application/javascript",
+        ".ts": "application/typescript",
+        ".swift": "text/x-swift",
+        ".go": "text/x-go",
+        ".rb": "text/x-ruby",
+        ".php": "application/x-httpd-php",
+        ".css": "text/css",
+        ".scss": "text/x-scss",
+        ".less": "text/x-less",
+    }
+
+    return mime_type_map.get(ext, "application/octet-stream")
 
 
 class ScanResponse(BaseModel):
@@ -185,7 +254,104 @@ class ClearCacheResponse(BaseModel):
         json_schema_extra = {
             "example": {
                 "status": "success",
-                "message": "Successfully cleared cache for modes: ['default', 'naive']",
+                "message": "Cache cleared successfully for modes: ['default', 'naive']",
+            }
+        }
+
+
+class DocumentContentResponse(BaseModel):
+    """Response model for document content retrieval
+
+    Attributes:
+        id: Document identifier
+        content: Full document content
+        content_length: Length of document content in characters
+        file_path: Path to the document file
+        metadata: Additional metadata about the document
+    """
+
+    id: str = Field(description="Document identifier")
+    content: str = Field(description="Full document content")
+    content_length: int = Field(description="Length of document content in characters")
+    file_path: str = Field(description="Path to the document file")
+    metadata: Optional[dict[str, Any]] = Field(
+        default=None, description="Additional metadata about the document"
+    )
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id": "doc_123456",
+                "content": "This is the full content of the document...",
+                "content_length": 15240,
+                "file_path": "research_paper.pdf",
+                "metadata": {"author": "John Doe", "year": 2025},
+            }
+        }
+
+
+class DocumentChunkResponse(BaseModel):
+    """Response model for a single document chunk
+
+    Attributes:
+        id: Chunk identifier
+        content: Chunk content
+        tokens: Number of tokens in the chunk
+        chunk_order_index: Index/order of the chunk within the document
+        full_doc_id: ID of the parent document
+        file_path: Path to the original document file
+    """
+
+    id: str = Field(description="Chunk identifier")
+    content: str = Field(description="Chunk content")
+    tokens: int = Field(description="Number of tokens in the chunk")
+    chunk_order_index: int = Field(
+        description="Index/order of the chunk within the document"
+    )
+    full_doc_id: str = Field(description="ID of the parent document")
+    file_path: str = Field(description="Path to the original document file")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id": "chunk_123456",
+                "content": "This is a chunk of the document...",
+                "tokens": 256,
+                "chunk_order_index": 0,
+                "full_doc_id": "doc_123456",
+                "file_path": "research_paper.pdf",
+            }
+        }
+
+
+class DocumentChunksResponse(BaseModel):
+    """Response model for document chunks retrieval
+
+    Attributes:
+        doc_id: Document identifier
+        chunks: List of document chunks
+        total_chunks: Total number of chunks
+    """
+
+    doc_id: str = Field(description="Document identifier")
+    chunks: List[DocumentChunkResponse] = Field(description="List of document chunks")
+    total_chunks: int = Field(description="Total number of chunks")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "doc_id": "doc_123456",
+                "chunks": [
+                    {
+                        "id": "chunk_123456",
+                        "content": "This is the first chunk...",
+                        "tokens": 256,
+                        "chunk_order_index": 0,
+                        "full_doc_id": "doc_123456",
+                        "file_path": "research_paper.pdf",
+                    }
+                ],
+                "total_chunks": 12,
             }
         }
 
@@ -231,6 +397,7 @@ class DocStatusResponse(BaseModel):
         default=None, description="Additional metadata about the document"
     )
     file_path: str = Field(description="Path to the document file")
+    mime_type: str = Field(description="MIME type of the document")
 
     class Config:
         json_schema_extra = {
@@ -245,6 +412,7 @@ class DocStatusResponse(BaseModel):
                 "error": None,
                 "metadata": {"author": "John Doe", "year": 2025},
                 "file_path": "research_paper.pdf",
+                "mime_type": "application/pdf",
             }
         }
 
@@ -395,30 +563,38 @@ class DocumentManager:
     def is_supported_file(self, filename: str) -> bool:
         return any(filename.lower().endswith(ext) for ext in self.supported_extensions)
 
-    async def load_indexed_files_from_storage(self, rag: Optional['LightRAG'] = None) -> None:
+    async def load_indexed_files_from_storage(
+        self, rag: Optional["LightRAG"] = None
+    ) -> None:
         """Load processed file paths from document status storage into indexed_files"""
         if not rag:
-            logger.debug("No RAG instance provided, cannot load indexed files from storage")
+            logger.debug(
+                "No RAG instance provided, cannot load indexed files from storage"
+            )
             return
-            
+
         try:
             from lightrag.base import DocStatus
-            
+
             # Get processed docs from current storage
-            processed_docs = await rag.doc_status.get_docs_by_status(DocStatus.PROCESSED)
-            
+            processed_docs = await rag.doc_status.get_docs_by_status(
+                DocStatus.PROCESSED
+            )
+
             # Clear current indexed files first
             previous_count = len(self.indexed_files)
-            
+
             for doc_id, doc_info in processed_docs.items():
-                if hasattr(doc_info, 'file_path') and doc_info.file_path:
+                if hasattr(doc_info, "file_path") and doc_info.file_path:
                     # Convert stored file path back to Path object for consistency
                     file_path = self.input_dir / doc_info.file_path
                     if file_path.exists():  # Only add if file still exists
                         self.indexed_files.add(file_path)
-            
-            logger.info(f"Loaded {len(self.indexed_files)} indexed files from storage (was {previous_count}) for {self.input_dir}")
-            
+
+            logger.info(
+                f"Loaded {len(self.indexed_files)} indexed files from storage (was {previous_count}) for {self.input_dir}"
+            )
+
         except Exception as e:
             logger.warning(f"Error loading indexed files from storage: {e}")
             # Don't fail - just continue with empty set (current behavior)
@@ -428,12 +604,14 @@ class DocumentManager:
         self.input_dir = Path(new_input_dir)
         self.input_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"DocumentManager input directory updated to: {self.input_dir}")
-    
+
     def reset_frontend_state(self):
         """Reset frontend-facing state tracking."""
         # Clear the indexed files tracking to force re-scanning
         self.indexed_files.clear()
-        logger.info("DocumentManager frontend state reset - cleared indexed files tracking")
+        logger.info(
+            "DocumentManager frontend state reset - cleared indexed files tracking"
+        )
 
 
 async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
@@ -516,7 +694,9 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 if global_args.document_loading_engine == "DOCLING":
                     if not pm.is_installed("docling"):  # type: ignore
                         pm.install("docling")
-                    from docling.document_converter import DocumentConverter  # type: ignore
+                    from docling.document_converter import (
+                        DocumentConverter,  # type: ignore
+                    )
 
                     converter = DocumentConverter()
                     result = converter.convert(file_path)
@@ -524,8 +704,9 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 else:
                     if not pm.is_installed("pypdf2"):  # type: ignore
                         pm.install("pypdf2")
-                    from PyPDF2 import PdfReader  # type: ignore
                     from io import BytesIO
+
+                    from PyPDF2 import PdfReader  # type: ignore
 
                     pdf_file = BytesIO(file)
                     reader = PdfReader(pdf_file)
@@ -535,7 +716,9 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 if global_args.document_loading_engine == "DOCLING":
                     if not pm.is_installed("docling"):  # type: ignore
                         pm.install("docling")
-                    from docling.document_converter import DocumentConverter  # type: ignore
+                    from docling.document_converter import (
+                        DocumentConverter,  # type: ignore
+                    )
 
                     converter = DocumentConverter()
                     result = converter.convert(file_path)
@@ -543,8 +726,9 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 else:
                     if not pm.is_installed("python-docx"):  # type: ignore
                         pm.install("docx")
-                    from docx import Document  # type: ignore
                     from io import BytesIO
+
+                    from docx import Document  # type: ignore
 
                     docx_file = BytesIO(file)
                     doc = Document(docx_file)
@@ -555,7 +739,9 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 if global_args.document_loading_engine == "DOCLING":
                     if not pm.is_installed("docling"):  # type: ignore
                         pm.install("docling")
-                    from docling.document_converter import DocumentConverter  # type: ignore
+                    from docling.document_converter import (
+                        DocumentConverter,  # type: ignore
+                    )
 
                     converter = DocumentConverter()
                     result = converter.convert(file_path)
@@ -563,8 +749,9 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 else:
                     if not pm.is_installed("python-pptx"):  # type: ignore
                         pm.install("pptx")
-                    from pptx import Presentation  # type: ignore
                     from io import BytesIO
+
+                    from pptx import Presentation  # type: ignore
 
                     pptx_file = BytesIO(file)
                     prs = Presentation(pptx_file)
@@ -576,7 +763,9 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 if global_args.document_loading_engine == "DOCLING":
                     if not pm.is_installed("docling"):  # type: ignore
                         pm.install("docling")
-                    from docling.document_converter import DocumentConverter  # type: ignore
+                    from docling.document_converter import (
+                        DocumentConverter,  # type: ignore
+                    )
 
                     converter = DocumentConverter()
                     result = converter.convert(file_path)
@@ -584,8 +773,9 @@ async def pipeline_enqueue_file(rag: LightRAG, file_path: Path) -> bool:
                 else:
                     if not pm.is_installed("openpyxl"):  # type: ignore
                         pm.install("openpyxl")
-                    from openpyxl import load_workbook  # type: ignore
                     from io import BytesIO
+
+                    from openpyxl import load_workbook  # type: ignore
 
                     xlsx_file = BytesIO(file)
                     wb = load_workbook(xlsx_file)
@@ -710,7 +900,7 @@ async def run_scanning_process(rag: LightRAG, doc_manager: DocumentManager):
         # Load existing processed files from storage first
         logger.info("Loading existing processed files from storage...")
         await doc_manager.load_indexed_files_from_storage(rag)
-        
+
         # Now scan for truly new files
         new_files = doc_manager.scan_directory_for_new_files()
         total_files = len(new_files)
@@ -1215,8 +1405,8 @@ def create_document_routes(
         """
         try:
             from lightrag.kg.shared_storage import (
-                get_namespace_data,
                 get_all_update_flags_status,
+                get_namespace_data,
             )
 
             pipeline_status = await get_namespace_data("pipeline_status")
@@ -1308,6 +1498,9 @@ def create_document_routes(
                             error=doc_status.error,
                             metadata=doc_status.metadata,
                             file_path=doc_status.file_path,
+                            mime_type=get_mime_type_from_extension(
+                                doc_status.file_path
+                            ),
                         )
                     )
             return response
@@ -1366,6 +1559,110 @@ def create_document_routes(
             raise
         except Exception as e:
             logger.error(f"Error clearing cache: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @router.get(
+        "/{doc_id}/content",
+        response_model=DocumentContentResponse,
+        dependencies=[Depends(combined_auth)],
+    )
+    async def get_document_content(doc_id: str):
+        """
+        Retrieve the content of a document by its ID.
+
+        This endpoint retrieves the full content of a document based on its ID.
+
+        Args:
+            doc_id (str): The ID of the document to retrieve
+
+        Returns:
+            DocumentContentResponse: A response object containing the document content
+
+        Raises:
+            HTTPException: If the document is not found (404) or other errors occur (500)
+        """
+        try:
+            # First check if the document exists in document status
+            doc_statuses = await rag.aget_docs_by_ids(doc_id)
+            if doc_id not in doc_statuses:
+                raise HTTPException(
+                    status_code=404, detail=f"Document with ID '{doc_id}' not found"
+                )
+
+            doc_status = doc_statuses[doc_id]
+
+            # Get the actual document content from full_docs storage
+            full_doc = await rag.full_docs.get_by_id(doc_id)
+            if not full_doc or "content" not in full_doc:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Document content for ID '{doc_id}' not found",
+                )
+
+            return DocumentContentResponse(
+                id=doc_id,
+                content=full_doc["content"],
+                content_length=len(full_doc["content"]),
+                file_path=getattr(doc_status, "file_path", "unknown"),
+                metadata=getattr(doc_status, "metadata", {}),
+            )
+        except HTTPException:
+            # Re-raise HTTP exceptions (like 404) without modification
+            raise
+        except Exception as e:
+            logger.error(f"Error GET /documents/{doc_id}/content: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @router.get(
+        "/{doc_id}/chunks",
+        response_model=DocumentChunksResponse,
+        dependencies=[Depends(combined_auth)],
+    )
+    async def get_document_chunks(doc_id: str):
+        """
+        Retrieve the chunks of a document by its ID.
+
+        This endpoint retrieves the chunks of a document based on its ID.
+
+        Args:
+            doc_id (str): The ID of the document to retrieve chunks for
+
+        Returns:
+            DocumentChunksResponse: A response object containing the document chunks
+
+        Raises:
+            HTTPException: If the document is not found (404) or other errors occur (500)
+        """
+        try:
+            chunks = await rag.aget_chunks_by_doc_id(doc_id)
+            if chunks:
+                return DocumentChunksResponse(
+                    doc_id=doc_id,
+                    chunks=[
+                        DocumentChunkResponse(
+                            id=chunk["id"],
+                            content=chunk.get("content", ""),
+                            tokens=chunk.get("tokens", 0),
+                            chunk_order_index=chunk.get("chunk_order_index", 0),
+                            full_doc_id=chunk.get("full_doc_id", doc_id),
+                            file_path=chunk.get("file_path", "unknown"),
+                        )
+                        for chunk in chunks
+                    ],
+                    total_chunks=len(chunks),
+                )
+            else:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"No chunks found for document with ID '{doc_id}'",
+                )
+        except HTTPException:
+            # Re-raise HTTP exceptions (like 404) without modification
+            raise
+        except Exception as e:
+            logger.error(f"Error GET /documents/{doc_id}/chunks: {str(e)}")
             logger.error(traceback.format_exc())
             raise HTTPException(status_code=500, detail=str(e))
 
