@@ -136,18 +136,18 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
   - [x] 2.12 Submit pull request with Phase 1 changes for review and merge
 
 - [ ] 3.0 Create MCP Server Foundation with Authentication
-  - [ ] 3.1 Create branch `feature/mcp-server-foundation` from main feature branch
-  - [ ] 3.2 Initialize `lightrag_mcp/` directory structure with `__init__.py` files
-  - [ ] 3.3 Create `lightrag_mcp/main.py` with basic FastAPI application setup
-  - [ ] 3.4 Implement OAuth 2.1 authentication in `lightrag_mcp/auth.py`
-  - [ ] 3.5 Setup environment configuration in `lightrag_mcp/config.py`
-  - [ ] 3.6 Create LightRAG API client in `lightrag_mcp/services/lightrag_client.py`
-  - [ ] 3.7 Implement health check and discovery endpoints
-  - [ ] 3.8 Create authentication middleware for request validation
-  - [ ] 3.9 Add comprehensive logging configuration
-  - [ ] 3.10 Create unit tests for authentication and configuration
-  - [ ] 3.11 Test OAuth 2.1 flow with mock authorization server
-  - [ ] 3.12 Validate LightRAG API connectivity and authentication
+  - [x] 3.1 Create branch `feature/mcp-server-foundation` from main feature branch
+  - [x] 3.2 Initialize `lightrag_mcp/` directory structure with `__init__.py` files
+  - [x] 3.3 Create `lightrag_mcp/main.py` with basic FastAPI application setup
+  - [x] 3.4 Implement OAuth 2.1 authentication in `lightrag_mcp/auth.py`
+  - [x] 3.5 Setup environment configuration in `lightrag_mcp/config.py`
+  - [x] 3.6 Create LightRAG API client in `lightrag_mcp/services/lightrag_client.py`
+  - [x] 3.7 Implement health check and discovery endpoints
+  - [x] 3.8 Create authentication middleware for request validation
+  - [x] 3.9 Add comprehensive logging configuration
+  - [x] 3.10 Create unit tests for authentication and configuration
+  - [x] 3.11 Test OAuth 2.1 flow with mock authorization server
+  - [x] 3.12 Validate LightRAG API connectivity and authentication
 
 - [ ] 4.0 Implement Core MCP Protocol and Tool Framework
   - [ ] 4.1 Create branch `feature/mcp-core-protocol` from main feature branch
