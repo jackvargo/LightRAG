@@ -20,6 +20,72 @@ from lightrag.utils import get_env_value
 load_dotenv(dotenv_path=".env", override=False)
 
 
+def load_secret_from_file(file_path: str) -> str:
+    """
+    Load a secret from a file path.
+    
+    Args:
+        file_path (str): Path to the secret file
+        
+    Returns:
+        str: Content of the file, stripped of whitespace, or empty string if file doesn't exist
+    """
+    if file_path and os.path.exists(file_path):
+        try:
+            with open(file_path, 'r') as f:
+                content = f.read().strip()
+                logging.info(f"Successfully loaded secret from {file_path}")
+                return content
+        except Exception as e:
+            logging.warning(f"Failed to read secret file {file_path}: {e}")
+            return ""
+    else:
+        logging.debug(f"Secret file not found or path empty: {file_path}")
+        return ""
+
+
+def get_env_value_with_file_fallback(env_key: str, file_env_key: str, default: any, value_type: type = str) -> any:
+    """
+    Get value from environment variable with file fallback and type conversion.
+    
+    First checks the direct environment variable, then checks for a file path
+    environment variable and loads the content from that file.
+    
+    Args:
+        env_key (str): Primary environment variable key
+        file_env_key (str): File path environment variable key (fallback)
+        default (any): Default value if neither env variable is set
+        value_type (type): Type to convert the value to
+        
+    Returns:
+        any: Converted value from environment, file, or default
+    """
+    # First check direct environment variable
+    value = os.getenv(env_key)
+    if value:
+        if value_type is bool:
+            return value.lower() in ("true", "1", "yes", "t", "on")
+        try:
+            return value_type(value)
+        except ValueError:
+            return default
+    
+    # If direct env var is not set, check file-based env var
+    file_path = os.getenv(file_env_key)
+    if file_path:
+        file_content = load_secret_from_file(file_path)
+        if file_content:
+            if value_type is bool:
+                return file_content.lower() in ("true", "1", "yes", "t", "on")
+            try:
+                return value_type(file_content)
+            except ValueError:
+                return default
+    
+    # Return default if neither option worked
+    return default
+
+
 class OllamaServerInfos:
     # Constants for emulated Ollama model information
     LIGHTRAG_NAME = "lightrag"
@@ -130,7 +196,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--key",
         type=str,
-        default=get_env_value("LIGHTRAG_API_KEY", None),
+        default=get_env_value_with_file_fallback("LIGHTRAG_API_KEY", "LIGHTRAG_API_KEY_FILE", None),
         help="API key for authentication. This protects lightrag server against unauthorized access",
     )
 
@@ -286,9 +352,9 @@ def parse_args() -> argparse.Namespace:
     args.summary_language = get_env_value("SUMMARY_LANGUAGE", "English")
     args.whitelist_paths = get_env_value("WHITELIST_PATHS", "/health,/api/*")
 
-    # For JWT Auth
-    args.auth_accounts = get_env_value("AUTH_ACCOUNTS", "")
-    args.token_secret = get_env_value("TOKEN_SECRET", "lightrag-jwt-default-secret")
+    # For JWT Auth - Enhanced with file fallback support
+    args.auth_accounts = get_env_value_with_file_fallback("AUTH_ACCOUNTS", "AUTH_FILE", "")
+    args.token_secret = get_env_value_with_file_fallback("TOKEN_SECRET", "TOKEN_SECRET_FILE", "lightrag-jwt-default-secret")
     args.token_expire_hours = get_env_value("TOKEN_EXPIRE_HOURS", 48, int)
     args.guest_token_expire_hours = get_env_value("GUEST_TOKEN_EXPIRE_HOURS", 24, int)
     args.jwt_algorithm = get_env_value("JWT_ALGORITHM", "HS256")

@@ -7,6 +7,7 @@ WORKDIR /ui
 
 # Copy package files first for better caching
 COPY lightrag_webui/package*.json ./
+COPY lightrag_webui/yarn.lock* ./
 
 # Install dependencies with legacy peer deps to handle version conflicts
 RUN npm install --legacy-peer-deps
@@ -76,7 +77,7 @@ ENV DEFAULT_CONTEXT=default
 ENV MAX_CONTEXTS=10
 ENV PORT=9621
 
-# Health check
+# Health check with variable port support
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:${PORT}/health || exit 1
 

@@ -1,6 +1,6 @@
 ---
-description:
-globs:
+description: 
+globs: 
 alwaysApply: false
 ---
 # Rule: Generating a Product Requirements Document (PRD)
@@ -29,6 +29,7 @@ The AI should adapt its questions based on the prompt, but here are some common 
 *   **Data Requirements:** "What kind of data does this feature need to display or manipulate?"
 *   **Design/UI:** "Are there any existing design mockups or UI guidelines to follow?" or "Can you describe the desired look and feel?"
 *   **Edge Cases:** "Are there any potential edge cases or error conditions we should consider?"
+*   **Git Strategy:** "What should the main feature branch be called?"
 
 ## PRD Structure
 
@@ -41,8 +42,12 @@ The generated PRD should include the following sections:
 5.  **Non-Goals (Out of Scope):** Clearly state what this feature will *not* include to manage scope.
 6.  **Design Considerations (Optional):** Link to mockups, describe UI/UX requirements, or mention relevant components/styles if applicable.
 7.  **Technical Considerations (Optional):** Mention any known technical constraints, dependencies, or suggestions (e.g., "Should integrate with the existing Auth module").
-8.  **Success Metrics:** How will the success of this feature be measured? (e.g., "Increase user engagement by 10%", "Reduce support tickets related to X").
-9.  **Open Questions:** List any remaining questions or areas needing further clarification.
+8.  **Git Strategy:** Define the main feature branch name (e.g., `feature/user-profile-system`) and note that sub-features should branch from and merge back to this main branch.
+9.  **Success Metrics:** How will the success of this feature be measured? (e.g., "Increase user engagement by 10%", "Reduce support tickets related to X").
+10. **Implementation Phases (Optional):** If the feature is complex, outline the major 
+phases and which components belong in each phase.
+11. **Open Questions:** List any remaining questions or areas needing further 
+clarification.
 
 ## Target Audience
 

@@ -53,6 +53,9 @@ from lightrag.kg.shared_storage import (
 from lightrag.types import GPTKeywordExtractionFormat
 from lightrag.utils import EmbeddingFunc, get_env_value, logger, set_verbose_debug
 from lightrag.contexts.context_manager import ContextManager
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from passlib.context import CryptContext
 
 from .config import (
     get_default_host,
@@ -75,6 +78,9 @@ config.read("config.ini")
 
 # Global authentication configuration
 auth_configured = bool(auth_handler.accounts)
+
+# Create a password context for hashing and verification
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def create_app(args):
@@ -514,10 +520,53 @@ def create_app(args):
                 "webui_description": webui_description,
             }
         username = form_data.username
-        if auth_handler.accounts.get(username) != form_data.password:
+        stored_password_hash = auth_handler.accounts.get(username)
+
+        # Securely verify the password using bcrypt hash verification
+        # Support both hashed passwords and plain text passwords for backward compatibility
+        if not stored_password_hash:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
             )
+        
+        # Clean the hash and check format (handle potential whitespace/newlines)
+        clean_hash = stored_password_hash.strip()
+        
+        # Debug logging to see what we're working with
+        logger.debug(f"Auth attempt for user: {username}")
+        logger.debug(f"Hash from storage: {repr(clean_hash)}")
+        logger.debug(f"Hash starts with: {repr(clean_hash[:4])}")
+        
+        # Check if stored password is hashed (bcrypt hashes start with $2a$, $2b$, $2x$, $2y$)
+        # Note: htpasswd -Bc generates $2y$ hashes, which are perfectly valid
+        bcrypt_prefixes = ['$2a$', '$2b$', '$2x$', '$2y$']
+        is_bcrypt_hash = any(clean_hash.startswith(prefix) for prefix in bcrypt_prefixes)
+        
+        logger.debug(f"Is bcrypt hash: {is_bcrypt_hash}")
+        
+        if is_bcrypt_hash:
+            # Use bcrypt verification for hashed passwords
+            try:
+                verification_result = pwd_context.verify(form_data.password, clean_hash)
+                logger.debug(f"bcrypt verification result: {verification_result}")
+                if not verification_result:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
+                    )
+            except Exception as e:
+                logger.warning(f"bcrypt verification failed: {e}, falling back to plain text comparison")
+                # If bcrypt verification fails for any reason, fall back to plain text
+                if form_data.password != clean_hash:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
+                    )
+        else:
+            logger.debug("Using plain text password comparison")
+            # Plain text comparison for backward compatibility
+            if form_data.password != clean_hash:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
+                )
 
         # Regular user login
         user_token = auth_handler.create_token(
@@ -604,15 +653,24 @@ def create_app(args):
             return response
 
     # Webui mount webui/index.html
-    static_dir = Path(__file__).parent / "webui"
-    static_dir.mkdir(exist_ok=True)
-    app.mount(
-        "/webui",
-        SmartStaticFiles(
-            directory=static_dir, html=True, check_dir=True
-        ),  # Use SmartStaticFiles
-        name="webui",
-    )
+    # Mount static files for production mode when /app/static exists
+    integrated_static_dir = Path("/app/static")
+    if integrated_static_dir.exists() and integrated_static_dir.is_dir():
+        # Production mode: mount built static files
+        app.mount(
+            "/webui",
+            SmartStaticFiles(directory=str(integrated_static_dir), html=True, check_dir=True),
+            name="webui",
+        )
+    else:
+        # Development mode: mount local webui directory
+        static_dir = Path(__file__).parent / "webui"
+        static_dir.mkdir(exist_ok=True)
+        app.mount(
+            "/webui",
+            SmartStaticFiles(directory=static_dir, html=True, check_dir=True),
+            name="webui",
+        )
 
     return app
 
