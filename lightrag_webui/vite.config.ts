@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig(({ command }) => {
   const isDev = command === 'serve'
-  
+
   return {
     plugins: [react(), tailwindcss()],
     resolve: {
@@ -18,8 +18,8 @@ export default defineConfig(({ command }) => {
     build: {
       // For production Docker build, output to dist
       // For development build, output to the API webui directory
-      outDir: isDev ? 
-        path.resolve(__dirname, '../lightrag/api/webui') : 
+      outDir: isDev ?
+        path.resolve(__dirname, '../lightrag/api/webui') :
         path.resolve(__dirname, './dist'),
       emptyOutDir: true,
       sourcemap: !isDev, // Enable sourcemaps in production for debugging

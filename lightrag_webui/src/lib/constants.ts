@@ -3,7 +3,7 @@ import { ButtonVariantType } from '@/components/ui/Button'
 // Backend URL configuration for production vs development
 // In production (integrated container), use relative URLs
 // In development, use absolute URL to development backend
-export const backendBaseUrl = import.meta.env.PROD 
+export const backendBaseUrl = import.meta.env.PROD
   ? '' // Relative URLs for production (served from same container)
   : 'http://localhost:9621' // Absolute URL for development
 

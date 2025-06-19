@@ -18,20 +18,22 @@ from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
+from jose import JWTError, jwt
+from passlib.context import CryptContext
 
 from lightrag import LightRAG
 from lightrag import __version__ as core_version
 from lightrag.api import __api_version__
 from lightrag.api.auth import auth_handler
+from lightrag.api.routers.context_routes import router as context_router
 from lightrag.api.routers.document_routes import (
     DocumentManager,
     create_document_routes,
     run_scanning_process,
 )
 from lightrag.api.routers.graph_routes import create_graph_routes
-from lightrag.api.routers.context_routes import router as context_router
 from lightrag.api.routers.ollama_api import OllamaAPI
 from lightrag.api.routers.query_routes import create_query_routes
 from lightrag.api.utils_api import (
@@ -44,6 +46,7 @@ from lightrag.constants import (
     DEFAULT_LOG_FILENAME,
     DEFAULT_LOG_MAX_BYTES,
 )
+from lightrag.contexts.context_manager import ContextManager
 from lightrag.kg.shared_storage import (
     get_namespace_data,
     get_pipeline_status_lock,
@@ -52,10 +55,6 @@ from lightrag.kg.shared_storage import (
 )
 from lightrag.types import GPTKeywordExtractionFormat
 from lightrag.utils import EmbeddingFunc, get_env_value, logger, set_verbose_debug
-from lightrag.contexts.context_manager import ContextManager
-from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
-from passlib.context import CryptContext
 
 from .config import (
     get_default_host,
@@ -124,10 +123,10 @@ def create_app(args):
 
     # Initialize context manager first to get the current context paths
     context_manager = ContextManager.get_instance()
-    
+
     # Get the current context's working and input directories, fallback to args if no context
     current_working_path, current_input_path = context_manager.get_context_paths()
-    
+
     # Use context-specific working directory if available
     if current_working_path:
         context_working_dir = str(current_working_path)
@@ -135,8 +134,8 @@ def create_app(args):
         args.working_dir = context_working_dir
     else:
         logger.info(f"No context working path found, using default: {args.working_dir}")
-    
-    # Use context-specific input directory if available 
+
+    # Use context-specific input directory if available
     doc_input_dir = str(current_input_path) if current_input_path else args.input_dir
     if current_input_path:
         logger.info(f"Using context-specific input directory: {doc_input_dir}")
@@ -401,52 +400,67 @@ def create_app(args):
 
     # Add routes
     # Add this function after rag and doc_manager are created
-    async def on_context_switch(context_name, context_working_path, previous_context_name=None, context_input_path=None, **kwargs):
+    async def on_context_switch(
+        context_name,
+        context_working_path,
+        previous_context_name=None,
+        context_input_path=None,
+        **kwargs,
+    ):
         """Update RAG instance and document manager when context switches"""
-        logger.info(f"Context switch callback: {previous_context_name} → {context_name}")
-        
+        logger.info(
+            f"Context switch callback: {previous_context_name} → {context_name}"
+        )
+
         try:
             # Reset storage namespaces first to ensure clean context switch
             await reset_all_storage_namespaces_for_context_switch()
             logger.info("Reset storage namespaces for context switch")
-            
+
             # Update RAG working directory
-            if hasattr(rag, 'update_working_dir'):
+            if hasattr(rag, "update_working_dir"):
                 await rag.update_working_dir(str(context_working_path))
                 logger.info(f"Updated RAG working directory to: {context_working_path}")
             else:
                 # Fallback approach - manually update working_dir
                 rag.working_dir = str(context_working_path)
-                logger.info(f"Manually updated RAG working_dir to: {context_working_path}")
-            
+                logger.info(
+                    f"Manually updated RAG working_dir to: {context_working_path}"
+                )
+
             # Force reload document status storage from new context files
-            if hasattr(rag.doc_status, 'initialize'):
+            if hasattr(rag.doc_status, "initialize"):
                 await rag.doc_status.initialize()
                 logger.info("Force reloaded document status storage from new context")
-            
-            # Update document manager input directory  
-            if hasattr(doc_manager, 'update_input_directory'):
+
+            # Update document manager input directory
+            if hasattr(doc_manager, "update_input_directory"):
                 doc_manager.update_input_directory(context_input_path)
-                logger.info(f"DocumentManager input directory updated to: {context_input_path}")
-                
+                logger.info(
+                    f"DocumentManager input directory updated to: {context_input_path}"
+                )
+
             # Reset frontend state and load indexed files from new context
-            if hasattr(doc_manager, 'reset_frontend_state'):
+            if hasattr(doc_manager, "reset_frontend_state"):
                 doc_manager.reset_frontend_state()
-                
-            if hasattr(doc_manager, 'load_indexed_files_from_storage'):
+
+            if hasattr(doc_manager, "load_indexed_files_from_storage"):
                 await doc_manager.load_indexed_files_from_storage(rag)
                 logger.info("Loaded indexed files from new context storage")
-            
+
             # Reload storages to refresh data if method available
-            if hasattr(rag, 'reload_storages'):
+            if hasattr(rag, "reload_storages"):
                 await rag.reload_storages()
                 logger.info("Reloaded all storages after context switch")
-                
-            logger.info(f"Context switch completed successfully: {previous_context_name} → {context_name}")
-            
+
+            logger.info(
+                f"Context switch completed successfully: {previous_context_name} → {context_name}"
+            )
+
         except Exception as e:
             logger.error(f"Error during context switch callback: {e}")
             import traceback
+
             logger.error(traceback.format_exc())
             raise  # Re-raise to propagate the error
 
@@ -457,7 +471,7 @@ def create_app(args):
     app.include_router(create_document_routes(rag, doc_manager, api_key))
     app.include_router(create_query_routes(rag, api_key, args.top_k))
     app.include_router(create_graph_routes(rag, api_key))
-    
+
     # Context router now has individual route-level auth dependencies
     logger.info(f"Registering context router. Auth configured: {auth_configured}")
     logger.info(f"API key configured: {bool(api_key)}")
@@ -528,22 +542,24 @@ def create_app(args):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
             )
-        
+
         # Clean the hash and check format (handle potential whitespace/newlines)
         clean_hash = stored_password_hash.strip()
-        
+
         # Debug logging to see what we're working with
         logger.debug(f"Auth attempt for user: {username}")
         logger.debug(f"Hash from storage: {repr(clean_hash)}")
         logger.debug(f"Hash starts with: {repr(clean_hash[:4])}")
-        
+
         # Check if stored password is hashed (bcrypt hashes start with $2a$, $2b$, $2x$, $2y$)
         # Note: htpasswd -Bc generates $2y$ hashes, which are perfectly valid
-        bcrypt_prefixes = ['$2a$', '$2b$', '$2x$', '$2y$']
-        is_bcrypt_hash = any(clean_hash.startswith(prefix) for prefix in bcrypt_prefixes)
-        
+        bcrypt_prefixes = ["$2a$", "$2b$", "$2x$", "$2y$"]
+        is_bcrypt_hash = any(
+            clean_hash.startswith(prefix) for prefix in bcrypt_prefixes
+        )
+
         logger.debug(f"Is bcrypt hash: {is_bcrypt_hash}")
-        
+
         if is_bcrypt_hash:
             # Use bcrypt verification for hashed passwords
             try:
@@ -551,21 +567,26 @@ def create_app(args):
                 logger.debug(f"bcrypt verification result: {verification_result}")
                 if not verification_result:
                     raise HTTPException(
-                        status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="Incorrect credentials",
                     )
             except Exception as e:
-                logger.warning(f"bcrypt verification failed: {e}, falling back to plain text comparison")
+                logger.warning(
+                    f"bcrypt verification failed: {e}, falling back to plain text comparison"
+                )
                 # If bcrypt verification fails for any reason, fall back to plain text
                 if form_data.password != clean_hash:
                     raise HTTPException(
-                        status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="Incorrect credentials",
                     )
         else:
             logger.debug("Using plain text password comparison")
             # Plain text comparison for backward compatibility
             if form_data.password != clean_hash:
                 raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials"
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Incorrect credentials",
                 )
 
         # Regular user login
@@ -659,7 +680,9 @@ def create_app(args):
         # Production mode: mount built static files
         app.mount(
             "/webui",
-            SmartStaticFiles(directory=str(integrated_static_dir), html=True, check_dir=True),
+            SmartStaticFiles(
+                directory=str(integrated_static_dir), html=True, check_dir=True
+            ),
             name="webui",
         )
     else:
