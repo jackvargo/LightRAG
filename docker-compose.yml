@@ -14,7 +14,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: backend-builder
+      target: prod
     image: lightrag-server:dev
     container_name: ${CONTAINER_NAME:-lightrag}-dev
     ports:
