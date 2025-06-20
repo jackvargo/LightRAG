@@ -36,7 +36,7 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
 
 ### Phase 2: MCP Server Implementation
 - `lightrag_mcp/` - New directory for MCP server implementation
-- `lightrag_mcp/main.py` - FastAPI application entry point for MCP server
+- `lightrag_mcp/main.py` - FastAPI application entry point for MCP server with WebSocket/SSE support and comprehensive tool discovery endpoints
 - `lightrag_mcp/auth.py` - OAuth 2.1 authentication implementation
 - `lightrag_mcp/protocol/` - MCP protocol implementation directory
 - `lightrag_mcp/protocol/server.py` - Core MCP server protocol handler
@@ -150,18 +150,19 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
   - [x] 3.12 Validate LightRAG API connectivity and authentication
 
 - [ ] 4.0 Implement Core MCP Protocol and Tool Framework
-  - [ ] 4.1 Create branch `feature/mcp-core-protocol` from main feature branch
-  - [ ] 4.2 Implement MCP JSON-RPC protocol handler in `lightrag_mcp/protocol/server.py`
-  - [ ] 4.3 Setup WebSocket and SSE support for real-time communication
-  - [ ] 4.4 Create MCP capability negotiation and initialization
-  - [ ] 4.5 Implement error handling with detailed error messages
-  - [ ] 4.6 Create base tool framework in `lightrag_mcp/protocol/tools.py`
-  - [ ] 4.7 Add tool discovery and metadata endpoints
-  - [ ] 4.8 Implement streaming response handling for long-running operations
-  - [ ] 4.9 Create connection lifecycle management (connect, disconnect, cleanup)
-  - [ ] 4.10 Add comprehensive protocol validation and error responses
-  - [ ] 4.11 Create unit tests for protocol implementation
-  - [ ] 4.12 Test MCP client connection and basic protocol flow
+  - [x] 4.1 Create branch `feature/mcp-core-protocol` from main feature branch
+  - [x] 4.2 Implement MCP JSON-RPC protocol handler in `lightrag_mcp/protocol/server.py`
+  - [x] 4.3 Setup WebSocket and SSE support for real-time communication
+  - [x] 4.4 Create MCP capability negotiation and initialization
+  - [x] 4.5 Implement error handling with detailed error messages
+  - [x] 4.6 Create base tool framework in `lightrag_mcp/protocol/tools.py`
+  - [x] 4.7 Add tool discovery and metadata endpoints
+  - [x] 4.8 Implement streaming response handling for long-running operations
+  - [x] 4.9 Create connection lifecycle management (connect, disconnect, cleanup)
+  - [x] 4.10 Add comprehensive protocol validation and error responses
+  - [x] 4.11 Create unit tests for protocol implementation
+  - [x] 4.12 Test MCP client connection and basic protocol flow
+  - [ ] 4.13 Commit and merge sub-feature branch into `feature/mcp-server-implementation`.
 
 - [ ] 5.0 Build MCP Tools for Context and Query Management
   - [ ] 5.1 Create branch `feature/mcp-tools-implementation` from main feature branch
@@ -179,6 +180,7 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
   - [ ] 5.13 Create comprehensive tool tests with mocked LightRAG responses
   - [ ] 5.14 Test error handling and fallback scenarios for each tool
   - [ ] 5.15 Validate tool parameter validation and response formatting
+  - [ ] 5.16 Commit and merge sub-feature branch into `feature/mcp-server-implementation`.
 
 - [ ] 6.0 Add Document Resources and Prompt Templates
   - [ ] 6.1 Create branch `feature/mcp-resources-prompts` from main feature branch
@@ -195,6 +197,7 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
   - [ ] 6.12 Test document and chunk resource retrieval with various file types
   - [ ] 6.13 Test prompt template loading and parameter substitution
   - [ ] 6.14 Validate MCP resource compliance with specification
+  - [ ] 6.15 Commit and merge sub-feature branch into `feature/mcp-server-implementation`.
 
 - [ ] 7.0 Implement Session Management and Production Deployment
   - [ ] 7.1 Create branch `feature/mcp-session-deployment` from main feature branch
@@ -213,4 +216,5 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
   - [ ] 7.14 Validate production deployment with Docker compose
   - [ ] 7.15 Run full CI/CD pipeline test on feature branch
   - [ ] 7.16 Create monitoring dashboard and alerting configuration
-  - [ ] 7.17 Submit final pull request and merge feature branch to main
+  - [ ] 7.17 Commit and merge sub-feature branch into `feature/mcp-server-implementation`.
+  - [ ] 7.18 Submit final pull request and merge feature branch to main

@@ -19,15 +19,16 @@ import inspect
 import json
 import uuid
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union, Callable, AsyncGenerator, Type
-from dataclasses import dataclass, field
+from typing import Any, AsyncGenerator, Callable, Dict, List, Optional, Type, Union
+
 from pydantic import BaseModel, Field, validator
 
 from ..config import MCPConfig
-from ..services.lightrag_client import LightRAGClient, get_lightrag_client
 from ..logging_utils import get_logger
+from ..services.lightrag_client import LightRAGClient, get_lightrag_client
 from .server import ConnectionSession, JSONRPCError, JSONRPCErrorCode
 
 logger = get_logger(__name__)
@@ -35,6 +36,7 @@ logger = get_logger(__name__)
 
 class ToolParameterType(str, Enum):
     """Supported parameter types for MCP tools"""
+
     STRING = "string"
     INTEGER = "integer"
     NUMBER = "number"
@@ -45,6 +47,7 @@ class ToolParameterType(str, Enum):
 
 class ToolCategory(str, Enum):
     """Categories of available tools"""
+
     CONTEXT_MANAGEMENT = "context_management"
     QUERY_OPERATIONS = "query_operations"
     SEMANTIC_SEARCH = "semantic_search"
@@ -56,6 +59,7 @@ class ToolCategory(str, Enum):
 @dataclass
 class ToolParameter:
     """Tool parameter definition with validation rules"""
+
     name: str
     type: ToolParameterType
     description: str
@@ -70,11 +74,8 @@ class ToolParameter:
 
     def to_schema(self) -> Dict[str, Any]:
         """Convert parameter to JSON schema format"""
-        schema = {
-            "type": self.type.value,
-            "description": self.description
-        }
-        
+        schema = {"type": self.type.value, "description": self.description}
+
         if self.enum:
             schema["enum"] = self.enum
         if self.minimum is not None:
@@ -85,35 +86,35 @@ class ToolParameter:
             schema["pattern"] = self.pattern
         if not self.required and self.default is not None:
             schema["default"] = self.default
-            
+
         if self.type == ToolParameterType.ARRAY and self.items:
             schema["items"] = self.items.to_schema()
         elif self.type == ToolParameterType.OBJECT and self.properties:
             schema["properties"] = {
-                name: param.to_schema() 
-                for name, param in self.properties.items()
+                name: param.to_schema() for name, param in self.properties.items()
             }
             schema["required"] = [
-                name for name, param in self.properties.items() 
-                if param.required
+                name for name, param in self.properties.items() if param.required
             ]
-            
+
         return schema
 
     def validate_value(self, value: Any) -> Any:
         """Validate parameter value against schema"""
         if self.required and value is None:
             raise ValueError(f"Required parameter '{self.name}' is missing")
-            
+
         if value is None:
             return self.default
-            
+
         # Type validation
         if self.type == ToolParameterType.STRING and not isinstance(value, str):
             raise ValueError(f"Parameter '{self.name}' must be a string")
         elif self.type == ToolParameterType.INTEGER and not isinstance(value, int):
             raise ValueError(f"Parameter '{self.name}' must be an integer")
-        elif self.type == ToolParameterType.NUMBER and not isinstance(value, (int, float)):
+        elif self.type == ToolParameterType.NUMBER and not isinstance(
+            value, (int, float)
+        ):
             raise ValueError(f"Parameter '{self.name}' must be a number")
         elif self.type == ToolParameterType.BOOLEAN and not isinstance(value, bool):
             raise ValueError(f"Parameter '{self.name}' must be a boolean")
@@ -121,7 +122,7 @@ class ToolParameter:
             raise ValueError(f"Parameter '{self.name}' must be an array")
         elif self.type == ToolParameterType.OBJECT and not isinstance(value, dict):
             raise ValueError(f"Parameter '{self.name}' must be an object")
-            
+
         # Value validation
         if self.enum and value not in self.enum:
             raise ValueError(f"Parameter '{self.name}' must be one of: {self.enum}")
@@ -131,15 +132,19 @@ class ToolParameter:
             raise ValueError(f"Parameter '{self.name}' must be <= {self.maximum}")
         if self.pattern and isinstance(value, str):
             import re
+
             if not re.match(self.pattern, value):
-                raise ValueError(f"Parameter '{self.name}' does not match pattern: {self.pattern}")
-                
+                raise ValueError(
+                    f"Parameter '{self.name}' does not match pattern: {self.pattern}"
+                )
+
         return value
 
 
 @dataclass
 class ToolProgress:
     """Progress information for long-running tool operations"""
+
     operation_id: str
     progress: float  # 0.0 to 1.0
     status: str
@@ -155,39 +160,40 @@ class ToolProgress:
             "status": self.status,
             "message": self.message,
             "timestamp": self.timestamp.isoformat(),
-            "details": self.details or {}
+            "details": self.details or {},
         }
 
 
 @dataclass
 class ToolResult:
     """Result from tool execution"""
+
     success: bool
     data: Optional[Any] = None
     error: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
     progress: Optional[ToolProgress] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert result to dictionary format"""
         result = {
             "success": self.success,
             "data": self.data,
-            "metadata": self.metadata or {}
+            "metadata": self.metadata or {},
         }
-        
+
         if self.error:
             result["error"] = self.error
         if self.progress:
             result["progress"] = self.progress.to_dict()
-            
+
         return result
 
 
 class MCPTool(ABC):
     """
     Abstract base class for MCP tools
-    
+
     All MCP tools must inherit from this class and implement the required methods.
     This provides a standardized interface for tool registration, validation, and execution.
     """
@@ -246,76 +252,69 @@ class MCPTool(ABC):
         """Get JSON schema for tool parameters"""
         if not self.parameters:
             return {"type": "object", "properties": {}}
-            
+
         properties = {}
         required = []
-        
+
         for param in self.parameters:
             properties[param.name] = param.to_schema()
             if param.required:
                 required.append(param.name)
-        
-        schema = {
-            "type": "object",
-            "properties": properties
-        }
-        
+
+        schema = {"type": "object", "properties": properties}
+
         if required:
             schema["required"] = required
-            
+
         return schema
 
     def validate_parameters(self, params: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """Validate and normalize tool parameters"""
         if not params:
             params = {}
-            
+
         validated = {}
-        
+
         for param in self.parameters:
             value = params.get(param.name)
             validated[param.name] = param.validate_value(value)
-            
+
         return validated
 
     def validate_session(self, session: ConnectionSession) -> None:
         """Validate session requirements for tool execution"""
         if not session.is_initialized():
             raise ValueError("Session not properly initialized")
-            
+
         if self.requires_context and not session.context:
             raise ValueError(f"Tool '{self.name}' requires a context to be selected")
 
     @abstractmethod
     async def execute(
-        self, 
-        session: ConnectionSession, 
-        parameters: Dict[str, Any]
+        self, session: ConnectionSession, parameters: Dict[str, Any]
     ) -> ToolResult:
         """
         Execute the tool with validated parameters
-        
+
         Args:
             session: Current MCP session
             parameters: Validated tool parameters
-            
+
         Returns:
             ToolResult with execution results
         """
         pass
 
     async def execute_streaming(
-        self, 
-        session: ConnectionSession, 
-        parameters: Dict[str, Any]
+        self, session: ConnectionSession, parameters: Dict[str, Any]
     ) -> AsyncGenerator[ToolResult, None]:
         """
         Execute tool with streaming results (optional)
-        
+
         Args:
             session: Current MCP session
             parameters: Validated tool parameters
-            
+
         Yields:
             ToolResult instances with partial results
         """
@@ -333,15 +332,15 @@ class MCPTool(ABC):
                 "category": self.category.value,
                 "supports_progress": self.supports_progress,
                 "supports_streaming": self.supports_streaming,
-                "requires_context": self.requires_context
-            }
+                "requires_context": self.requires_context,
+            },
         }
 
 
 class ToolRegistry:
     """
     Registry for managing MCP tools
-    
+
     Handles tool registration, discovery, and execution routing.
     """
 
@@ -355,31 +354,32 @@ class ToolRegistry:
         """Register a new tool"""
         if tool.name in self._tools:
             raise ValueError(f"Tool '{tool.name}' is already registered")
-            
+
         self._tools[tool.name] = tool
-        
+
         # Add to category index
         if tool.category not in self._tools_by_category:
             self._tools_by_category[tool.category] = []
         self._tools_by_category[tool.category].append(tool)
-        
-        self.logger.info(f"Registered tool: {tool.name} (category: {tool.category.value})")
+
+        self.logger.info(
+            f"Registered tool: {tool.name} (category: {tool.category.value})"
+        )
 
     def unregister_tool(self, tool_name: str) -> None:
         """Unregister a tool"""
         if tool_name not in self._tools:
             raise ValueError(f"Tool '{tool_name}' is not registered")
-            
+
         tool = self._tools[tool_name]
         del self._tools[tool_name]
-        
+
         # Remove from category index
         if tool.category in self._tools_by_category:
             self._tools_by_category[tool.category] = [
-                t for t in self._tools_by_category[tool.category] 
-                if t.name != tool_name
+                t for t in self._tools_by_category[tool.category] if t.name != tool_name
             ]
-            
+
         self.logger.info(f"Unregistered tool: {tool_name}")
 
     def get_tool(self, tool_name: str) -> Optional[MCPTool]:
@@ -397,99 +397,93 @@ class ToolRegistry:
         return [tool.to_mcp_schema() for tool in self._tools.values()]
 
     async def execute_tool(
-        self, 
-        tool_name: str, 
-        session: ConnectionSession, 
-        parameters: Optional[Dict[str, Any]] = None
+        self,
+        tool_name: str,
+        session: ConnectionSession,
+        parameters: Optional[Dict[str, Any]] = None,
     ) -> ToolResult:
         """Execute a tool by name"""
         tool = self.get_tool(tool_name)
         if not tool:
-            return ToolResult(
-                success=False,
-                error=f"Tool '{tool_name}' not found"
-            )
-            
+            return ToolResult(success=False, error=f"Tool '{tool_name}' not found")
+
         try:
             # Validate session requirements
             tool.validate_session(session)
-            
+
             # Validate and normalize parameters
             validated_params = tool.validate_parameters(parameters)
-            
+
             # Execute tool
             result = await tool.execute(session, validated_params)
-            
+
             self.logger.info(
                 f"Tool executed successfully",
                 tool_name=tool_name,
                 session_id=session.session_id,
-                success=result.success
+                success=result.success,
             )
-            
+
             return result
-            
+
         except Exception as e:
             self.logger.error(
                 f"Tool execution failed",
                 tool_name=tool_name,
                 session_id=session.session_id,
                 error=str(e),
-                exc_info=True
+                exc_info=True,
             )
-            
+
             return ToolResult(
                 success=False,
                 error=str(e),
-                metadata={"tool_name": tool_name, "error_type": type(e).__name__}
+                metadata={"tool_name": tool_name, "error_type": type(e).__name__},
             )
 
     async def execute_tool_streaming(
-        self, 
-        tool_name: str, 
-        session: ConnectionSession, 
-        parameters: Optional[Dict[str, Any]] = None
+        self,
+        tool_name: str,
+        session: ConnectionSession,
+        parameters: Optional[Dict[str, Any]] = None,
     ) -> AsyncGenerator[ToolResult, None]:
         """Execute a tool with streaming results"""
         tool = self.get_tool(tool_name)
         if not tool:
-            yield ToolResult(
-                success=False,
-                error=f"Tool '{tool_name}' not found"
-            )
+            yield ToolResult(success=False, error=f"Tool '{tool_name}' not found")
             return
-            
+
         try:
             # Validate session requirements
             tool.validate_session(session)
-            
+
             # Validate and normalize parameters
             validated_params = tool.validate_parameters(parameters)
-            
+
             # Execute tool with streaming
             async for result in tool.execute_streaming(session, validated_params):
                 yield result
-                
+
         except Exception as e:
             self.logger.error(
                 f"Streaming tool execution failed",
                 tool_name=tool_name,
                 session_id=session.session_id,
                 error=str(e),
-                exc_info=True
+                exc_info=True,
             )
-            
+
             yield ToolResult(
                 success=False,
                 error=str(e),
-                metadata={"tool_name": tool_name, "error_type": type(e).__name__}
+                metadata={"tool_name": tool_name, "error_type": type(e).__name__},
             )
 
 
 class ToolManager:
     """
     High-level tool management interface
-    
+
     Provides the main interface for MCP protocol server to interact with tools.
     """
 
@@ -502,24 +496,23 @@ class ToolManager:
     async def initialize(self) -> None:
         """Initialize tool manager and register built-in tools"""
         self.logger.info("Initializing tool manager")
-        
+
         # Tool registration will be handled in Phase 5
         # For now, we just log that the framework is ready
         self.logger.info(
-            "Tool framework initialized",
-            tools_count=len(self.registry.list_tools())
+            "Tool framework initialized", tools_count=len(self.registry.list_tools())
         )
 
     async def shutdown(self) -> None:
         """Shutdown tool manager and cancel active operations"""
         self.logger.info("Shutting down tool manager")
-        
+
         # Cancel all active operations
         for operation_id, task in self._active_operations.items():
             if not task.done():
                 task.cancel()
                 self.logger.debug(f"Cancelled operation: {operation_id}")
-                
+
         self._active_operations.clear()
         self.logger.info("Tool manager shutdown complete")
 
@@ -532,84 +525,77 @@ class ToolManager:
         return self.registry.get_tools_schema()
 
     async def call_tool(
-        self, 
-        tool_name: str, 
-        session: ConnectionSession, 
-        arguments: Optional[Dict[str, Any]] = None
+        self,
+        tool_name: str,
+        session: ConnectionSession,
+        arguments: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Call a tool for MCP tools/call
-        
+
         Returns standardized MCP tool call response
         """
         try:
             result = await self.registry.execute_tool(tool_name, session, arguments)
-            
+
             return {
                 "content": [
-                    {
-                        "type": "text",
-                        "text": json.dumps(result.to_dict(), indent=2)
-                    }
+                    {"type": "text", "text": json.dumps(result.to_dict(), indent=2)}
                 ],
-                "isError": not result.success
+                "isError": not result.success,
             }
-            
+
         except Exception as e:
             self.logger.error(
                 f"Tool call failed",
                 tool_name=tool_name,
                 session_id=session.session_id,
                 error=str(e),
-                exc_info=True
+                exc_info=True,
             )
-            
+
             return {
                 "content": [
-                    {
-                        "type": "text", 
-                        "text": f"Tool execution failed: {str(e)}"
-                    }
+                    {"type": "text", "text": f"Tool execution failed: {str(e)}"}
                 ],
-                "isError": True
+                "isError": True,
             }
 
     async def call_tool_streaming(
-        self, 
-        tool_name: str, 
-        session: ConnectionSession, 
-        arguments: Optional[Dict[str, Any]] = None
+        self,
+        tool_name: str,
+        session: ConnectionSession,
+        arguments: Optional[Dict[str, Any]] = None,
     ) -> AsyncGenerator[Dict[str, Any], None]:
         """Call a tool with streaming results"""
         try:
-            async for result in self.registry.execute_tool_streaming(tool_name, session, arguments):
+            async for result in self.registry.execute_tool_streaming(
+                tool_name, session, arguments
+            ):
                 yield {
                     "content": [
-                        {
-                            "type": "text",
-                            "text": json.dumps(result.to_dict(), indent=2)
-                        }
+                        {"type": "text", "text": json.dumps(result.to_dict(), indent=2)}
                     ],
-                    "isError": not result.success
+                    "isError": not result.success,
                 }
-                
+
         except Exception as e:
             self.logger.error(
                 f"Streaming tool call failed",
                 tool_name=tool_name,
                 session_id=session.session_id,
                 error=str(e),
-                exc_info=True
+                exc_info=True,
             )
-            
+
             yield {
                 "content": [
                     {
                         "type": "text",
-                        "text": f"Streaming tool execution failed: {str(e)}"
+                        "text": f"Streaming tool execution failed: {str(e)}",
                     }
                 ],
-                "isError": True
+                "isError": True,
             }
 
     def cancel_operation(self, operation_id: str) -> bool:
@@ -636,13 +622,14 @@ class ToolManager:
 
 # Helper functions for creating common parameter types
 
+
 def string_parameter(
-    name: str, 
-    description: str, 
-    required: bool = True, 
+    name: str,
+    description: str,
+    required: bool = True,
     default: Optional[str] = None,
     enum: Optional[List[str]] = None,
-    pattern: Optional[str] = None
+    pattern: Optional[str] = None,
 ) -> ToolParameter:
     """Create a string parameter"""
     return ToolParameter(
@@ -652,7 +639,7 @@ def string_parameter(
         required=required,
         default=default,
         enum=enum,
-        pattern=pattern
+        pattern=pattern,
     )
 
 
@@ -662,7 +649,7 @@ def integer_parameter(
     required: bool = True,
     default: Optional[int] = None,
     minimum: Optional[int] = None,
-    maximum: Optional[int] = None
+    maximum: Optional[int] = None,
 ) -> ToolParameter:
     """Create an integer parameter"""
     return ToolParameter(
@@ -672,15 +659,12 @@ def integer_parameter(
         required=required,
         default=default,
         minimum=minimum,
-        maximum=maximum
+        maximum=maximum,
     )
 
 
 def boolean_parameter(
-    name: str,
-    description: str,
-    required: bool = True,
-    default: Optional[bool] = None
+    name: str, description: str, required: bool = True, default: Optional[bool] = None
 ) -> ToolParameter:
     """Create a boolean parameter"""
     return ToolParameter(
@@ -688,7 +672,7 @@ def boolean_parameter(
         type=ToolParameterType.BOOLEAN,
         description=description,
         required=required,
-        default=default
+        default=default,
     )
 
 
@@ -697,7 +681,7 @@ def array_parameter(
     description: str,
     items: ToolParameter,
     required: bool = True,
-    default: Optional[List[Any]] = None
+    default: Optional[List[Any]] = None,
 ) -> ToolParameter:
     """Create an array parameter"""
     return ToolParameter(
@@ -706,5 +690,5 @@ def array_parameter(
         description=description,
         required=required,
         default=default,
-        items=items
-    ) 
+        items=items,
+    )

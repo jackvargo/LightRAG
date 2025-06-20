@@ -16,6 +16,9 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
+# Import config types
+from .config import AuthMode
+
 # Import security logger - delay import to avoid circular dependency
 logger = logging.getLogger(__name__)
 

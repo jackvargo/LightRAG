@@ -1,0 +1,57 @@
+# Test requirements for MCP Protocol Tests
+# Install with: pip install -r tests/mcp/requirements-test.txt
+
+# Core testing framework
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.11.0
+pytest-cov>=4.1.0
+
+# HTTP testing
+httpx>=0.24.0
+requests>=2.31.0
+
+# WebSocket testing
+websockets>=11.0.0
+websocket-client>=1.6.0
+
+# Async testing utilities
+aiohttp>=3.8.0
+asyncio-mqtt>=0.13.0
+
+# Mock and fixture utilities
+factory-boy>=3.3.0
+faker>=19.0.0
+responses>=0.23.0
+
+# Test reporting and coverage
+pytest-html>=3.2.0
+pytest-xdist>=3.3.0
+coverage>=7.2.0
+
+# Performance testing
+pytest-benchmark>=4.0.0
+memory-profiler>=0.61.0
+
+# Code quality
+flake8>=6.0.0
+black>=23.0.0
+isort>=5.12.0
+
+# Type checking
+mypy>=1.5.0
+types-requests>=2.31.0
+
+# Documentation testing
+pytest-doctestplus>=1.0.0
+
+# Environment management
+python-dotenv>=1.0.0
+
+# JSON schema validation
+jsonschema>=4.19.0
+pydantic>=2.0.0
+
+# Logging and debugging
+structlog>=23.1.0
+rich>=13.5.0
