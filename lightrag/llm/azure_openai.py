@@ -70,6 +70,8 @@ async def azure_openai_complete_if_cache(
             model=model, messages=messages, **kwargs
         )
     else:
+        if 'max_tokens' in kwargs:
+            kwargs['max_completion_tokens'] = kwargs.pop('max_tokens')
         response = await openai_async_client.chat.completions.create(
             model=model, messages=messages, **kwargs
         )
