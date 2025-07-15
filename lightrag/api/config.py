@@ -284,6 +284,41 @@ def parse_args() -> argparse.Namespace:
     args.cors_origins = get_env_value("CORS_ORIGINS", "*")
     args.summary_language = get_env_value("SUMMARY_LANGUAGE", "English")
     args.whitelist_paths = get_env_value("WHITELIST_PATHS", "/health,/api/*")
+    
+    # Entity extraction configuration
+    entity_types_str = get_env_value("ENTITY_TYPES", "")
+    if entity_types_str:
+        args.entity_types = [t.strip() for t in entity_types_str.split(",")]
+    else:
+        args.entity_types = None
+
+    # Relationship verbs configuration
+    relationship_verbs_str = get_env_value("RELATIONSHIP_VERBS", "")
+    if relationship_verbs_str:
+        args.relationship_verbs = [v.strip() for v in relationship_verbs_str.split(",")]
+    else:
+        args.relationship_verbs = None
+
+    # Parse ADDON_PARAMS as JSON if provided
+    addon_params_str = get_env_value("ADDON_PARAMS", "")
+    addon_params_from_json = {}
+    if addon_params_str:
+        try:
+            import json
+            addon_params_from_json = json.loads(addon_params_str)
+        except json.JSONDecodeError as e:
+            print(f"Warning: Failed to parse ADDON_PARAMS as JSON: {e}")
+            addon_params_from_json = {}
+
+    # Merge ADDON_PARAMS with individual env vars (individual env vars take priority)
+    if args.entity_types is None and "entity_types" in addon_params_from_json:
+        args.entity_types = addon_params_from_json["entity_types"]
+    
+    if args.relationship_verbs is None and "relationship_verbs" in addon_params_from_json:
+        args.relationship_verbs = addon_params_from_json["relationship_verbs"]
+
+    # Store the full addon_params for later use
+    args.addon_params_json = addon_params_from_json
 
     # For JWT Auth
     args.auth_accounts = get_env_value("AUTH_ACCOUNTS", "")

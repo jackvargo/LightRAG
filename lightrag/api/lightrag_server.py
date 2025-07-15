@@ -325,7 +325,14 @@ def create_app(args):
             enable_llm_cache=args.enable_llm_cache,
             auto_manage_storages_states=False,
             max_parallel_insert=args.max_parallel_insert,
-            addon_params={"language": args.summary_language},
+            addon_params={
+                **getattr(args, 'addon_params_json', {}),
+                **{k: v for k, v in {
+                    "language": args.summary_language,
+                    "entity_types": args.entity_types,
+                    "relationship_verbs": args.relationship_verbs,
+                }.items() if v is not None}
+            },
         )
     else:  # azure_openai
         rag = LightRAG(
@@ -351,7 +358,14 @@ def create_app(args):
             enable_llm_cache=args.enable_llm_cache,
             auto_manage_storages_states=False,
             max_parallel_insert=args.max_parallel_insert,
-            addon_params={"language": args.summary_language},
+            addon_params={
+                **getattr(args, 'addon_params_json', {}),
+                **{k: v for k, v in {
+                    "language": args.summary_language,
+                    "entity_types": args.entity_types,
+                    "relationship_verbs": args.relationship_verbs,
+                }.items() if v is not None}
+            },
         )
 
     # Add routes
