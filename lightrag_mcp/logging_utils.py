@@ -77,6 +77,10 @@ class StructuredLogger:
             kwargs["error_message"] = str(error)
         self.logger.critical(message, **kwargs)
 
+    def bind(self, **context):
+        """Bind context to logger (delegates to structlog)."""
+        return self.logger.bind(**context)
+
 
 class PerformanceLogger:
     """Logger for performance monitoring."""

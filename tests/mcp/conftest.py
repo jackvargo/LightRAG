@@ -51,6 +51,12 @@ def mock_config() -> MagicMock:
     config.mcp.max_parameter_depth = 10
     config.mcp.session_timeout_minutes = 30
     config.mcp.heartbeat_interval_seconds = 60
+
+    # Add LightRAG client configuration attributes
+    config.lightrag_url = "http://localhost:9621"
+    config.lightrag_username = "admin"
+    config.lightrag_password = "admin123"
+
     return config
 
 

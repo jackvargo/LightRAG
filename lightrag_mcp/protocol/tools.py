@@ -497,8 +497,106 @@ class ToolManager:
         """Initialize tool manager and register built-in tools"""
         self.logger.info("Initializing tool manager")
 
-        # Tool registration will be handled in Phase 5
-        # For now, we just log that the framework is ready
+        # Import and register context management tools
+        try:
+            from .context_tools import (
+                GetContextInfoTool,
+                ListContextsTool,
+                QueryTool,
+                SwitchContextTool,
+            )
+
+            # Register context management tools
+            self.register_tool(ListContextsTool(self.config))
+            self.register_tool(SwitchContextTool(self.config))
+            self.register_tool(GetContextInfoTool(self.config))
+            self.register_tool(QueryTool(self.config))
+
+            self.logger.info("Registered context management tools")
+
+        except ImportError as e:
+            self.logger.error(f"Failed to import context tools: {e}")
+        except Exception as e:
+            self.logger.error(f"Failed to register context tools: {e}")
+
+        # Import and register semantic tools - Task 5.6 and 5.7
+        try:
+            from .context_tools import (
+                FindConceptTool,
+                GetRelationshipsTool,
+                SearchDocsTool,
+                SearchDocumentsTool,
+            )
+
+            # Register semantic tools (note: MCPTool constructor only takes config)
+            self.register_tool(FindConceptTool(self.config))
+            self.register_tool(GetRelationshipsTool(self.config))
+            self.register_tool(SearchDocsTool(self.config))
+            self.register_tool(SearchDocumentsTool(self.config))  # Task 5.7
+
+            self.logger.info("Registered semantic and document tools")
+
+        except ImportError as e:
+            self.logger.error(f"Failed to import semantic tools: {e}")
+        except Exception as e:
+            self.logger.error(f"Failed to register semantic tools: {e}")
+
+        # Import and register summary tool - Task 5.8
+        try:
+            from .context_tools import GetSummaryTool
+
+            # Register summary tool
+            self.register_tool(GetSummaryTool(self.config))
+
+            self.logger.info("Registered summary tool")
+
+        except ImportError as e:
+            self.logger.error(f"Failed to import summary tool: {e}")
+        except Exception as e:
+            self.logger.error(f"Failed to register summary tool: {e}")
+
+        # Import and register graph exploration tool - Task 5.9
+        try:
+            from .context_tools import ExploreGraphTool
+
+            # Register graph exploration tool
+            self.register_tool(ExploreGraphTool(self.config))
+
+            self.logger.info("Registered graph exploration tool")
+
+        except ImportError as e:
+            self.logger.error(f"Failed to import graph exploration tool: {e}")
+        except Exception as e:
+            self.logger.error(f"Failed to register graph exploration tool: {e}")
+
+        # Import and register cache management tool - Task 5.11
+        try:
+            from .context_tools import ClearCacheTool
+
+            # Register cache management tool
+            self.register_tool(ClearCacheTool(self.config))
+
+            self.logger.info("Registered cache management tool")
+
+        except ImportError as e:
+            self.logger.error(f"Failed to import cache management tool: {e}")
+        except Exception as e:
+            self.logger.error(f"Failed to register cache management tool: {e}")
+
+        # Import and register help tool - Task 5.12
+        try:
+            from .context_tools import HelpTool
+
+            # Register help tool
+            self.register_tool(HelpTool(self.config))
+
+            self.logger.info("Registered help tool")
+
+        except ImportError as e:
+            self.logger.error(f"Failed to import help tool: {e}")
+        except Exception as e:
+            self.logger.error(f"Failed to register help tool: {e}")
+
         self.logger.info(
             "Tool framework initialized", tools_count=len(self.registry.list_tools())
         )
