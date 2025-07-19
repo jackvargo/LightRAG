@@ -184,7 +184,7 @@ Based on PRD: [prd-mcp-server-capability.md](./prd-mcp-server-capability.md)
   - [x] 5.13 Create comprehensive tool tests with mocked LightRAG responses
   - [x] 5.14 Test error handling and fallback scenarios for each tool
   - [x] 5.15 Validate tool parameter validation and response formatting
-  - [ ] 5.16 Commit and merge sub-feature branch into `feature/mcp-server-implementation`.
+  - [x] 5.16 Commit and merge sub-feature branch into `feature/mcp-server-implementation`
 
 - [ ] 6.0 Add Document Resources and Prompt Templates
   - [ ] 6.1 Create branch `feature/mcp-resources-prompts` from main feature branch
